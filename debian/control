@@ -1,0 +1,40 @@
+Source: libchronicle-perl
+Section: perl
+Priority: optional
+Maintainer: Steve Kemp <steve@steve.org.uk>
+Build-Depends: debhelper (>= 8)
+Build-Depends-Indep: libdbi-perl,
+ libfile-sharedir-install-perl,
+ libhtml-template-perl,
+ libmodule-pluggable-ordered-perl,
+ libtest-notabs-perl,
+ libtest-pod-perl,
+ libtest-strict-perl,
+ libtimedate-perl,
+ perl,
+ perl-base (>= 5.14.2-21+deb7u1),
+ perl-modules
+Standards-Version: 3.9.4
+Homepage: https://github.com/skx/chronicle2
+
+Package: libchronicle-perl
+Architecture: all
+Depends: ${misc:Depends}, ${perl:Depends},
+ libdbi-perl,
+ libhtml-template-perl,
+ libmodule-pluggable-ordered-perl,
+ libtimedate-perl,
+ perl,
+ perl-base (>= 5.14.2-21+deb7u1),
+ perl-modules
+Description: A static blog-compiler.
+ Convert a directory of simple  text files into a static HTML weblog,
+ (or blog if you prefer).
+ .
+ The system is intentionally simple, but it supports:
+ .
+  * RSS feed creation.
+  * Template based output.
+  * The tagging of entries.
+  * Notification of ping services upon blog rebuild.
+  * User comments upon entries.
