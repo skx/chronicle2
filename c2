@@ -204,6 +204,10 @@ else
 }
 
 
+#
+#  Options here are passed to all templates
+#
+our %GLOBAL_TEMPLATE_VARS = ();
 
 
 #
@@ -257,32 +261,6 @@ for my $plugin ( Chronicle->plugins() )
 #  Parse/update blog posts from our data/ directory.
 #
 updateDatabase($dbh);
-
-
-#
-#  Output each blog post to disk.
-#
-outputPages($dbh);
-
-
-#
-#  Now output each tag-page, and the cloud-page
-#
-outputTags($dbh);
-outputTagCloud($dbh);
-
-
-#
-#  TODO : fix the hap-hazard ordering here.
-#
-outputArchive($dbh);
-
-
-#
-#  Output RSS & index
-#
-#outputRSS($dbh);
-outputIndex($dbh);
 
 
 #
@@ -353,6 +331,10 @@ sub updateDatabase
       $dbh->prepare("SELECT id FROM blog WHERE ( file=? AND mtime=? )") or
       die "Failed to select post";
 
+
+    #
+    #  Look for blog entries.
+    #
     foreach my $file ( glob( $CONFIG{ 'input' } . "/" . $CONFIG{ 'pattern' } ) )
     {
 
@@ -372,6 +354,9 @@ sub updateDatabase
         if ( !$result )
         {
 
+            #
+            #  The file is not in the database, or it is present with a
+            # different modification time.
             #
             #  Parse the file and insert it.
             #
@@ -404,7 +389,8 @@ sub insertPost
     #
     #  Is the entry present, but with a different mtime?
     #
-    #  If so we need to delete the post, and the tags.
+    #  If so we need to delete the post, and the tags which are pointing
+    # at it, otherwise we'll have orphaned tags.
     #
     my $sql = $dbh->prepare("SELECT id FROM blog WHERE file=?");
     $sql->execute($filename) or die "Failed to execute :" . $dbh->errstr();
@@ -437,9 +423,7 @@ sub insertPost
 
 
     #
-    #
-    #
-    #  Read the actual entry
+    #  Read the actual entry, from the disk.
     #
     my $inHeader = 1;
     open my $handle, "<:encoding(utf-8)", $filename or
@@ -567,7 +551,7 @@ sub insertPost
 
 
     #
-    #  Now we need to add the tags
+    #  Add any tags the post might contain.
     #
     if ( $meta{ 'tags' } )
     {
@@ -631,164 +615,6 @@ sub getDatabase
     $dbh->do("PRAGMA cache_size = 400000");
 
     return ($dbh);
-}
-
-
-=begin doc
-
-Write out each distinct blog-post
-
-=end doc
-
-=cut
-
-sub outputPages
-{
-    my ($dbh) = (@_);
-
-    my $all = $dbh->prepare("SELECT id FROM blog") or
-      die "Failed to find posts";
-
-    my $now = time;
-
-    $all->execute() or die "Failed to execute:" . $dbh->errstr();
-    my $id;
-    $all->bind_columns( undef, \$id );
-
-    while ( $all->fetch() )
-    {
-
-        #
-        #  Read the details of this single entry.
-        #
-        my $entry = getBlog( $dbh, $id );
-
-        #
-        #  We skip posts that are already present - UNLESS they are posted
-        # within the past ten days.
-        #
-        #  This means that we automatically include new comments when
-        # rebuilding a recent post.
-        #
-        #  Of course if you run "make clean" then you'll rebuild all
-        # pages, regardless of the age.
-        #
-        next
-          if ( ( -e $CONFIG{ 'output' } . "/" . $entry->{ 'link' } ) &&
-               ( ( $now - $entry->{ 'posted' } ) >
-                 ( 60 * 60 * 24 * $CONFIG{ 'comment-days' } ) ) );
-
-
-        $CONFIG{ 'verbose' } &&
-          print "Creating : $CONFIG{'output'}/$entry->{'link'}\n";
-
-
-        my $c = load_template("entry.tmpl");
-        $c->param( top => $CONFIG{ 'top' } );
-        $c->param($entry);
-
-        #
-        #  Ensure we have a full output path - because a plugin might have given us a dated-path.
-        #
-        my $dir = File::Basename::dirname(
-                               $CONFIG{ 'output' } . "/" . $entry->{ 'link' } );
-        if ( !-d $dir )
-        {
-            File::Path::make_path( $dir,
-                                   {  verbose => 0,
-                                      mode    => 0755,
-                                   } );
-        }
-
-        open( my $handle, ">:utf8",
-              $CONFIG{ 'output' } . "/" . $entry->{ 'link' } ) or
-          die "Failed to open";
-        print $handle $c->output();
-        close($handle);
-
-    }
-
-    $all->finish();
-}
-
-
-
-=begin doc
-
-Output a page (`output/tags/$tag/index.html`) for each distinct tag
-we've ever used.
-
-=end doc
-
-=cut
-
-sub outputTags
-{
-    my ($dbh) = (@_);
-
-    my $all = $dbh->prepare("SELECT DISTINCT(name) FROM tags") or
-      die "Failed to find all tags";
-    my $ids =
-      $dbh->prepare("SELECT DISTINCT(blog_id) FROM tags WHERE name=?") or
-      die "Failed to find all blog posts with given tag";
-
-    $all->execute() or die "Failed to execute:" . $dbh->errstr();
-    my $tag;
-    $all->bind_columns( undef, \$tag );
-
-    while ( $all->fetch() )
-    {
-
-        # skip if it exists.
-        next if ( -e $CONFIG{ 'output' } . "/tags/$tag" );
-
-        $CONFIG{ 'verbose' } &&
-          print "Creating : $CONFIG{'output'}/tags/$tag/index.html\n";
-
-        File::Path::make_path( "$CONFIG{'output'}/tags/$tag",
-                               {  verbose => 0,
-                                  mode    => 0755,
-                               } );
-
-        #
-        #  Data for HTML::Template
-        #
-        my $entries;
-
-        #
-        #  For this tag get the posts associated with it.
-        #
-        $ids->execute($tag) or die "Failed to execute: " . $dbh->errstr();
-        my $id;
-        $ids->bind_columns( undef, \$id );
-
-        while ( $ids->fetch() )
-        {
-            push( @$entries, getBlog( $dbh, $id ) );
-        }
-
-
-
-
-        my $c = load_template("tag.tmpl");
-        $c->param( top     => $CONFIG{ 'top' } );
-        $c->param( entries => $entries ) if ($entries);
-        $c->param( tag     => $tag );
-        open( my $handle, ">:utf8", "$CONFIG{'output'}/tags/$tag/index.html" )
-          or
-          die "Failed to open";
-        print $handle $c->output();
-        close($handle);
-
-    }
-
-
-    #
-    #  We're all done.
-    #
-    $all->finish();
-    $ids->finish();
-
 }
 
 
@@ -893,224 +719,7 @@ sub getBlog
 
 =begin doc
 
-Output `output/tags/index.html` containing a complete tag-cloud of the
-tags we've ever used.
-
-=end doc
-
-=cut
-
-sub outputTagCloud
-{
-    my ($dbh) = (@_);
-
-    my $tags;
-
-    #
-    # Now the tags.
-    #
-    my $sql = $dbh->prepare(
-        'SELECT DISTINCT(name),COUNT(name) AS runningtotal FROM tags GROUP BY name ORDER BY name'
-      ) or
-      die "Failed to prepare tag cloud";
-    $sql->execute() or die "Failed to execute: " . $dbh->errstr();
-
-    my ( $tag, $count );
-    $sql->bind_columns( undef, \$tag, \$count );
-
-    #
-    # Process the results.
-    #
-    while ( $sql->fetch() )
-    {
-        my $size = $count * 5 + 5;
-        if ( $size > 60 ) {$size = 60;}
-
-        push( @$tags,
-              {  tag   => $tag,
-                 count => $count,
-                 tsize => $size
-              } );
-
-    }
-    $sql->finish();
-
-
-    $CONFIG{ 'verbose' } &&
-      print "Creating : $CONFIG{'output'}/tags/index.html\n";
-
-    my $c = load_template("cloud.tmpl");
-    $c->param( all_tags => $tags );
-    $c->param( top      => $CONFIG{ 'top' } );
-    open( my $handle, ">", "$CONFIG{'output'}/tags/index.html" ) or
-      die "Failed to open";
-    print $handle $c->output();
-    close($handle);
-}
-
-
-
-=begin doc
-
-Output pages for each year/month we've ever seen `output/archive/$year/$mon`.
-
-This is not yet complete and will need more love.
-
-=end doc
-
-=cut
-
-sub outputArchive
-{
-    my ($dbh) = (@_);
-
-    my %mons = ( "01" => 'January',
-                 "02" => 'February',
-                 "03" => 'March',
-                 "04" => 'April',
-                 "05" => 'May',
-                 "06" => 'June',
-                 "07" => 'July',
-                 "08" => 'August',
-                 "09" => 'September',
-                 "10" => 'October',
-                 "11" => 'November',
-                 "12" => 'December'
-               );
-
-
-
-    #
-    #  Date-record
-    #
-    my %hash;
-    my %index;
-
-    my $all = $dbh->prepare(
-        "SELECT strftime( '%m %Y', date, 'unixepoch') FROM blog ORDER BY strftime( '%s', date, 'unixepoch' ) ASC"
-      ) or
-      die "Failed to prepare";
-
-
-    $all->execute() or die "Failed to execute:" . $dbh->errstr();
-    my $dt;
-    $all->bind_columns( undef, \$dt );
-
-    while ( $all->fetch() )
-    {
-        if ( $dt =~ /([0-9]+) ([0-9]+)/ )
-        {
-            $hash{ $dt } += 1;
-
-            $index{ $2 }{ $1 } += 1;
-        }
-    }
-    $all->finish();
-
-    #
-    #  Ouptut the index
-    #
-    my $data;
-    foreach my $year ( reverse sort keys %index )
-    {
-        my $mons = $index{ $year };
-
-        foreach my $mon ( reverse sort keys %$mons )
-        {
-            push( @$data,
-                  {  year       => $year,
-                     month      => $mon,
-                     month_name => $mons{ $mon },
-                     count      => $index{ $year }{ $mon } } );
-        }
-    }
-
-
-    if ( !-d "$CONFIG{'output'}/archive/" )
-    {
-        File::Path::make_path( "$CONFIG{'output'}/archive/",
-                               {  verbose => 0,
-                                  mode    => 0755,
-                               } );
-    }
-
-
-    $CONFIG{ 'verbose' } &&
-      print "Creating : $CONFIG{'output'}/archive/index.html\n";
-
-    my $c = load_template("archive_index.tmpl");
-    $c->param( archive => $data );
-    open( my $handle, ">", "$CONFIG{'output'}/archive/index.html" ) or
-      die "Failed to open";
-    print $handle $c->output();
-    close($handle);
-
-
-    #
-    #  Foreach year/mon pair
-    #
-    foreach my $ym ( keys %hash )
-    {
-        my $mon  = "";
-        my $year = "";
-        if ( $ym =~ /^([0-9]+) ([0-9]+)$/ )
-        {
-            $mon  = $1;
-            $year = $2;
-        }
-        my $ids = $dbh->prepare(
-            "SELECT id FROM blog WHERE strftime( '%m %Y', date, 'unixepoch') = ? ORDER BY mtime DESC"
-          ) or
-          die "Failed to prepare";
-
-        $ids->execute($ym) or die "Failed to execute:" . $dbh->errstr();
-
-        my $id;
-        $ids->bind_columns( undef, \$id );
-
-        # skip if it exists.
-        next if ( -e "$CONFIG{'output'}/archive/$year/$mon" );
-
-        File::Path::make_path( "$CONFIG{'output'}/archive/$year/$mon",
-                               {  verbose => 0,
-                                  mode    => 0755,
-                               } );
-
-
-        my $entries;
-
-        while ( $ids->fetch() )
-        {
-            push( @$entries, getBlog( $dbh, $id ) );
-        }
-        $ids->finish();
-
-
-        $CONFIG{ 'verbose' } &&
-          print "Creating : $CONFIG{'output'}/archive/$year/$mon/index.html\n";
-
-        my $c = load_template("/archive.tmpl");
-        $c->param( top        => $CONFIG{ 'top' } );
-        $c->param( entries    => $entries );
-        $c->param( month      => $mon, year => $year );
-        $c->param( month_name => $mons{ $mon } );
-        open( my $handle, ">:utf8",
-              "$CONFIG{'output'}/archive/$year/$mon/index.html" ) or
-          die "Failed to open";
-        print $handle $c->output();
-        close($handle);
-
-
-    }
-
-
-}
-
-
-
-=begin doc
-
-Get the cooments associated with a post.
+Get the coments associated with a post.
 
 =end doc
 
@@ -1250,49 +859,6 @@ sub getComments
 }
 
 
-=begin doc
-
-Output the index page.
-
-=end doc
-
-=cut
-
-sub outputIndex
-{
-    my ($dbh) = (@_);
-
-    my $recent = $dbh->prepare(
-        "SELECT id FROM blog ORDER BY date DESC LIMIT 0,$CONFIG{'entry-count'}")
-      or
-      die "Failed to find recent posts";
-
-    $recent->execute() or die "Failed to execute:" . $dbh->errstr();
-    my $id;
-    $recent->bind_columns( undef, \$id );
-
-
-    my $entries;
-
-    while ( $recent->fetch() )
-    {
-        push( @$entries, getBlog( $dbh, $id ) );
-    }
-    $recent->finish();
-
-
-    $CONFIG{ 'verbose' } && print "Creating : $CONFIG{'output'}/index.html\n";
-
-    my $c = load_template("index.tmpl");
-    $c->param( top     => $CONFIG{ 'top' } );
-    $c->param( entries => $entries );
-    open( my $handle, ">:utf8", "$CONFIG{'output'}/index.html" ) or
-      die "Failed to open";
-    print $handle $c->output();
-    close($handle);
-}
-
-
 
 =begin doc
 
@@ -1306,6 +872,11 @@ sub load_template
 {
     my ($filename) = (@_);
 
+    #
+    #  Ensure we have a theme.
+    #
+    die "You must specify a theme with --theme"
+      unless ( $CONFIG{ 'theme' } );
 
     #
     #  Ensure things exist.
@@ -1332,6 +903,13 @@ sub load_template
                     loop_context_vars => 1,
                     global_vars       => 1,
     );
+
+
+    #
+    #  Populate the template with any global variables a plugin
+    # might have set.
+    #
+    $tmpl->param( \%GLOBAL_TEMPLATE_VARS );
 
     return ($tmpl);
 }
