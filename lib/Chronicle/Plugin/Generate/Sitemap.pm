@@ -116,5 +116,15 @@ __DATA__
   <priority>0.75</priority>
   <changefreq>weekly</changefreq>
 </url>
+<url>
+  <loc><!-- tmpl_var name='top' -->/archive/</loc>
+  <priority>0.50</priority>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc><!-- tmpl_var name='top' -->/tags/</loc>
+  <priority>0.50</priority>
+  <changefreq>weekly</changefreq>
+</url>
 </urlset>
 
