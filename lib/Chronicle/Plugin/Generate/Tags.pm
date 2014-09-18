@@ -42,7 +42,7 @@ sub outputTags
     my $all = $dbh->prepare("SELECT DISTINCT(name) FROM tags") or
       die "Failed to find all tags";
     my $ids =
-      $dbh->prepare("SELECT DISTINCT(blog_id) FROM tags WHERE name=? ORDER BY id DESC") or
+      $dbh->prepare("SELECT DISTINCT(a.blog_id) FROM tags AS a JOIN blog AS b WHERE ( a.blog_id = b.id AND a.name=? ) ORDER BY b.date DESC") or
       die "Failed to find all blog posts with given tag";
 
     $all->execute() or die "Failed to execute:" . $dbh->errstr();
