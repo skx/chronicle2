@@ -85,4 +85,6 @@ sub on_initiate
 }
 
 
+sub on_initiate_order { return  0; }
+
 1;

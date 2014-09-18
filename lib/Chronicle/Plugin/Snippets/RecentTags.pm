@@ -77,5 +77,6 @@ sub on_initiate
     $Chronicle::GLOBAL_TEMPLATE_VARS{ "recent_tags" } = $entries if ( $entries );
 }
 
+sub on_initiate_order { return  0; }
 
 1;
