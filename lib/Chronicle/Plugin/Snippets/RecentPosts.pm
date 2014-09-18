@@ -62,7 +62,7 @@ sub on_initiate
     $recent->bind_columns( undef, \$id );
 
 
-    my $entries;
+    my $entries = undef;
 
     while ( $recent->fetch() )
     {
@@ -80,7 +80,7 @@ sub on_initiate
     #
     #  Now we have the structure.
     #
-    $Chronicle::GLOBAL_TEMPLATE_VARS{ "recent_posts" } = $entries;
+    $Chronicle::GLOBAL_TEMPLATE_VARS{ "recent_posts" } = $entries if ( $entries );
 }
 
 
