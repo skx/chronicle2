@@ -1,0 +1,28 @@
+Format-Specification: http://anonscm.debian.org/viewvc/dep/web/deps/dep5.mdwn?view=markup&pathrev=135
+Maintainer: Steve Kemp <steve@steve.org.uk>
+Source: http://github.com/skx/chronicle2
+Name: Chronicle
+
+Files: *
+Copyright: Steve Kemp <steve@steve.org.uk>
+License: Artistic
+
+Files: debian/*
+Copyright: 2014, Steve Kemp <steve@steve.org.uk>
+License: GPL-2+ or Artistic
+
+License: GPL-2+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 1, or (at your option)
+ any later version.
+ .
+ On Debian systems, the complete text of version 1 of the GNU General
+ Public License can be found in `/usr/share/common-licenses/GPL-1'.
+
+License: Artistic
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the Artistic License, which comes with Perl.
+ .
+ On Debian systems, the complete text of the Artistic License can be
+ found in `/usr/share/common-licenses/Artistic'.
