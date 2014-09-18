@@ -196,11 +196,11 @@ $CONFIG{ 'verbose' }      = 0;
 
 if ( -d "./themes" )
 {
-    $CONFIG{ 'theme-dir' }    = "./themes";
+    $CONFIG{ 'theme-dir' } = "./themes";
 }
 else
 {
-    $CONFIG{ 'theme-dir'} = File::ShareDir::dist_dir('Chronicle');
+    $CONFIG{ 'theme-dir' } = File::ShareDir::dist_dir('Chronicle');
 }
 
 
@@ -1366,6 +1366,7 @@ sub parseCommandLine
             # theme support
             "theme=s",     \$CONFIG{ 'theme' },
             "theme-dir=s", \$CONFIG{ 'theme-dir' },
+            "list-themes", \$CONFIG{ 'list-themes' },
 
             # paths
             "input=s",   \$CONFIG{ 'input' },
@@ -1398,6 +1399,17 @@ sub parseCommandLine
     pod2usage(1) if $HELP;
     pod2usage( -verbose => 2 ) if $MANUAL;
 
+    if ( $CONFIG{ 'list-themes' } )
+    {
+        print "Listing themes beneath $CONFIG{'theme-dir'}\n";
+
+        foreach my $ent ( glob( $CONFIG{ 'theme-dir' } . "/*" ) )
+        {
+            my $name = File::Basename::basename($ent);
+            print "\t*\t" . $name . "\n" if ( -d $ent );
+        }
+        exit(0);
+    }
 }
 
 
