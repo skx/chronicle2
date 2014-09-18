@@ -8,8 +8,8 @@ Chronicle::Plugin::Generate::Sitemap - Generate a sitemap automatically
 This module will be invoked automatically when your site is built
 via the C<on_terminate> hook that Chronicle provides.
 
-The intention is that the plugin will generate a top-level C<sitemap.xml>
-file which contains a link to all your generated blog-pages.
+It is responsible for creating the top-level C</sitemap.xml> file
+which you use for search engine submission, etc.
 
 =cut
 
@@ -27,6 +27,7 @@ This library is free software. You can modify and or distribute it under
 the same terms as Perl itself.
 
 =cut
+
 
 package Chronicle::Plugin::Generate::Sitemap;
 
