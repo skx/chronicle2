@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w -Ilib/
+#!/usr/bin/perl
 
 =head1 NAME
 
@@ -67,8 +67,26 @@ The title of the blog-post itself.
 
 =head1 EXTENDING WITH PLUGINS
 
-This script is designed to be extended via plugins, and to that end three
-hooks are currently provided:
+The core of this script is responsible for a small amount of things:
+
+* Finding blog posts.
+* Parsing them into a SQLite database.
+* Cleaning up.
+
+The actual job of generating the pages is delegated to a series of plugins
+each of which is responsible for outputing one thing.  For example all of
+the tag-pages, located beneath C</tags/> in your generated site, are generated
+by the plugin L<Chronicle::Plugin::Generate::Tags>.
+
+In theory using plugins like this allows clean separation, however this comes
+at a cost.  Because there is no linking between plugins, and they run in
+their own private islands there is no ability for a tags-page to contain
+a list of "Recent Pages".
+
+In short the plugin-system is neat, extensible, but needs more thought.
+
+Currently there are three plugin-hooks which are supported, and demonstrated
+via our included code:
 
 =over 8
 
@@ -264,7 +282,7 @@ updateDatabase($dbh);
 
 
 #
-#  Call any on_initiate plugins we might have loaded.
+#  Call any on_terminate plugins we might have loaded.
 #
 for my $plugin ( Chronicle->plugins() )
 {
@@ -333,11 +351,14 @@ sub updateDatabase
 
 
     #
-    #  Look for blog entries.
+    #  Look for posts.
     #
     foreach my $file ( glob( $CONFIG{ 'input' } . "/" . $CONFIG{ 'pattern' } ) )
     {
 
+        #
+        # We want to find the mtime to see if it is newer than the DB-version.
+        #
         my ( $dev,   $ino,     $mode, $nlink, $uid,
              $gid,   $rdev,    $size, $atime, $mtime,
              $ctime, $blksize, $blocks
@@ -423,12 +444,15 @@ sub insertPost
 
 
     #
-    #  Read the actual entry, from the disk.
+    #  Read the actual entry from disk.
     #
     my $inHeader = 1;
     open my $handle, "<:encoding(utf-8)", $filename or
       die "Failed to read $filename $!";
 
+    #
+    #  The meta-data which comes from the posts header.
+    #
     my %meta;
 
     while ( my $line = <$handle> )
@@ -618,6 +642,7 @@ sub getDatabase
 }
 
 
+
 =begin doc
 
 Fetch the blog post with the given ID
@@ -719,7 +744,7 @@ sub getBlog
 
 =begin doc
 
-Get the coments associated with a post.
+Get the cooments associated with a post.
 
 =end doc
 
@@ -904,13 +929,10 @@ sub load_template
                     global_vars       => 1,
     );
 
-
     #
-    #  Populate the template with any global variables a plugin
-    # might have set.
+    #  If we have global options then set them.
     #
     $tmpl->param( \%GLOBAL_TEMPLATE_VARS );
-
     return ($tmpl);
 }
 
@@ -960,6 +982,7 @@ sub parseCommandLine
             "comment-days=s", \$CONFIG{ 'comment-days' },
 
             # plugins
+            "list-plugins",      \$CONFIG{ 'list-plugins' },
             "exclude-plugins=s", \$CONFIG{ 'exclude-plugins' },
 
             # prefix
@@ -987,6 +1010,27 @@ sub parseCommandLine
             print "\t*\t" . $name . "\n" if ( -d $ent );
         }
         exit(0);
+    }
+
+    if ( $CONFIG{ 'list-plugins' } )
+    {
+        for my $plugin ( sort Chronicle->plugins() )
+        {
+            print $plugin . "\n";
+
+            if ( $CONFIG{ 'verbose' } )
+            {
+                foreach my $method (
+                              sort qw! on_terminate on_initiate modify_entry ! )
+                {
+                    if ( $plugin->can($method) )
+                    {
+                        print "\tImplementes $method\n";
+                    }
+                }
+            }
+        }
+        exit 0;
     }
 }
 
