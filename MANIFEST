@@ -1,0 +1,29 @@
+c2
+lib/Chronicle/Plugin/Archived.pm
+lib/Chronicle/Plugin/Generate/RSS.pm
+lib/Chronicle/Plugin/Generate/Sitemap.pm
+lib/Chronicle/Plugin/Markdown.pm
+lib/Chronicle/Plugin/Verbose.pm
+Makefile
+Makefile.PL
+MANIFEST			This list of files
+MANIFEST.bak
+MANIFEST.SKIP			This list of files
+t/load-modules.t
+t/manifest.t
+t/pod.t
+t/style-no-tabs.t
+t/test-strict.t
+themes/blog.steve.org.uk/archive.tmpl
+themes/blog.steve.org.uk/archive_index.tmpl
+themes/blog.steve.org.uk/cloud.tmpl
+themes/blog.steve.org.uk/entry.tmpl
+themes/blog.steve.org.uk/inc/add-comment.inc
+themes/blog.steve.org.uk/inc/analytics.inc
+themes/blog.steve.org.uk/inc/blog-post.inc
+themes/blog.steve.org.uk/inc/comment-loop.inc
+themes/blog.steve.org.uk/inc/sidebar.inc
+themes/blog.steve.org.uk/inc/style.inc
+themes/blog.steve.org.uk/index.rss
+themes/blog.steve.org.uk/index.tmpl
+themes/blog.steve.org.uk/tag.tmpl
