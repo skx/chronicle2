@@ -47,7 +47,6 @@ globally available.
 sub on_initiate
 {
     my ( $self, $config, $dbh ) = (@_);
-    print "OK\n";
 
     #
     #  The number of tags to include.
