@@ -54,8 +54,8 @@ sub on_initiate
     my $count = $config->{ 'recent-tag-count' } || 10;
 
     my $recent =
-      $dbh->prepare("SELECT name FROM tags ORDER BY id DESC LIMIT $count") or
-      die "Failed to find recent posts";
+      $dbh->prepare("SELECT distinct(a.name) FROM tags AS a JOIN blog AS b WHERE ( b.id = a.blog_id  ) ORDER BY b.date DESC LIMIT $count" ) or
+        die "Failed to find recent tags: " . $dbh->errstr();
 
     $recent->execute() or die "Failed to execute:" . $dbh->errstr();
     my $tag;
