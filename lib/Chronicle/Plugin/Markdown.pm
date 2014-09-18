@@ -8,12 +8,11 @@ Chronicle::Plugin::Markdown - Support markdown-formatted input.
 The module allows you to write your input blog-entries in the
 Markdown format.
 
-Merely add the "C<format: markdown>" header to your entries
-and they will be automatically converted as part of the import
-process.
+Add the "C<format: markdown>" header to your entries and they
+will be automatically converted as part of the import process.
 
 NOTE:  If you enable/disable this plugin you will need to regenerate
-your SQLite database.
+your SQLite database, because the conversion happens at import-time.
 
 =cut
 
@@ -41,10 +40,10 @@ use warnings;
 
 =begin doc
 
-This method will be called whenever a new blog-post is entered
-into the database.
+This method will be called whenever a new blog-post is imported to the database.
 
-We look for a format header, and if it is found we'll update
+We look for a format header, and if it is found we'll update the content
+if that header has a value of 'textile'.
 
 =end doc
 
