@@ -12,6 +12,15 @@
 </ul>
 <!-- /tmpl_if name='recent_posts' -->
 
+<!-- tmpl_if name='recent_tags' -->
+<h3>Recent Tags</h3>
+<ul>
+<!-- tmpl_loop name='recent_tags' -->
+<li><a href="/tags/<!-- tmpl_var name='tag' -->"><!-- tmpl_var name='tag' --></a></li>
+<!-- /tmpl_loop -->
+</ul>
+<!-- /tmpl_if name='recent_tags' -->
+
 <h3>Links</h3>
 <ul style="list-style:none;">
  <li><a href="/about/">About</a></li>
