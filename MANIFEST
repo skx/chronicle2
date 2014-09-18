@@ -13,12 +13,9 @@ lib/Chronicle/Plugin/Textile.pm
 lib/Chronicle/Plugin/Timer.pm
 lib/Chronicle/Plugin/Verbose.pm
 lib/Chronicle/Plugin/Version.pm
-Makefile
 Makefile.PL
 MANIFEST
-MANIFEST.bak
 MANIFEST.SKIP
-MYMETA.yml
 README.md
 t/load-modules.t
 t/manifest.t
