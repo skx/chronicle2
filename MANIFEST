@@ -1,4 +1,6 @@
+cgi-bin/comments.cgi
 chronicle
+COMMENTS.md
 lib/Chronicle/Plugin/Archived.pm
 lib/Chronicle/Plugin/Generate/Archive.pm
 lib/Chronicle/Plugin/Generate/Index.pm
@@ -13,12 +15,12 @@ lib/Chronicle/Plugin/Textile.pm
 lib/Chronicle/Plugin/Timer.pm
 lib/Chronicle/Plugin/Verbose.pm
 lib/Chronicle/Plugin/Version.pm
+LICENSE
+Makefile
 Makefile.PL
 MANIFEST
 MANIFEST.SKIP
-COMMENTS.md
 README.md
-cgi-bin/comments.cgi
 t/load-modules.t
 t/manifest.t
 t/pod.t
