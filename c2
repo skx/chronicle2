@@ -98,7 +98,7 @@ options and the database handle used for storage.
 This method is invoked as a blog entry is read to disk before it is inserted into the database for the first time - or when the item on disk has been changed and the database must be refreshed.  This method is designed to handle Markdown expansion, etc.
 
 =item on_terminate
-THis is called immediately prior to the exit, after the pages have been built.  Again a reference to the configuration options, and the database handle is provided.
+This is called immediately prior to the exit, after the pages have been built.  Again a reference to the configuration options, and the database handle is provided.
 
 =back
 
