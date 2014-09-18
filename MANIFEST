@@ -1,4 +1,4 @@
-c2
+chronicle
 lib/Chronicle/Plugin/Archived.pm
 lib/Chronicle/Plugin/Generate/Archive.pm
 lib/Chronicle/Plugin/Generate/Index.pm
@@ -16,7 +16,9 @@ lib/Chronicle/Plugin/Version.pm
 Makefile.PL
 MANIFEST
 MANIFEST.SKIP
+COMMENTS.md
 README.md
+cgi-bin/comments.cgi
 t/load-modules.t
 t/manifest.t
 t/pod.t

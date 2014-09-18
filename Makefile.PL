@@ -17,8 +17,8 @@ install_share dist => 'themes';
 
 my %WriteMakefileArgs = (
     NAME         => 'Chronicle',
-    EXE_FILES    => ['c2'],
-    VERSION_FROM => 'c2',
+    EXE_FILES    => ['chronicle'],
+    VERSION_FROM => 'chronicle',
     PREREQ_PM    => {
         'HTML::Template' => 0,
         'Date::Format'   => 0,

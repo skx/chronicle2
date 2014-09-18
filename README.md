@@ -1,7 +1,7 @@
-c2
---
+chronicle
+---------
 
-c2 is a proof of concept replacement for the [chronicle blog compiler](http://www.steve.org.uk/Software/chronicle/).
+This is a proof of concept replacement for the [chronicle blog compiler](http://www.steve.org.uk/Software/chronicle/).
 
 This implementation is significantly faster at page generation than the
 original chronicle, primarily because posts are parsed and inserted into
