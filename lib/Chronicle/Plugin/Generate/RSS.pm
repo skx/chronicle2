@@ -73,7 +73,7 @@ sub on_terminate
     my $c = Chronicle::load_template("index.rss");
     $c->param( top     => $config->{ 'top' } );
     $c->param( entries => $entries );
-    open( my $handle, ">:utf8", "$config->{'output'}/index.rss" ) or
+    open( my $handle, ">:encoding(UTF-8)", "$config->{'output'}/index.rss" ) or
       die "Failed to open";
     print $handle $c->output();
     close($handle);
