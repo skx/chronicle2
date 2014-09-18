@@ -17,21 +17,28 @@ install_share dist => 'themes';
 
 my %WriteMakefileArgs = (
     NAME         => 'Chronicle',
-                         EXE_FILES => ['c2'],
+    EXE_FILES    => ['c2'],
     VERSION_FROM => 'c2',
     PREREQ_PM    => {
-                   'HTML::Template' => 0,
-                   'Module::Pluggable::Ordered' => 0,
-                   'DBI'            => 0,
+        'HTML::Template' => 0,
+        'Date::Format'   => 0,
+        'Date::Parse'    => 0,
+        'Digest::MD5'    => 0,
+        'File::Path'     => 0,
+        'File::Basename' => 0,
+        'Getopt::Long'   => 0,
+        'Pod::Usage'     => 0,
+
+        'Module::Pluggable::Ordered' => 0,
+        'DBI'                        => 0,
                  },
 
 
-    BUILD_REQUIRES => {
-                       'File::ShareDir::Install' => 0,
-                       'Test::More'   => 0,
-                       'Test::Pod'    => 0,
-                       'Test::Strict' => 0,
-                       'Test::NoTabs' => 0,
+    BUILD_REQUIRES => { 'File::ShareDir::Install' => 0,
+                        'Test::More'              => 0,
+                        'Test::Pod'               => 0,
+                        'Test::Strict'            => 0,
+                        'Test::NoTabs'            => 0,
                       },
 
     ABSTRACT => 'A static blog-compiler with minimal dependencies.',
