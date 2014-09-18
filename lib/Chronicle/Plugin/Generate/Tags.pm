@@ -18,10 +18,8 @@ sub on_terminate
 {
     my ( $self, $config, $dbh ) = (@_);
 
-    print "Generating tags/XXX/index.html\n";
     outputTags( $config, $dbh );
 
-    print "Generating tags/index.html\n";
     outputTagCloud( $config, $dbh );
 }
 
