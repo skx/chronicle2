@@ -52,6 +52,9 @@ the same terms as Perl itself.
 
 package Chronicle::Plugin::Archived;
 
+use strict;
+use warnings;
+
 use Date::Format;
 use Date::Parse;
 

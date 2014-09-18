@@ -29,8 +29,12 @@ the same terms as Perl itself.
 
 =cut
 
-
 package Chronicle::Plugin::Verbose;
+
+use strict;
+use warnings;
+
+
 
 sub on_initiate
 {
