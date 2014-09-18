@@ -13,10 +13,10 @@ inserted into a series of templates, which ultimately generates the output.
 > Although we assume you keep the SQLite database around it doesn't matter if you delete it.  The act of parsing all your entries is still a very quick process.
 
 
-User Visible Changes
+User-Visible Changes
 --------------------
 
-In an ideal wold you should be able to migrate from Chronicle directly
+In an ideal would you should be able to migrate from Chronicle directly
 to this codebase, as there are a lot of commonalities:
 
 * Blog entries are are still read from `data/`.
