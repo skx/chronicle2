@@ -168,6 +168,7 @@ use Date::Parse;
 use Digest::MD5 qw(md5_hex);
 use File::Path;
 use File::Basename;
+use File::ShareDir;
 use Getopt::Long;
 use HTML::Template;
 use Pod::Usage;
@@ -192,7 +193,16 @@ $CONFIG{ 'rss-count' }    = 1;
 $CONFIG{ 'entry-count' }  = 10;
 $CONFIG{ 'comment-days' } = 10;
 $CONFIG{ 'verbose' }      = 0;
-$CONFIG{ 'theme-dir' }    = "./themes";
+
+if ( -d "./themes" )
+{
+    $CONFIG{ 'theme-dir' }    = "./themes";
+}
+else
+{
+    $CONFIG{ 'theme-dir'} = File::ShareDir::dist_dir('Chronicle');
+}
+
 
 
 
