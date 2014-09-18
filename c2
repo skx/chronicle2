@@ -220,6 +220,13 @@ our %GLOBAL_TEMPLATE_VARS = ();
 
 
 #
+#  Read the global and per-user configuration file, if present.
+#
+readConfigurationFile("/etc/chronicle/config");
+readConfigurationFile( $ENV{ 'HOME' } . "/.chronicle/config" );
+
+
+#
 #  Parse our command-line options
 #
 parseCommandLine();
