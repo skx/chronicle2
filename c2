@@ -130,15 +130,6 @@ added they will be processed appropriately.
 
 =cut
 
-=head1 TODO
-
-1. Archive has entries within the months in a haphazard fashion.
-2. Need a new layout?
-3. Optimize.  At the moment each blog post is written to disk on each run.  This is harmless but also not required..
-4. Archive should be in most-recent-first
-
-=cut
-
 =head1 OPERATIONS
 
 If you delete a post you MUST trash your database, because posts
