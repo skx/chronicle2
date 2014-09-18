@@ -3,10 +3,14 @@
 use strict;
 use warnings;
 
-use Test::More tests => 12;
+use Test::More tests => 14;
 
 BEGIN
 {
+
+    #
+    #  General plugins
+    #
     use_ok( "Chronicle::Plugin::Archived", "We could load the module" );
     use_ok( "Chronicle::Plugin::Timer",    "We could load the module" );
     use_ok( "Chronicle::Plugin::Markdown", "We could load the module" );
@@ -14,6 +18,15 @@ BEGIN
     use_ok( "Chronicle::Plugin::Verbose",  "We could load the module" );
     use_ok( "Chronicle::Plugin::Version",  "We could load the module" );
 
+    #
+    #  Snippets
+    #
+    use_ok( "Chronicle::Plugin::Snippets::RecentTags",  "Loaded module" );
+    use_ok( "Chronicle::Plugin::Snippets::RecentPosts", "Loaded module" );
+
+    #
+    #  Generators
+    #
     use_ok( "Chronicle::Plugin::Generate::Archive",
             "We could load the module" );
     use_ok( "Chronicle::Plugin::Generate::Pages", "We could load the module" );
