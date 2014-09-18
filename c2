@@ -1284,7 +1284,7 @@ sub outputIndex
 
 
 
-=beging doc
+=begin doc
 
 Paying attention to our theme load a template.
 
