@@ -146,7 +146,7 @@ sub on_terminate
             $year = $2;
         }
         my $ids = $dbh->prepare(
-            "SELECT id FROM blog WHERE strftime( '%m %Y', date, 'unixepoch') = ? ORDER BY mtime DESC"
+            "SELECT id FROM blog WHERE strftime( '%m %Y', date, 'unixepoch') = ? ORDER BY date DESC"
           ) or
           die "Failed to prepare";
 
