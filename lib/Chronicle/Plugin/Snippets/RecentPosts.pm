@@ -67,8 +67,9 @@ sub on_initiate
     while ( $recent->fetch() )
     {
         my $data = Chronicle::getBlog( $dbh, $id );
+
         push( @$entries,
-              {  date  => $data->{ 'date' },
+              {  date  => $data->{ 'date_only' },
                  title => $data->{ 'title' },
                  link  => $data->{ 'link' },
                  tags  => $data->{ 'tags' },

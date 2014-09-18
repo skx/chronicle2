@@ -709,8 +709,9 @@ sub getBlog
         $tz = "GMT";
     }
 
-    $data->{ 'date' } = time2str( "%a, %e %b %Y $hms $tz", $time );
-    $data->{ 'time' } = $hms;
+    $data->{ 'date' }      = time2str( "%a, %e %b %Y $hms $tz", $time );
+    $data->{ 'date_only' } = time2str( "%e %B %Y", $time );
+    $data->{ 'time' }      = $hms;
 
 
     #
