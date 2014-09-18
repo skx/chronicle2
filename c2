@@ -1,0 +1,1392 @@
+#!/usr/bin/perl -w -Ilib/
+
+=head1 NAME
+
+c2 - A simple blog compiler.
+
+=cut
+
+=head1 SYNOPSIS
+
+  c2  [options]
+
+=cut
+
+=head1 ABOUT
+
+Proof of concept Chronicle successor which uses SQLite to generate a static
+blog with support for comments.
+
+The key observation which has lead to this prototype is that rebuilding a
+blog with chronicle is slow because every file must be parsed and processed
+in a large data-structure, in ram, on every run.
+
+However 90% of the time a blog is rebuilt it is only done so to include a
+new user-submitted comment - there is no new blog entry, or change to an
+existing post.
+
+If we parse all the blog entries *ONCE* and insert into a persistent SQLite
+database we can query that for reading tag-data, archives, etc, and this
+will be just as fast as reading our previous in-RAM data-structure, if not
+faster.
+
+Because people are fallible we'll read the `mtime` of the blog-posts
+and include that in the database, this will allow us to incorporate new
+posts and edits to old posts, without having to throw away our database.
+
+The average run of a blog with 1000 entries, and no changes, is 3 seconds
+and when changes have been detected, or we have to rebuild the SQLite
+database from scratch it is still ~10 seconds.  This is a considerable
+win.
+
+=cut
+
+=head1 DATABASE STRUCTURE
+
+A table for tags, storing the tag-name and associated blog-entry.
+
+A table for posts, which contains the following columns:
+
+=over 8
+
+=item mtime
+The C<mtime> of the input file.
+
+=item date
+The date-header as self-reported in the blog-post
+
+=item body
+The body of the blog-post itself.
+
+=item title
+The title of the blog-post itself.
+
+=back
+
+=cut
+
+=head1 EXTENDING WITH PLUGINS
+
+This script is designed to be extended via plugins, and to that end three
+hooks are currently provided:
+
+=over 8
+
+=item on_initiate
+This is called prior to any processing, with a reference to the configuration
+options and the database handle used for storage.
+
+=item modify_entry
+This method is invoked as a blog entry is read to disk before it is inserted into the database for the first time - or when the item on disk has been changed and the database must be refreshed.  This method is designed to handle Markdown expansion, etc.
+
+=item on_terminate
+THis is called immediately prior to the exit, after the pages have been built.  Again a reference to the configuration options, and the database handle is provided.
+
+=back
+
+Any plugin in the C<Chronicle::Plugin::> namespace will be loaded when the
+script starts.  NOTE: It is not necessary for a plugin to define methods,
+unless it wishes to be called.
+
+Much of the core functionality, such as the generation of the main RSS feed,
+is implemented as plugins.  You might wish to disable plugins, and this
+can be done via command-line flags such as C<--exclude-plugin=RSS,Verbose>.
+
+=cut
+
+=head1 STATUS
+
+All blog posts are read into SQLite, updates being catered for.
+
+All pages are output.
+
+    /tags/               -> Tag cloud
+    /tags/XX             -> Page for the given tag
+    /XXX                 -> Individual blog-posts.
+    /archive/$year/$mon/ -> Archive for given date-ranges
+    /index.rss           -> RSS Feed
+    /index.html          -> Index-page
+
+Entries are assumed to be written in HTML, but if `format: markdown` is
+added they will be processed appropriately.
+
+=cut
+
+=head1 TODO
+
+1. Archive has entries within the months in a haphazard fashion.
+2. Need a new layout?
+3. Optimize.  At the moment each blog post is written to disk on each run.  This is harmless but also not required..
+4. Archive should be in most-recent-first
+
+=cut
+
+=head1 OPERATIONS
+
+If you delete a post you MUST trash your database, because posts
+are only output/updated/overwritten but never deleted.
+
+Similarly if you remove a tag from a post then the /tag/$old-tag will
+still remain, because missing tags are added but additional ones are
+not purged.
+
+=cut
+
+
+=head1 AUTHOR
+
+ Steve
+ --
+ http://www.steve.org.uk/
+
+=cut
+
+=head1 LICENSE
+
+Copyright (c) 2014 by Steve Kemp.  All rights reserved.
+
+This module is free software;
+you can redistribute it and/or modify it under
+the same terms as Perl itself.
+The LICENSE file contains the full text of the license.
+
+=cut
+
+
+use strict;
+use warnings;
+
+
+package Chronicle;
+use Module::Pluggable::Ordered require => 1, inner => 0;
+
+
+use DBI;
+use Date::Format;
+use Date::Parse;
+use Digest::MD5 qw(md5_hex);
+use File::Path;
+use File::Basename;
+use Getopt::Long;
+use HTML::Template;
+use Pod::Usage;
+
+use utf8;
+use open ':std', ':encoding(UTF-8)';
+use open IO => ':encoding(UTF-8)';
+
+
+
+#
+#  Default options.
+#
+my %CONFIG;
+$CONFIG{ 'input' }        = "./data";
+$CONFIG{ 'pattern' }      = "*.txt";
+$CONFIG{ 'output' }       = "./output";
+$CONFIG{ 'author' }       = 'steve@steve.org.uk';
+$CONFIG{ 'top' }          = "http://blog.steve.org.uk/";
+$CONFIG{ 'comments' }     = "./comments/";
+$CONFIG{ 'rss-count' }    = 1;
+$CONFIG{ 'entry-count' }  = 10;
+$CONFIG{ 'comment-days' } = 10;
+$CONFIG{ 'verbose' }      = 0;
+$CONFIG{ 'theme-dir' }    = "./themes";
+
+
+
+#
+#  Parse our command-line options
+#
+parseCommandLine();
+
+
+#
+# Get the database handle, creating the database on-disk if necessary.
+#
+my $dbh = getDatabase();
+
+
+
+#
+#  Call any on_initiate plugins we might have loaded.
+#
+for my $plugin ( Chronicle->plugins() )
+{
+    my $skip = 0;
+
+    if ( $CONFIG{ 'exclude-plugins' } )
+    {
+        foreach my $exclude ( split( /,/, $CONFIG{ 'exclude-plugins' } ) )
+        {
+
+            # strip leading and trailing space.
+            $exclude =~ s/^\s+//;
+            $exclude =~ s/\s+$//;
+
+            # skip empty tags.
+            next if ( !length($exclude) );
+
+            $skip = 1 if ( $plugin =~ /\Q$exclude\E/i );
+        }
+    }
+
+    next if ($skip);
+
+    #
+    #  Ensure our plugin has the method we want to invoke.
+    #
+    next unless $plugin->can('on_initiate');
+    $plugin->on_initiate( \%CONFIG, $dbh );
+
+}
+
+
+#
+#  Parse/update blog posts from our data/ directory.
+#
+updateDatabase($dbh);
+
+
+#
+#  Output each blog post to disk.
+#
+outputPages($dbh);
+
+
+#
+#  Now output each tag-page, and the cloud-page
+#
+outputTags($dbh);
+outputTagCloud($dbh);
+
+
+#
+#  TODO : fix the hap-hazard ordering here.
+#
+outputArchive($dbh);
+
+
+#
+#  Output RSS & index
+#
+#outputRSS($dbh);
+outputIndex($dbh);
+
+
+#
+#  Call any on_initiate plugins we might have loaded.
+#
+for my $plugin ( Chronicle->plugins() )
+{
+    my $skip = 0;
+
+    if ( $CONFIG{ 'exclude-plugins' } )
+    {
+        foreach my $exclude ( split( /,/, $CONFIG{ 'exclude-plugins' } ) )
+        {
+
+            # strip leading and trailing space.
+            $exclude =~ s/^\s+//;
+            $exclude =~ s/\s+$//;
+
+            # skip empty tags.
+            next if ( !length($exclude) );
+
+            $skip = 1 if ( $plugin =~ /\Q$exclude\E/i );
+        }
+    }
+
+    next if ($skip);
+
+
+    #
+    #  Ensure our plugin has the method we want to invoke.
+    #
+    next unless $plugin->can('on_terminate');
+    $plugin->on_terminate( \%CONFIG, $dbh );
+
+}
+
+
+#
+#  Now we're done.
+#
+$dbh->disconnect();
+exit(0);
+
+
+
+
+=begin doc
+
+Read each blog-post from beneath ./data/ - and if it is missing from the
+database then insert it.
+
+We also handle the case where the file on disk is newer than the database
+version - in that case we remove the database version and update it to
+contain the newer content.
+
+=end doc
+
+=cut
+
+sub updateDatabase
+{
+    my ($dbh) = (@_);
+
+    #
+    #  Assume each entry is already present in the database.
+    #
+    my $sql =
+      $dbh->prepare("SELECT id FROM blog WHERE ( file=? AND mtime=? )") or
+      die "Failed to select post";
+
+    foreach my $file ( glob( $CONFIG{ 'input' } . "/" . $CONFIG{ 'pattern' } ) )
+    {
+
+        my ( $dev,   $ino,     $mode, $nlink, $uid,
+             $gid,   $rdev,    $size, $atime, $mtime,
+             $ctime, $blksize, $blocks
+           ) = stat($file);
+
+
+        #
+        #  Lookup the existing entry
+        #
+        $sql->execute( $file, $mtime ) or
+          die "Failed to execute: " . $dbh->errstr();
+        my $result = $sql->fetchrow_hashref();
+
+        if ( !$result )
+        {
+
+            #
+            #  Parse the file and insert it.
+            #
+            insertPost( $dbh, $file, $mtime );
+        }
+    }
+
+    $sql->finish();
+}
+
+
+
+=begin doc
+
+Given a filename containing a blog post then insert that post into
+the database.
+
+We also update the tags.
+
+=end doc
+
+=cut
+
+sub insertPost
+{
+    my ( $dbh, $filename, $mtime ) = (@_);
+
+    $CONFIG{ 'verbose' } && print "Adding post to DB: $filename\n";
+
+    #
+    #  Is the entry present, but with a different mtime?
+    #
+    #  If so we need to delete the post, and the tags.
+    #
+    my $sql = $dbh->prepare("SELECT id FROM blog WHERE file=?");
+    $sql->execute($filename) or die "Failed to execute :" . $dbh->errstr();
+    my $id;
+    $sql->bind_columns( undef, \$id );
+
+    while ( $sql->fetch() )
+    {
+        $CONFIG{ 'verbose' } && print "Replacing DB post: $id\n";
+
+        #
+        #  Delete the tags
+        #
+        my $del_tags = $dbh->prepare("DELETE FROM tags WHERE blog_id=?") or
+          die "Failed to prepare ";
+        $del_tags->execute($id) or
+          die "Failed to delete tags:" . $dbh->errstr();
+        $del_tags->finish();
+
+        #
+        #  Now delete the entry
+        #
+        my $del_blog = $dbh->prepare("DELETE FROM blog WHERE id=?") or
+          die "Failed to prepare ";
+        $del_blog->execute($id) or
+          die "Failed to delete blog:" . $dbh->errstr();
+        $del_blog->finish();
+    }
+    $sql->finish();
+
+
+    #
+    #
+    #
+    #  Read the actual entry
+    #
+    my $inHeader = 1;
+    open my $handle, "<:encoding(utf-8)", $filename or
+      die "Failed to read $filename $!";
+
+    my %meta;
+
+    while ( my $line = <$handle> )
+    {
+        if ( $inHeader > 0 )
+        {
+
+            #
+            #  If the line has the form of "key: value"
+            #
+            if ( $line =~ /^([^:]+):(.*)/ )
+            {
+                my $key = $1;
+                my $val = $2;
+
+                $key = lc($key);
+                $key =~ s/^\s+|\s+$//g;
+                $val =~ s/^\s+|\s+$//g;
+
+                #
+                #  "subject" is a synonym for "title".
+                #
+                $key = "title" if ( $key eq "subject" );
+
+                #
+                #  Update the value if there is one present,
+                # and we've not already saved that one away.
+                #
+                $meta{ $key } = $val
+                  if ( defined($val) && length($val) && !$meta{ $key } );
+
+            }
+            else
+            {
+
+                #
+                #  Empty line == end of header
+                #
+                $inHeader = 0 if ( $line =~ /^$/ );
+            }
+        }
+        else
+        {
+            $meta{ 'body' } .= $line;
+        }
+    }
+    close($handle);
+
+    if ( !$meta{ 'date' } )
+    {
+        die "Post is missing a date header - $filename\n";
+    }
+
+
+    #
+    #  Generate the link from the title of the post.
+    #
+    $meta{ 'link' } = $meta{ 'title' };
+    $meta{ 'link' } =~ s/\.txt//g;
+    $meta{ 'link' } =~ s/[^a-z0-9]/_/gi;
+    $meta{ 'link' } .= ".html";
+    $meta{ 'link' } = lc( $meta{ 'link' } );
+
+
+    #
+    #  Update our meta-data via any loaded plugins.
+    #
+    for my $plugin ( Chronicle->plugins() )
+    {
+        my $skip = 0;
+
+        if ( $CONFIG{ 'exclude-plugins' } )
+        {
+            foreach my $exclude ( split( /,/, $CONFIG{ 'exclude-plugins' } ) )
+            {
+
+                # strip leading and trailing space.
+                $exclude =~ s/^\s+//;
+                $exclude =~ s/\s+$//;
+
+                # skip empty tags.
+                next if ( !length($exclude) );
+
+                $skip = 1 if ( $plugin =~ /\Q$exclude\E/i );
+            }
+        }
+
+        next if ($skip);
+
+
+        #
+        #  Ensure our plugin has the method we want to invoke.
+        #
+        next unless $plugin->can('modify_entry');
+        my $m = $plugin->modify_entry( \%meta );
+        %meta = %$m;
+    }
+
+    #
+    #  Convert the date to a seconds past epoch.
+    #
+    $meta{ 'date' } = str2time( $meta{ 'date' } );
+
+    #
+    #  Now insert
+    #
+    my $post_add = $dbh->prepare(
+        "INSERT INTO blog (file,date,title,link,mtime,body) VALUES( ?,?,?,?,?,?)"
+      ) or
+      die "Failed to prepare";
+
+    $post_add->execute( $filename,
+                        $meta{ 'date' },
+                        $meta{ 'title' },
+                        $meta{ 'link' },
+                        $mtime, $meta{ 'body' } ) or
+      die "Failed to insert:" . $dbh->errstr();
+
+    my $blog_id = $dbh->func('last_insert_rowid');
+
+
+    #
+    #  Now we need to add the tags
+    #
+    if ( $meta{ 'tags' } )
+    {
+        my $tag_add =
+          $dbh->prepare("INSERT INTO tags (blog_id, name) VALUES( ?,?)") or
+          die "Failed to prepare";
+
+        foreach my $tag ( split( /,/, $meta{ 'tags' } ) )
+        {
+
+            # strip leading and trailing space.
+            $tag =~ s/^\s+//;
+            $tag =~ s/\s+$//;
+
+            # skip empty tags.
+            next if ( !length($tag) );
+
+            #
+            #  Find the tag ID
+            #
+            $tag_add->execute( $blog_id, $tag ) or
+              die "Failed to execute:" . $dbh->errstr();
+        }
+    }
+}
+
+
+
+=begin doc
+
+Create a database handle, if necessary creating the tables first.
+
+=end doc
+
+=cut
+
+sub getDatabase
+{
+    my $file    = $ENV{ 'HOME' } . "/blog.db";
+    my $present = 0;
+    $present = 1 if ( -e $file );
+
+
+    my $dbh = DBI->connect( "dbi:SQLite:dbname=$file", "", "" );
+
+    if ( !$present )
+    {
+
+        $dbh->do(
+            "CREATE TABLE blog (id INTEGER PRIMARY KEY, file, date,title, link,mtime, body );"
+        );
+        $dbh->do("CREATE TABLE tags (id INTEGER PRIMARY KEY, name, blog_id );");
+    }
+
+    #
+    #  These put us at risk of losing data, but given the immense
+    # speedups and the fact that we can regenerate the blog database
+    # on-demand they're worth risking.
+    #
+    $dbh->do("PRAGMA synchronous = OFF");
+    $dbh->do("PRAGMA cache_size = 400000");
+
+    return ($dbh);
+}
+
+
+=begin doc
+
+Write out each distinct blog-post
+
+=end doc
+
+=cut
+
+sub outputPages
+{
+    my ($dbh) = (@_);
+
+    my $all = $dbh->prepare("SELECT id FROM blog") or
+      die "Failed to find posts";
+
+    my $now = time;
+
+    $all->execute() or die "Failed to execute:" . $dbh->errstr();
+    my $id;
+    $all->bind_columns( undef, \$id );
+
+    while ( $all->fetch() )
+    {
+
+        #
+        #  Read the details of this single entry.
+        #
+        my $entry = getBlog( $dbh, $id );
+
+        #
+        #  We skip posts that are already present - UNLESS they are posted
+        # within the past ten days.
+        #
+        #  This means that we automatically include new comments when
+        # rebuilding a recent post.
+        #
+        #  Of course if you run "make clean" then you'll rebuild all
+        # pages, regardless of the age.
+        #
+        next
+          if ( ( -e $CONFIG{ 'output' } . "/" . $entry->{ 'link' } ) &&
+               ( ( $now - $entry->{ 'posted' } ) >
+                 ( 60 * 60 * 24 * $CONFIG{ 'comment-days' } ) ) );
+
+
+        $CONFIG{ 'verbose' } &&
+          print "Creating : $CONFIG{'output'}/$entry->{'link'}\n";
+
+
+        my $c = load_template("entry.tmpl");
+        $c->param( top => $CONFIG{ 'top' } );
+        $c->param($entry);
+
+        #
+        #  Ensure we have a full output path - because a plugin might have given us a dated-path.
+        #
+        my $dir = File::Basename::dirname(
+                               $CONFIG{ 'output' } . "/" . $entry->{ 'link' } );
+        if ( !-d $dir )
+        {
+            File::Path::make_path( $dir,
+                                   {  verbose => 0,
+                                      mode    => 0755,
+                                   } );
+        }
+
+        open( my $handle, ">:utf8",
+              $CONFIG{ 'output' } . "/" . $entry->{ 'link' } ) or
+          die "Failed to open";
+        print $handle $c->output();
+        close($handle);
+
+    }
+
+    $all->finish();
+}
+
+
+
+=begin doc
+
+Output a page (`output/tags/$tag/index.html`) for each distinct tag
+we've ever used.
+
+=end doc
+
+=cut
+
+sub outputTags
+{
+    my ($dbh) = (@_);
+
+    my $all = $dbh->prepare("SELECT DISTINCT(name) FROM tags") or
+      die "Failed to find all tags";
+    my $ids =
+      $dbh->prepare("SELECT DISTINCT(blog_id) FROM tags WHERE name=?") or
+      die "Failed to find all blog posts with given tag";
+
+    $all->execute() or die "Failed to execute:" . $dbh->errstr();
+    my $tag;
+    $all->bind_columns( undef, \$tag );
+
+    while ( $all->fetch() )
+    {
+
+        # skip if it exists.
+        next if ( -e $CONFIG{ 'output' } . "/tags/$tag" );
+
+        $CONFIG{ 'verbose' } &&
+          print "Creating : $CONFIG{'output'}/tags/$tag/index.html\n";
+
+        File::Path::make_path( "$CONFIG{'output'}/tags/$tag",
+                               {  verbose => 0,
+                                  mode    => 0755,
+                               } );
+
+        #
+        #  Data for HTML::Template
+        #
+        my $entries;
+
+        #
+        #  For this tag get the posts associated with it.
+        #
+        $ids->execute($tag) or die "Failed to execute: " . $dbh->errstr();
+        my $id;
+        $ids->bind_columns( undef, \$id );
+
+        while ( $ids->fetch() )
+        {
+            push( @$entries, getBlog( $dbh, $id ) );
+        }
+
+
+
+
+        my $c = load_template("tag.tmpl");
+        $c->param( top     => $CONFIG{ 'top' } );
+        $c->param( entries => $entries ) if ($entries);
+        $c->param( tag     => $tag );
+        open( my $handle, ">:utf8", "$CONFIG{'output'}/tags/$tag/index.html" )
+          or
+          die "Failed to open";
+        print $handle $c->output();
+        close($handle);
+
+    }
+
+
+    #
+    #  We're all done.
+    #
+    $all->finish();
+    $ids->finish();
+
+}
+
+
+=begin doc
+
+Fetch the blog post with the given ID
+
+=end doc
+
+=cut
+
+sub getBlog
+{
+    my ( $dbh, $id ) = (@_);
+
+    #
+    #  Get the blog-post
+    #
+    my $sql = $dbh->prepare("SELECT * FROM blog WHERE id=?") or
+      die "Failed to prepare";
+    $sql->execute($id) or
+      die "Failed to execute:" . $dbh->errstr();
+    my $data = $sql->fetchrow_hashref();
+    $sql->finish();
+
+    #
+    #  Get the tags, if any
+    #
+    my $tags = $dbh->prepare("SELECT name FROM tags WHERE blog_id=?") or
+      die "Failed to prepare";
+    my $name;
+    $tags->execute($id) or die "Failed to execute: " . $dbh->errstr();
+    $tags->bind_columns( undef, \$name );
+    while ( $tags->fetch() )
+    {
+        my $x = $data->{ 'tags' };
+        push( @$x, { tag => $name } );
+        $data->{ 'tags' } = $x;
+    }
+    $tags->finish();
+
+    #
+    #  Generate the date/time from mtime;
+    #
+    #  If the date is set then we use it, and get the time from the mtime
+    #
+    #  If the date is not set then we use the mtime for both date & time.
+    #
+    my $time;
+    my $posted = $data->{ 'date' };
+    $data->{ 'posted' } = $data->{ 'date' };
+    if ( $data->{ 'date' } )
+    {
+        $time = $data->{ 'date' };
+    }
+    else
+    {
+        $time = $data->{ 'mtime' };
+    }
+    my $hms = time2str( "%H:%M:%S", $time );
+    my $tz  = time2str( "%z",       $time );
+
+
+    if ( $hms eq '00:00:00' )
+    {
+        $hms = time2str( "%H:%M:%S", $data->{ 'mtime' }, "GMT" );
+        $tz = "GMT";
+    }
+
+    $data->{ 'date' } = time2str( "%a, %e %b %Y $hms $tz", $time );
+    $data->{ 'time' } = $hms;
+
+
+    #
+    #  Add on comments to this post.
+    #
+    my $comments = getComments( $data->{ 'link' } );
+    if ($comments)
+    {
+        $data->{ 'comments' } = $comments;
+
+        my $count = scalar(@$comments);
+        $data->{ 'comment_count' }  = $count;
+        $data->{ 'comment_plural' } = 1
+          if ( ( $count == 0 ) || ( $count > 1 ) );
+    }
+
+
+    #
+    #  If the post is less than 10 days old
+    #
+    my $now = time;
+    if ( ( $now - $posted ) < ( 60 * 60 * 24 * $CONFIG{ 'comment-days' } ) )
+    {
+        $data->{ 'comments_enabled' } = 1;
+    }
+
+    return ($data);
+}
+
+
+
+=begin doc
+
+Output `output/tags/index.html` containing a complete tag-cloud of the
+tags we've ever used.
+
+=end doc
+
+=cut
+
+sub outputTagCloud
+{
+    my ($dbh) = (@_);
+
+    my $tags;
+
+    #
+    # Now the tags.
+    #
+    my $sql = $dbh->prepare(
+        'SELECT DISTINCT(name),COUNT(name) AS runningtotal FROM tags GROUP BY name ORDER BY name'
+      ) or
+      die "Failed to prepare tag cloud";
+    $sql->execute() or die "Failed to execute: " . $dbh->errstr();
+
+    my ( $tag, $count );
+    $sql->bind_columns( undef, \$tag, \$count );
+
+    #
+    # Process the results.
+    #
+    while ( $sql->fetch() )
+    {
+        my $size = $count * 5 + 5;
+        if ( $size > 60 ) {$size = 60;}
+
+        push( @$tags,
+              {  tag   => $tag,
+                 count => $count,
+                 tsize => $size
+              } );
+
+    }
+    $sql->finish();
+
+
+    $CONFIG{ 'verbose' } &&
+      print "Creating : $CONFIG{'output'}/tags/index.html\n";
+
+    my $c = load_template("cloud.tmpl");
+    $c->param( all_tags => $tags );
+    $c->param( top      => $CONFIG{ 'top' } );
+    open( my $handle, ">", "$CONFIG{'output'}/tags/index.html" ) or
+      die "Failed to open";
+    print $handle $c->output();
+    close($handle);
+}
+
+
+
+=begin doc
+
+Output pages for each year/month we've ever seen `output/archive/$year/$mon`.
+
+This is not yet complete and will need more love.
+
+=end doc
+
+=cut
+
+sub outputArchive
+{
+    my ($dbh) = (@_);
+
+    my %mons = ( "01" => 'January',
+                 "02" => 'February',
+                 "03" => 'March',
+                 "04" => 'April',
+                 "05" => 'May',
+                 "06" => 'June',
+                 "07" => 'July',
+                 "08" => 'August',
+                 "09" => 'September',
+                 "10" => 'October',
+                 "11" => 'November',
+                 "12" => 'December'
+               );
+
+
+
+    #
+    #  Date-record
+    #
+    my %hash;
+    my %index;
+
+    my $all = $dbh->prepare(
+        "SELECT strftime( '%m %Y', date, 'unixepoch') FROM blog ORDER BY strftime( '%s', date, 'unixepoch' ) ASC"
+      ) or
+      die "Failed to prepare";
+
+
+    $all->execute() or die "Failed to execute:" . $dbh->errstr();
+    my $dt;
+    $all->bind_columns( undef, \$dt );
+
+    while ( $all->fetch() )
+    {
+        if ( $dt =~ /([0-9]+) ([0-9]+)/ )
+        {
+            $hash{ $dt } += 1;
+
+            $index{ $2 }{ $1 } += 1;
+        }
+    }
+    $all->finish();
+
+    #
+    #  Ouptut the index
+    #
+    my $data;
+    foreach my $year ( reverse sort keys %index )
+    {
+        my $mons = $index{ $year };
+
+        foreach my $mon ( reverse sort keys %$mons )
+        {
+            push( @$data,
+                  {  year       => $year,
+                     month      => $mon,
+                     month_name => $mons{ $mon },
+                     count      => $index{ $year }{ $mon } } );
+        }
+    }
+
+
+    if ( !-d "$CONFIG{'output'}/archive/" )
+    {
+        File::Path::make_path( "$CONFIG{'output'}/archive/",
+                               {  verbose => 0,
+                                  mode    => 0755,
+                               } );
+    }
+
+
+    $CONFIG{ 'verbose' } &&
+      print "Creating : $CONFIG{'output'}/archive/index.html\n";
+
+    my $c = load_template("archive_index.tmpl");
+    $c->param( archive => $data );
+    open( my $handle, ">", "$CONFIG{'output'}/archive/index.html" ) or
+      die "Failed to open";
+    print $handle $c->output();
+    close($handle);
+
+
+    #
+    #  Foreach year/mon pair
+    #
+    foreach my $ym ( keys %hash )
+    {
+        my $mon  = "";
+        my $year = "";
+        if ( $ym =~ /^([0-9]+) ([0-9]+)$/ )
+        {
+            $mon  = $1;
+            $year = $2;
+        }
+        my $ids = $dbh->prepare(
+            "SELECT id FROM blog WHERE strftime( '%m %Y', date, 'unixepoch') = ? ORDER BY mtime DESC"
+          ) or
+          die "Failed to prepare";
+
+        $ids->execute($ym) or die "Failed to execute:" . $dbh->errstr();
+
+        my $id;
+        $ids->bind_columns( undef, \$id );
+
+        # skip if it exists.
+        next if ( -e "$CONFIG{'output'}/archive/$year/$mon" );
+
+        File::Path::make_path( "$CONFIG{'output'}/archive/$year/$mon",
+                               {  verbose => 0,
+                                  mode    => 0755,
+                               } );
+
+
+        my $entries;
+
+        while ( $ids->fetch() )
+        {
+            push( @$entries, getBlog( $dbh, $id ) );
+        }
+        $ids->finish();
+
+
+        $CONFIG{ 'verbose' } &&
+          print "Creating : $CONFIG{'output'}/archive/$year/$mon/index.html\n";
+
+        my $c = load_template("/archive.tmpl");
+        $c->param( top        => $CONFIG{ 'top' } );
+        $c->param( entries    => $entries );
+        $c->param( month      => $mon, year => $year );
+        $c->param( month_name => $mons{ $mon } );
+        open( my $handle, ">:utf8",
+              "$CONFIG{'output'}/archive/$year/$mon/index.html" ) or
+          die "Failed to open";
+        print $handle $c->output();
+        close($handle);
+
+
+    }
+
+
+}
+
+
+
+=begin doc
+
+Get the cooments associated with a post.
+
+=end doc
+
+=cut
+
+sub getComments
+{
+    my ($title) = (@_);
+
+    my $dir = $CONFIG{ 'comments' };
+    return unless ( -d $dir );
+    my $results;
+
+    if ( $title =~ /^(.*)\.([^.]+)$/ )
+    {
+        $title = $1;
+    }
+
+    #
+    #  Find each comment file.
+    #
+    my @entries;
+    foreach my $file ( sort( glob( $dir . "/" . $title . "*" ) ) )
+    {
+        push( @entries, $file );
+    }
+
+    #
+    # Sort them into order.
+    #
+    @entries = sort {( stat($a) )[9] <=> ( stat($b) )[9]} @entries;
+
+    #
+    #  Now process them.
+    #
+    foreach my $file (@entries)
+    {
+        my $date    = "";
+        my $name    = "";
+        my $link    = "";
+        my $body    = "";
+        my $mail    = "";
+        my $pubdate = "";
+
+        if ( $file =~ /^(.*)\.([^.]+)$/ )
+        {
+            $date = $2;
+
+            if ( $date =~ /(.*)-([0-9:]+)/ )
+            {
+                my $d = $1;
+                my $t = $2;
+
+                $d =~ s/-/ /g;
+
+                $date = "Submitted at $t on $d";
+            }
+        }
+
+        open my $comment, "<:encoding(utf-8)", $file or
+          next;
+
+        foreach my $line (<$comment>)
+        {
+            next if ( !defined($line) );
+
+            chomp($line);
+
+            next if ( $line =~ /^IP-Address:/ );
+            next if ( $line =~ /^User-Agent:/ );
+
+            if ( !length($name) && $line =~ /^Name: (.*)/i )
+            {
+                $name = $1;
+            }
+            elsif ( !length($mail) && $line =~ /^Mail: (.*)/i )
+            {
+                $mail = $1;
+            }
+            elsif ( !length($link) && $line =~ /^Link: (.*)/i )
+            {
+                $link = $1;
+            }
+            else
+            {
+                $body .= $line . "\n";
+            }
+        }
+        close($comment);
+
+        if ( length($name) &&
+             length($mail) &&
+             length($body) )
+        {
+
+            #
+            #  Add a gravitar link to the comment in case the
+            # theme wishes to use it.
+            #
+            my $default  = "";
+            my $size     = 32;
+            my $gravitar = "http://www.gravatar.com/avatar.php?gravatar_id=" .
+              md5_hex( lc $mail ) . ";size=" . $size;
+
+            #
+            # A comment which was submitted by the blog author might
+            # have special theming.
+            #
+            my $author = 0;
+            $author = 1
+              if ( $CONFIG{ 'author' } &&
+                   ( lc($mail) eq lc( $CONFIG{ 'author' } ) ) );
+
+            #
+            # Store the comment
+            #
+            push( @$results,
+                  {  name     => $name,
+                     author   => $author,
+                     gravitar => $gravitar,
+                     link     => $link,
+                     mail     => $mail,
+                     body     => $body,
+                     date     => $date,
+                  } );
+
+        }
+        else
+        {
+            $CONFIG{ 'verbose' } &&
+              print
+              "I didn't like length of \$name ($name), \$mail ($mail) or \$body ($body)\n";
+        }
+    }
+
+    return ($results);
+}
+
+
+=begin doc
+
+Output the index page.
+
+=end doc
+
+=cut
+
+sub outputIndex
+{
+    my ($dbh) = (@_);
+
+    my $recent = $dbh->prepare(
+        "SELECT id FROM blog ORDER BY date DESC LIMIT 0,$CONFIG{'entry-count'}")
+      or
+      die "Failed to find recent posts";
+
+    $recent->execute() or die "Failed to execute:" . $dbh->errstr();
+    my $id;
+    $recent->bind_columns( undef, \$id );
+
+
+    my $entries;
+
+    while ( $recent->fetch() )
+    {
+        push( @$entries, getBlog( $dbh, $id ) );
+    }
+    $recent->finish();
+
+
+    $CONFIG{ 'verbose' } && print "Creating : $CONFIG{'output'}/index.html\n";
+
+    my $c = load_template("index.tmpl");
+    $c->param( top     => $CONFIG{ 'top' } );
+    $c->param( entries => $entries );
+    open( my $handle, ">:utf8", "$CONFIG{'output'}/index.html" ) or
+      die "Failed to open";
+    print $handle $c->output();
+    close($handle);
+}
+
+
+
+=beging doc
+
+Paying attention to our theme load a template.
+
+=end doc
+
+=cut
+
+sub load_template
+{
+    my ($filename) = (@_);
+
+
+    #
+    #  Ensure things exist.
+    #
+    die "The theme directory specified with 'theme-dir' doesn't exist"
+      unless ( -d $CONFIG{ 'theme-dir' } );
+
+    die
+      "The theme '$CONFIG{'theme'}' doesn't exist beneath $CONFIG{'theme-dir'}!"
+      unless ( -d $CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' } );
+
+
+    #
+    #  The complete path to the template
+    #
+    my $path =
+      $CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' } . "/" . $filename;
+
+
+    my $tmpl = HTML::Template->new(
+                    filename => $path,
+                    path => [$CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' }],
+                    die_on_bad_params => 0,
+                    loop_context_vars => 1,
+                    global_vars       => 1,
+    );
+
+    return ($tmpl);
+}
+
+
+
+=begin doc
+
+Parse the command-line options.
+
+=end doc
+
+=cut
+
+sub parseCommandLine
+{
+    my $HELP    = 0;
+    my $MANUAL  = 0;
+    my $VERSION = 0;
+
+    #
+    #  Parse options.
+    #
+    if (
+        !GetOptions(
+
+            # Help options
+            "help",    \$HELP,
+            "manual",  \$MANUAL,
+            "verbose", \$CONFIG{ 'verbose' },
+
+            # theme support
+            "theme=s",     \$CONFIG{ 'theme' },
+            "theme-dir=s", \$CONFIG{ 'theme-dir' },
+
+            # paths
+            "input=s",   \$CONFIG{ 'input' },
+            "output=s",  \$CONFIG{ 'output' },
+            "pattern=s", \$CONFIG{ 'pattern' },
+
+            # limits
+            "entry-count=s", \$CONFIG{ 'entry-count' },
+            "rss-count=s",   \$CONFIG{ 'rss-count' },
+
+            # optional
+            "author=s",       \$CONFIG{ 'author' },
+            "comment-days=s", \$CONFIG{ 'comment-days' },
+
+            # plugins
+            "exclude-plugins=s", \$CONFIG{ 'exclude-plugins' },
+
+            # prefix
+            "url-prefix=s", \$CONFIG{ 'top' },
+
+            # commands
+            "pre-build=s",  \$CONFIG{ 'pre-build' },
+            "post-build=s", \$CONFIG{ 'post-build' },
+
+        ) )
+    {
+        exit;
+    }
+
+    pod2usage(1) if $HELP;
+    pod2usage( -verbose => 2 ) if $MANUAL;
+
+}
+
+
