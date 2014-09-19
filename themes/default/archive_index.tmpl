@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <title><!-- tmpl_var name='blog_title' -->: Archive</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="<!-- tmpl_var name='top' -->style.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="<!-- tmpl_var name='top' -->vim.css" />
+  </head>
+  <body>
+    <!-- tmpl_include name='header.inc' -->
+    <h3>Archive</h3>
+<dl>
+<!-- tmpl_loop name='archive' -->
+<dt><a href="/archive/<!-- tmpl_var name='year' -->/<!-- tmpl_var name='month' -->"><!-- tmpl_var name='month_name' --> <!-- tmpl_var name='year' --></a></dt>
+<dd><p><!-- tmpl_var name='count' --> posts.</p></dd>
+<!-- /tmpl_loop -->
+</dl>
+    <div id="sidebar">
+      <!-- tmpl_include name='sidebar.inc' -->
+    </div>
+    <!-- tmpl_include name='footer.inc' -->
+  </body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <title><!-- tmpl_var name='blog_title' -->: Entries Tagged <!-- tmpl_var name='tag' --></title>
+    <link rel="stylesheet" type="text/css" media="screen" href="<!-- tmpl_var name='top' -->style.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="<!-- tmpl_var name='top' -->vim.css" />
+  </head>
+  <body>
+    <!-- tmpl_include name='header.inc' -->
+    <h3>Entries tagged "<!-- tmpl_var name='tag' escape='html' -->".</h3>
+    <!-- tmpl_loop name='entries' -->
+    <div class="entry">
+      <div class="title">
+        <a href="<!-- tmpl_var name='top' --><!-- tmpl_var name='link' escape='html' -->"><!-- tmpl_var name='title' --></a>
+      </div>
+      <div class="date">
+        <!-- tmpl_var name='date' escape='html' -->
+      </div>
+      <div class="body">
+        <!-- tmpl_var name='body' -->
+      </div>
+      <div class="tags">
+        <!-- tmpl_if name='comment_count' -->
+        <span class="comments">
+          <!-- tmpl_var name='comment_count' --> comments.
+        </span>
+        <!-- /tmpl_if -->
+        <!-- tmpl_if name='tags' -->
+        Tags: <!-- tmpl_loop name='tags' --><a href="<!-- tmpl_var name='top' -->tags/<!-- tmpl_var name='tag' escape='html' -->"><!-- tmpl_var name='tag' escape='html' --></a><!-- tmpl_if name="__last__" -->.<!-- tmpl_else -->, <!-- /tmpl_if --><!-- /tmpl_loop -->
+        <!-- /tmpl_if -->
+        <!-- tmpl_if name='xrefpairs' -->
+          <div class="xrefs">
+	    Referenced by: <!-- tmpl_loop name='xrefpairs' --><a href="<!-- tmpl_var name='top' --><!-- tmpl_var name='xreflink' escape='html' -->"><!-- tmpl_var name='xreftitle' --></a><!-- tmpl_if name="__last__" --><!-- tmpl_else -->, <!-- /tmpl_if --><!-- /tmpl_loop -->
+	  </div>
+        <!-- /tmpl_if -->
+      </div>
+    </div>
+    <div class="padding"></div>
+    <!-- /tmpl_loop -->
+    <div id="sidebar">
+      <!-- tmpl_include name='sidebar.inc' -->
+    </div>
+    <!-- tmpl_include name='footer.inc' -->
+  </body>
+</html>
