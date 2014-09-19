@@ -31,6 +31,7 @@ chronicle - A static blog-compiler.
 
    --author       Specify the author's email address
    --comment-days Specify the number maximum age of posts to accept comments.
+   --force        Always regenerate pages.
 
   Help Options:
 
@@ -304,7 +305,7 @@ for my $plugin ( Chronicle->plugins() )
     #  Ensure our plugin has the method we want to invoke.
     #
     next unless $plugin->can('on_initiate');
-    $CONFIG{'verbose'} && print "Calling $plugin - on_initiate\n";
+    $CONFIG{ 'verbose' } && print "Calling $plugin - on_initiate\n";
     $plugin->on_initiate( \%CONFIG, $dbh );
 
 }
@@ -346,7 +347,7 @@ for my $plugin ( Chronicle->plugins() )
     #  Ensure our plugin has the method we want to invoke.
     #
     next unless $plugin->can('on_terminate');
-    $CONFIG{'verbose'} && print "Calling $plugin - on_terminate\n";
+    $CONFIG{ 'verbose' } && print "Calling $plugin - on_terminate\n";
     $plugin->on_terminate( \%CONFIG, $dbh );
 
 }
@@ -583,7 +584,7 @@ sub insertPost
         #  Ensure our plugin has the method we want to invoke.
         #
         next unless $plugin->can('modify_entry');
-        $CONFIG{'verbose'} && print "Calling $plugin - modify_entry\n";
+        $CONFIG{ 'verbose' } && print "Calling $plugin - modify_entry\n";
         my $m = $plugin->modify_entry( \%meta );
         %meta = %$m;
     }
@@ -994,8 +995,8 @@ Parse the command-line options.
 
 sub parseCommandLine
 {
-    my $HELP    = 0;
-    my $MANUAL  = 0;
+    my $HELP   = 0;
+    my $MANUAL = 0;
 
     #
     #  Parse options.
@@ -1027,6 +1028,7 @@ sub parseCommandLine
             "config=s",       \$CONFIG{ 'config' },
             "author=s",       \$CONFIG{ 'author' },
             "comment-days=s", \$CONFIG{ 'comment-days' },
+            "force",          \$CONFIG{ 'force' },
 
             # plugins
             "list-plugins",      \$CONFIG{ 'list-plugins' },
@@ -1054,7 +1056,7 @@ sub parseCommandLine
     #
     #  SHow version
     #
-    if ( $CONFIG{'version'} )
+    if ( $CONFIG{ 'version' } )
     {
         print "Chronicle $VERSION\n";
         exit(0);

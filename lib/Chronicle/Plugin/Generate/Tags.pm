@@ -52,7 +52,9 @@ sub outputTags
     {
 
         # skip if it exists.
-        next if ( -e $config->{ 'output' } . "/tags/$tag" );
+        next
+          if ( ( -e $config->{ 'output' } . "/tags/$tag" ) &&
+               ( !$config->{ 'force' } ) );
 
         $config->{ 'verbose' } &&
           print "Creating : $config->{'output'}/tags/$tag/index.html\n";

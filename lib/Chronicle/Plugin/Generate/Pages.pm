@@ -85,7 +85,8 @@ sub on_terminate
         next
           if ( ( -e $config->{ 'output' } . "/" . $entry->{ 'link' } ) &&
                ( ( $now - $entry->{ 'posted' } ) >
-                 ( 60 * 60 * 24 * $config->{ 'comment-days' } ) ) );
+                 ( 60 * 60 * 24 * $config->{ 'comment-days' } ) ) &&
+               ( !$config->{ 'force' } ) );
 
 
         $config->{ 'verbose' } &&

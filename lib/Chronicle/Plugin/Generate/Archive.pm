@@ -157,7 +157,9 @@ sub on_terminate
         $ids->bind_columns( undef, \$id );
 
         # skip if it exists.
-        next if ( -e "$config->{'output'}/archive/$year/$mon" );
+        next
+          if ( ( -e "$config->{'output'}/archive/$year/$mon" ) &&
+               ( !$config->{ 'force' } ) );
 
         File::Path::make_path( "$config->{'output'}/archive/$year/$mon",
                                {  verbose => 0,
