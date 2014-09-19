@@ -33,7 +33,6 @@ t/test-version-insertion.t
 THEMES.md
 themes/blog.steve.org.uk/archive.tmpl
 themes/blog.steve.org.uk/archive_index.tmpl
-themes/blog.steve.org.uk/cloud.tmpl
 themes/blog.steve.org.uk/entry.tmpl
 themes/blog.steve.org.uk/inc/add-comment.inc
 themes/blog.steve.org.uk/inc/analytics.inc
@@ -44,9 +43,9 @@ themes/blog.steve.org.uk/inc/style.inc
 themes/blog.steve.org.uk/index.rss
 themes/blog.steve.org.uk/index.tmpl
 themes/blog.steve.org.uk/tag.tmpl
+themes/blog.steve.org.uk/tag_index.tmpl
 themes/default/archive.tmpl
 themes/default/archive_index.tmpl
-themes/default/cloud.tmpl
 themes/default/comment-form.inc
 themes/default/comment-loop.inc
 themes/default/entry.tmpl
@@ -56,5 +55,7 @@ themes/default/index.rss
 themes/default/index.tmpl
 themes/default/sidebar.inc
 themes/default/static/style.css
+themes/default/static/xml.gif
 themes/default/tag.tmpl
-themes/default/xml.gif
+themes/default/tag_index.tmpl
+
