@@ -120,6 +120,12 @@ via our included code:
 
 =over 8
 
+=item on_db_create
+This is called if the SQLite database does not exist, and can be used to add new columns, or tables.
+
+=item on_db_open
+This is called when the database is opened, and we use it to set memory/sync options.  It could be used to do more.
+
 =item on_initiate
 This is called prior to any processing, with a reference to the configuration
 options and the database handle used for storage.
@@ -127,7 +133,7 @@ options and the database handle used for storage.
 =item on_insert
 This method is invoked as a blog entry is read to disk before it is inserted into the database for the first time - or when the item on disk has been changed and the database must be refreshed.  This method is designed to handle Markdown expansion, etc.
 
-=item on_terminate
+=item on_generate
 This is called immediately prior to the exit, after the pages have been built.  Again a reference to the configuration options, and the database handle is provided.
 
 =back
@@ -262,76 +268,36 @@ my $dbh = getDatabase();
 #
 updateDatabase($dbh);
 
+
 #
-#  Call any on_initiate plugins we might have loaded.
+#  Ensure we have an output directory.
 #
-for my $plugin ( Chronicle->plugins() )
+File::Path::make_path( $CONFIG{ 'output' },
+                       {  verbose => 0,
+                          mode    => oct("755"),
+                       } ) unless ( -d $CONFIG{ 'output' } );
+
+
+#
+#  Call on_initiate for all plugins which have not been excluded.
+#
+foreach my $plugin ( get_plugins_for_method("on_initiate") )
 {
-    my $skip = 0;
-
-    if ( $CONFIG{ 'exclude-plugins' } )
-    {
-        foreach my $exclude ( split( /,/, $CONFIG{ 'exclude-plugins' } ) )
-        {
-
-            # strip leading and trailing space.
-            $exclude =~ s/^\s+//;
-            $exclude =~ s/\s+$//;
-
-            # skip empty tags.
-            next if ( !length($exclude) );
-
-            $skip = 1 if ( $plugin =~ /\Q$exclude\E/i );
-        }
-    }
-
-    next if ($skip);
-
-
-    #
-    #  Ensure our plugin has the method we want to invoke.
-    #
-    next unless $plugin->can('on_initiate');
-    $CONFIG{ 'verbose' } && print "Calling $plugin - on_initiate\n";
-    $plugin->on_initiate( \%CONFIG, $dbh );
-
+    $CONFIG{ 'verbose' } && print "Calling $plugin on_initiate()\n";
+    $plugin->on_initiate( config => \%CONFIG, dbh => $dbh );
 }
 
 
-
 #
-#  Call any on_terminate plugins we might have loaded.
+#  Call on_generate for all plugins which have not been excluded.
 #
-for my $plugin ( Chronicle->plugins() )
+#  `on_generate` is logically identical to `on_initiate`, except
+# the former plugins are guranteed to have been invoked first.
+#
+foreach my $plugin ( get_plugins_for_method("on_generate") )
 {
-    my $skip = 0;
-
-    if ( $CONFIG{ 'exclude-plugins' } )
-    {
-        foreach my $exclude ( split( /,/, $CONFIG{ 'exclude-plugins' } ) )
-        {
-
-            # strip leading and trailing space.
-            $exclude =~ s/^\s+//;
-            $exclude =~ s/\s+$//;
-
-            # skip empty tags.
-            next if ( !length($exclude) );
-
-            $skip = 1 if ( $plugin =~ /\Q$exclude\E/i );
-        }
-    }
-
-    next if ($skip);
-
-
-    #
-    #  Ensure our plugin has the method we want to invoke.
-    #
-    next unless $plugin->can('on_terminate');
-    $CONFIG{ 'verbose' } && print "Calling $plugin - on_terminate\n";
-    $plugin->on_terminate( \%CONFIG, $dbh );
-
+    $CONFIG{ 'verbose' } && print "Calling $plugin on_generate()\n";
+    $plugin->on_generate( config => \%CONFIG, dbh => $dbh );
 }
 
 
@@ -648,6 +614,22 @@ sub getDatabase
             "CREATE TABLE blog (id INTEGER PRIMARY KEY, file, date,title, link,mtime, body );"
         );
         $dbh->do("CREATE TABLE tags (id INTEGER PRIMARY KEY, name, blog_id );");
+
+        foreach my $plugin ( get_plugins_for_method("on_db_create") )
+        {
+            $CONFIG{ 'verbose' } && print "Calling $plugin - on_db_create\n";
+            $plugin->on_db_create( config => \%CONFIG,
+                                   dbh    => $dbh, );
+        }
+
+    }
+
+
+    foreach my $plugin ( get_plugins_for_method("on_db_load") )
+    {
+        $CONFIG{ 'verbose' } && print "Calling $plugin - on_db_load\n";
+        $plugin->on_db_load( config => \%CONFIG,
+                             dbh    => $dbh, );
     }
 
     #
@@ -1162,4 +1144,55 @@ sub readConfigurationFile
     }
 
     close($handle);
+}
+
+
+
+=begin doc
+
+Return an array of plugins that implement the given method.
+
+This result set will exclude anything that has been deliberately
+excluded by the user.
+
+=end doc
+
+=cut
+
+sub get_plugins_for_method
+{
+    my ($method) = (@_);
+
+    my @plugins = ();
+
+    #
+    #  Call any on_initiate plugins we might have loaded.
+    #
+    for my $plugin ( Chronicle->plugins_ordered() )
+    {
+        my $skip = 0;
+
+        if ( $CONFIG{ 'exclude-plugins' } )
+        {
+            foreach my $exclude ( split( /,/, $CONFIG{ 'exclude-plugins' } ) )
+            {
+
+                # strip leading and trailing space.
+                $exclude =~ s/^\s+//;
+                $exclude =~ s/\s+$//;
+
+                # skip empty tags.
+                next if ( !length($exclude) );
+
+                $skip = 1 if ( $plugin =~ /\Q$exclude\E/i );
+            }
+        }
+
+        next if ($skip);
+        next unless $plugin->can($method);
+
+        push( @plugins, $plugin );
+    }
+
+    return (@plugins);
 }

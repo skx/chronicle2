@@ -7,8 +7,7 @@ This document describes how you would go about enabling this support.
 Introduction
 ------------
 
-The basic use of chronicle is to convert a collection of text files
-into a HTML & RSS blog.
+The basic use of chronicle is to convert a collection of text files into a HTML & RSS blog.
 
 There are two ways this software is typically used:
 
@@ -49,8 +48,7 @@ You may then regenerate your blog via:
 
      chronicle --input=./date/  --comments=./comments/ --output=/var/www/blog/
 
-This will ensure that the comments saved by your web-server into the
-comments directory are included in the (re)generated blog.
+This will ensure that the comments saved by your web-server into the comments directory are included in the (re)generated blog.
 
 
 

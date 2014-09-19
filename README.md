@@ -136,18 +136,24 @@ Extending
 As mentioned the core code is pretty minimal and all output functionality
 is carried out by plugins.
 
-The core calls three methods, an all available plugins:
+The core will call the following methods if present in plugins:
 
-* `on_initiate`
-   * This is called prior to any processing, with a reference to the configuration options and the database handle used for storage.
-   * This is a good place to call code that generates common snippets, or populates global-variables.
+* `on_db_create`
+   * This is called if the SQLite database does not exist, and can be used to add new columns, or tables.
+
+* `on_db_open`
+   * This is called when the database is opened, and we use it to set memory/sync options.  It could be used to do more.
 
 * `on_insert`
    * This method is invoked as a blog entry is read to disk before it is inserted into the database for the first time - or when the item on disk has been changed and the database must be refreshed.
    * This method is designed to handle Markdown/Textile conversion, etc.
 
-* `on_terminate`
-   * This is called after the database has been populated, again with a reference to the configuration options, and the database handle is provided.
+* `on_initiate`
+   * This is called prior to any processing, with a reference to the configuration options and the database handle used for storage.
+   * This is a good place to call code that generates common snippets, or populates global-variables.
+
+* `on_generate`
+   * This is called to generate the actual output pages.  There is no logical difference between this method and `on_initiate` except that the former plugin methods are guaranteed to have been called prior to `on_generate` being invoked.
    * This is where pages are output.
 
 
