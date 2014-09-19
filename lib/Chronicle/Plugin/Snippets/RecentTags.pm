@@ -53,9 +53,10 @@ sub on_initiate
     #
     my $count = $config->{ 'recent-tag-count' } || 10;
 
-    my $recent =
-      $dbh->prepare("SELECT a.name FROM tags AS a JOIN blog AS b WHERE ( b.id = a.blog_id  ) ORDER BY b.date DESC LIMIT $count" ) or
-        die "Failed to find recent tags: " . $dbh->errstr();
+    my $recent = $dbh->prepare(
+        "SELECT a.name FROM tags AS a JOIN blog AS b WHERE ( b.id = a.blog_id  ) ORDER BY b.date DESC LIMIT $count"
+      ) or
+      die "Failed to find recent tags: " . $dbh->errstr();
 
     $recent->execute() or die "Failed to execute:" . $dbh->errstr();
     my $tag;
@@ -74,9 +75,9 @@ sub on_initiate
     #
     #  Now we have the structure.
     #
-    $Chronicle::GLOBAL_TEMPLATE_VARS{ "recent_tags" } = $entries if ( $entries );
+    $Chronicle::GLOBAL_TEMPLATE_VARS{ "recent_tags" } = $entries if ($entries);
 }
 
-sub on_initiate_order { return  0; }
+sub on_initiate_order {return 0;}
 
 1;

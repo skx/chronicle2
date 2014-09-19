@@ -81,10 +81,10 @@ sub on_initiate
     #
     #  Now we have the structure.
     #
-    $Chronicle::GLOBAL_TEMPLATE_VARS{ "recent_posts" } = $entries if ( $entries );
+    $Chronicle::GLOBAL_TEMPLATE_VARS{ "recent_posts" } = $entries if ($entries);
 }
 
 
-sub on_initiate_order { return  0; }
+sub on_initiate_order {return 0;}
 
 1;
