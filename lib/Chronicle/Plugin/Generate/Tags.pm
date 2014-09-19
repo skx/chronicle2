@@ -155,7 +155,7 @@ sub outputTagCloud
     $config->{ 'verbose' } &&
       print "Creating : $config->{'output'}/tags/index.html\n";
 
-    my $c = Chronicle::load_template("cloud.tmpl");
+    my $c = Chronicle::load_template("tag_index.tmpl");
     $c->param( all_tags => $tags );
     $c->param( top      => $config->{ 'top' } );
     open( my $handle, ">", "$config->{'output'}/tags/index.html" ) or
