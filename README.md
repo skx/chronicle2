@@ -35,15 +35,15 @@ Clone the repository then install as you would any CPAN module:
 Blog Format
 -----------
 
-The blog format is very simple. Each file should start like this:
+The blog format is very simple, and the following file is a sample:
 
-      title: The title of my post
-      date: 12 August 2007
-      tags: foo, bar, baz
+    title: The title of my post
+    date: 12 August 2007
+    tags: foo, bar, baz
 
-      The text of the actual entry goes here.
+    The text of the actual entry goes here.
 
-      However much there is of it.
+    However much there is of it.
 
 
 The entry is prefixed by a small header, consisting of several pseudo-header fieilds. The header __MUST__ be separated from the body by at least one empty line.
@@ -93,15 +93,14 @@ In an ideal would you should be able to migrate from Chronicle directly
 to this codebase, as there are a lot of commonalities:
 
 * Blog entries are are still read from `data/`.
-* Blog entries are still build up of a header and the entry.
+* Blog entries are still built up of a header and the entry.
 * Entries are still parsed in HTML, Markdown, and Textile formats.
 
 However there are changes, and these largely relate to the templates,
 along with the implementation differences.
 
 The previous Chronicle codebase was comprised of a few different binaries,
-the new has only the single driver `c2` and a signification collection of
-plugins.
+the new has only the single driver `chronicle` and a collection of plugins.
 
 The driver script parse arguments, and the blog posts, but the actual
 generation of your site is entirely plugin-based.  The plugins are standard
