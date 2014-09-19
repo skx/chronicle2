@@ -2,6 +2,7 @@ cgi-bin/comments.cgi
 chronicle
 COMMENTS.md
 lib/Chronicle/Plugin/Archived.pm
+lib/Chronicle/Plugin/DBTweak.pm
 lib/Chronicle/Plugin/Generate/Archive.pm
 lib/Chronicle/Plugin/Generate/Index.pm
 lib/Chronicle/Plugin/Generate/Pages.pm
@@ -13,7 +14,6 @@ lib/Chronicle/Plugin/Snippets/AllTags.pm
 lib/Chronicle/Plugin/Snippets/RecentPosts.pm
 lib/Chronicle/Plugin/Snippets/RecentTags.pm
 lib/Chronicle/Plugin/Textile.pm
-lib/Chronicle/Plugin/Timer.pm
 lib/Chronicle/Plugin/Verbose.pm
 lib/Chronicle/Plugin/Version.pm
 LICENSE
@@ -30,6 +30,7 @@ t/test-markdown-formatter.t
 t/test-strict.t
 t/test-textile-formatter.t
 t/test-version-insertion.t
+THEMES.md
 themes/blog.steve.org.uk/archive.tmpl
 themes/blog.steve.org.uk/archive_index.tmpl
 themes/blog.steve.org.uk/cloud.tmpl
@@ -54,7 +55,6 @@ themes/default/header.inc
 themes/default/index.rss
 themes/default/index.tmpl
 themes/default/sidebar.inc
-themes/default/style.css
+themes/default/static/style.css
 themes/default/tag.tmpl
-themes/default/vim.css
 themes/default/xml.gif
