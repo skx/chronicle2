@@ -142,24 +142,6 @@ can be done via command-line flags such as C<--exclude-plugin=RSS,Verbose>.
 
 =cut
 
-=head1 STATUS
-
-All blog posts are read into SQLite, updates being catered for.
-
-All pages are output.
-
-    /tags/               -> Tag cloud
-    /tags/XX             -> Page for the given tag
-    /XXX                 -> Individual blog-posts.
-    /archive/$year/$mon/ -> Archive for given date-ranges
-    /index.rss           -> RSS Feed
-    /index.html          -> Index-page
-
-Entries are assumed to be written in HTML, but if `format: markdown` is
-added they will be processed appropriately.
-
-=cut
-
 =head1 OPERATIONS
 
 If you delete a post you MUST trash your database, because posts
