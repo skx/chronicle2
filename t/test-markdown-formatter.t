@@ -26,7 +26,7 @@ $data{ 'body' } = "This is **bold**";
 #
 #  (Because no "format" key exists in the hash.)
 #
-my $f = Chronicle::Plugin::Markdown::on_insert( undef, \%data );
+my $f = Chronicle::Plugin::Markdown::on_insert( undef, data => \%data );
 is( $f->{ 'body' }, $data{ 'body' },
     "Body is unchanged with no formatter set" );
 
@@ -38,7 +38,7 @@ foreach my $type (qw! markdown MARKDOWN MarkDoWN !)
 {
     $data{ 'format' } = $type;
 
-    my $out = Chronicle::Plugin::Markdown::on_insert( undef, \%data );
+    my $out = Chronicle::Plugin::Markdown::on_insert( undef, data => \%data );
 
     is( $out->{ 'body' },
         "<p>This is <strong>bold</strong></p>\n",
