@@ -20,7 +20,7 @@ chronicle - A static blog-compiler.
    --theme-dir      Specify the path to the theme templates.
    --theme          Specify the theme to use.
    --pattern        Specify the pattern of files to work with.
-   --url-prefix     Specify the prefix to the live blog.
+   --url-prefix     Specify the prefix to the generated blog.
 
   Counting Options:
 
@@ -83,7 +83,7 @@ A table for posts, which contains the following columns:
 The C<mtime> of the input file.
 
 =item date
-The date-header as self-reported in the blog-post
+The date-header as self-reported in the blog-post.
 
 =item body
 The body of the blog-post itself.
@@ -100,23 +100,15 @@ The title of the blog-post itself.
 The core of this script is responsible for a small amount of things:
 
 * Finding blog posts.
-* Parsing them into a SQLite database.
+* Parsing them into the SQLite database.
 * Cleaning up.
 
-The actual job of generating the pages is delegated to a series of plugins
-each of which is responsible for outputing one thing.  For example all of
-the tag-pages, located beneath C</tags/> in your generated site, are generated
+Actually generating output is delegated to a series of plugins each of
+which is responsible for outputing one thing.  For example all of the
+tag-pages, located beneath C</tags/> in your generated site, are generated
 by the plugin L<Chronicle::Plugin::Generate::Tags>.
 
-In theory using plugins like this allows clean separation, however this comes
-at a cost.  Because there is no linking between plugins, and they run in
-their own private islands there is no ability for a tags-page to contain
-a list of "Recent Pages".
-
-In short the plugin-system is neat, extensible, but needs more thought.
-
-Currently there are three plugin-hooks which are supported, and demonstrated
-via our included code:
+The core will call the following methods if present in plugins:
 
 =over 8
 
@@ -126,21 +118,22 @@ This is called if the SQLite database does not exist, and can be used to add new
 =item on_db_open
 This is called when the database is opened, and we use it to set memory/sync options.  It could be used to do more.
 
+=item on_insert
+This method is invoked as a blog entry is read to disk before it is inserted into the database for the first time - or when the item on disk has been changed and the database entry must be refreshed.  This method is designed to handle Markdown expansion, etc.
+
 =item on_initiate
-This is called prior to any processing, with a reference to the configuration
+This is called prior to any generation, with a reference to the configuration
 options and the database handle used for storage.
 
-=item on_insert
-This method is invoked as a blog entry is read to disk before it is inserted into the database for the first time - or when the item on disk has been changed and the database must be refreshed.  This method is designed to handle Markdown expansion, etc.
-
 =item on_generate
-This is called immediately prior to the exit, after the pages have been built.  Again a reference to the configuration options, and the database handle is provided.
+This is called to generate the output pages.  There is no logical difference between this method and C<on_initiate> except that the former plugin methods are guaranteed to have been called prior to C<on_generate> being invoked.  Again a reference to the configuration options, and the database handle is provided.
 
 =back
 
 Any plugin in the C<Chronicle::Plugin::> namespace will be loaded when the
-script starts.  NOTE: It is not necessary for a plugin to define methods,
-unless it wishes to be called.
+script starts.
+
+**NOTE**: It is not necessary for a plugin to define all three methods.
 
 Much of the core functionality, such as the generation of the main RSS feed,
 is implemented as plugins.  You might wish to disable plugins, and this
@@ -200,36 +193,29 @@ use Getopt::Long;
 use HTML::Template;
 use Pod::Usage;
 
-use utf8;
-use open ':std', ':encoding(UTF-8)';
-use open IO => ':encoding(UTF-8)';
-
 
 
 #
-#  Default options.
+#  Default options - These may be overridden by the command-line
+# or via the configuration files:
 #
-my %CONFIG;
+#   /etc/chronicle/config
+#   ~/.chronicle/config
+#
+#  NOTE: These filenames we deliberately chosen to avoid clashing
+# with previous releases of chronicle.
+#
+our %CONFIG;
 $CONFIG{ 'input' }        = "./data";
 $CONFIG{ 'pattern' }      = "*.txt";
 $CONFIG{ 'output' }       = "./output";
-$CONFIG{ 'author' }       = 'steve@steve.org.uk';
-$CONFIG{ 'top' }          = "http://blog.steve.org.uk/";
-$CONFIG{ 'comments' }     = "./comments/";
-$CONFIG{ 'rss-count' }    = 1;
-$CONFIG{ 'entry-count' }  = 10;
 $CONFIG{ 'comment-days' } = 10;
+$CONFIG{ 'entry-count' }  = 10;
+$CONFIG{ 'rss-count' }    = 10;
+$CONFIG{ 'theme-dir' }    = File::ShareDir::dist_dir('Chronicle');
+$CONFIG{ 'theme' }        = "default";
 $CONFIG{ 'verbose' }      = 0;
-
-if ( -d "./themes" )
-{
-    $CONFIG{ 'theme-dir' } = "./themes";
-}
-else
-{
-    $CONFIG{ 'theme-dir' } = File::ShareDir::dist_dir('Chronicle');
-}
-
+$CONFIG{ 'top' }          = "/";
 
 #
 #  Options here are passed to all templates
@@ -262,9 +248,8 @@ readConfigurationFile( $CONFIG{ 'config' } ) if ( defined $CONFIG{ 'config' } );
 my $dbh = getDatabase();
 
 
-
 #
-#  Parse/update blog posts from our data/ directory.
+#  Parse/update blog posts from our input directory.
 #
 updateDatabase($dbh);
 
@@ -276,6 +261,7 @@ File::Path::make_path( $CONFIG{ 'output' },
                        {  verbose => 0,
                           mode    => oct("755"),
                        } ) unless ( -d $CONFIG{ 'output' } );
+
 
 
 #
@@ -447,7 +433,7 @@ sub insertPost
     #  Read the actual entry from disk.
     #
     my $inHeader = 1;
-    open my $handle, "<:encoding(utf-8)", $filename or
+    open my $handle, "<:utf8", $filename or
       die "Failed to read $filename $!";
 
     #
@@ -516,39 +502,16 @@ sub insertPost
     $meta{ 'link' } .= ".html";
     $meta{ 'link' } = lc( $meta{ 'link' } );
 
-
     #
     #  Update our meta-data via any loaded plugins.
     #
-    for my $plugin ( Chronicle->plugins() )
+    foreach my $plugin ( get_plugins_for_method("on_insert") )
     {
-        my $skip = 0;
-
-        if ( $CONFIG{ 'exclude-plugins' } )
-        {
-            foreach my $exclude ( split( /,/, $CONFIG{ 'exclude-plugins' } ) )
-            {
-
-                # strip leading and trailing space.
-                $exclude =~ s/^\s+//;
-                $exclude =~ s/\s+$//;
-
-                # skip empty tags.
-                next if ( !length($exclude) );
-
-                $skip = 1 if ( $plugin =~ /\Q$exclude\E/i );
-            }
-        }
-
-        next if ($skip);
-
-
-        #
-        #  Ensure our plugin has the method we want to invoke.
-        #
-        next unless $plugin->can('on_insert');
         $CONFIG{ 'verbose' } && print "Calling $plugin - on_insert\n";
-        my $m = $plugin->on_insert( \%meta );
+        my $m = $plugin->on_insert( config => \%CONFIG,
+                                    dbh    => $dbh,
+                                    data   => \%meta
+                                  );
         %meta = %$m;
     }
 
@@ -630,6 +593,7 @@ sub getDatabase
         );
         $dbh->do("CREATE TABLE tags (id INTEGER PRIMARY KEY, name, blog_id );");
 
+
         foreach my $plugin ( get_plugins_for_method("on_db_create") )
         {
             $CONFIG{ 'verbose' } && print "Calling $plugin - on_db_create\n";
@@ -646,14 +610,6 @@ sub getDatabase
         $plugin->on_db_load( config => \%CONFIG,
                              dbh    => $dbh, );
     }
-
-    #
-    #  These put us at risk of losing data, but given the immense
-    # speedups and the fact that we can regenerate the blog database
-    # on-demand they're worth risking.
-    #
-    $dbh->do("PRAGMA synchronous = OFF");
-    $dbh->do("PRAGMA cache_size = 400000");
 
     return ($dbh);
 }
@@ -685,7 +641,9 @@ sub getBlog
     #
     #  Get the tags, if any
     #
-    my $tags = $dbh->prepare("SELECT name FROM tags WHERE blog_id=?") or
+    my $tags =
+      $dbh->prepare("SELECT name FROM tags WHERE blog_id=? ORDER by name ASC")
+      or
       die "Failed to prepare";
     my $name;
     $tags->execute($id) or die "Failed to execute: " . $dbh->errstr();
@@ -750,9 +708,16 @@ sub getBlog
     #  If the post is less than 10 days old
     #
     my $now = time;
-    if ( ( $now - $posted ) < ( 60 * 60 * 24 * $CONFIG{ 'comment-days' } ) )
+    my $ago = $now - $posted;
+    my $age = ( ( 60 * 60 * 24 ) * ( $CONFIG{'comment-days'} ) );
+
+    if ( $ago < $age )
     {
         $data->{ 'comments_enabled' } = 1;
+    }
+    else
+    {
+        $data->{ 'comments_enabled' } = undef;
     }
 
     return ($data);
@@ -772,8 +737,18 @@ sub getComments
 {
     my ($title) = (@_);
 
-    my $dir = $CONFIG{ 'comments' };
-    return unless ( -d $dir );
+    #
+    #  If there is no comment-directory setup then return nothing.
+    #
+    return unless ( $CONFIG{ 'comments' } );
+
+    #
+    #  If there is a comment-directory setup, but it doesn't exist
+    # then again we do nothing.
+    #
+    return unless ( -d $CONFIG{ 'comments' } );
+
+
     my $results;
 
     if ( $title =~ /^(.*)\.([^.]+)$/ )
@@ -785,7 +760,8 @@ sub getComments
     #  Find each comment file.
     #
     my @entries;
-    foreach my $file ( sort( glob( $dir . "/" . $title . "*" ) ) )
+    foreach
+      my $file ( sort( glob( $CONFIG{ 'comments' } . "/" . $title . "*" ) ) )
     {
         push( @entries, $file );
     }
@@ -822,7 +798,7 @@ sub getComments
             }
         }
 
-        open my $comment, "<:encoding(utf-8)", $file or
+        open my $comment, "<:utf8", $file or
           next;
 
         foreach my $line (<$comment>)
@@ -905,7 +881,7 @@ sub getComments
 
 =begin doc
 
-Paying attention to our theme load a template.
+Paying attention to our theme, load a template.
 
 =end doc
 
@@ -940,12 +916,13 @@ sub load_template
 
 
     my $tmpl = HTML::Template->new(
-                    filename => $path,
-                    path => [$CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' }],
-                    die_on_bad_params => 0,
-                    loop_context_vars => 1,
-                    global_vars       => 1,
-    );
+                                   utf8  => 1,
+                                   filename => $path,
+                                   path => [$CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' }],
+                                   die_on_bad_params => 0,
+                                   loop_context_vars => 1,
+                                   global_vars       => 1,
+                                  );
 
     #
     #  Legacy options.
@@ -998,6 +975,7 @@ sub parseCommandLine
             "input=s",   \$CONFIG{ 'input' },
             "output=s",  \$CONFIG{ 'output' },
             "pattern=s", \$CONFIG{ 'pattern' },
+            "comments=s", \$CONFIG{'comments'},
 
             # limits
             "entry-count=s", \$CONFIG{ 'entry-count' },
@@ -1033,7 +1011,7 @@ sub parseCommandLine
     pod2usage( -verbose => 2 ) if $MANUAL;
 
     #
-    #  SHow version
+    #  Show our version number, and terminate.
     #
     if ( $CONFIG{ 'version' } )
     {
@@ -1046,12 +1024,34 @@ sub parseCommandLine
     #
     if ( $CONFIG{ 'list-themes' } )
     {
-        print "Listing themes beneath $CONFIG{'theme-dir'}\n";
 
-        foreach my $ent ( glob( $CONFIG{ 'theme-dir' } . "/*" ) )
+        #
+        #  Global themese
+        #
+        my $global = File::ShareDir::dist_dir('Chronicle');
+
+        #
+        #  The theme-directories we'll inspect
+        #
+        my @dirs = ();
+        push( @dirs, $global );
+        if ( $CONFIG{ 'theme-dir' } && ( $CONFIG{ 'theme-dir' } ne $global ) )
         {
-            my $name = File::Basename::basename($ent);
-            print "\t*\t" . $name . "\n" if ( -d $ent );
+            push( @dirs, $CONFIG{ 'theme-dir' } );
+        }
+
+        #
+        #  For each global/local directory show the contents.
+        #
+        foreach my $dir (@dirs)
+        {
+            print "Themes beneath $dir\n";
+
+            foreach my $ent ( glob( $dir . "/*" ) )
+            {
+                my $name = File::Basename::basename($ent);
+                print "\t" . $name . "\n" if ( -d $ent );
+            }
         }
         exit(0);
     }
@@ -1061,18 +1061,18 @@ sub parseCommandLine
     #
     if ( $CONFIG{ 'list-plugins' } )
     {
-        for my $plugin ( sort Chronicle->plugins() )
+        for my $plugin ( Chronicle->plugins_ordered() )
         {
             print $plugin . "\n";
 
             if ( $CONFIG{ 'verbose' } )
             {
-                foreach my $method (
-                              sort qw! on_terminate on_initiate on_insert ! )
+                foreach
+                  my $method ( sort qw! on_db_create on_db_load on_insert on_initiate on_generate  ! )
                 {
                     if ( $plugin->can($method) )
                     {
-                        print "\tImplementes $method\n";
+                        print "\t$method\n";
                     }
                 }
             }
@@ -1102,7 +1102,8 @@ sub readConfigurationFile
 
     my $line = "";
 
-    open my $handle, "<:utf8", $file or die "Cannot read file '$file' - $!";
+    open my $handle, "<:utf8", $file or
+      die "Cannot read file '$file' - $!";
     while ( defined( $line = <$handle> ) )
     {
         chomp $line;
@@ -1160,7 +1161,6 @@ sub readConfigurationFile
 
     close($handle);
 }
-
 
 
 =begin doc
