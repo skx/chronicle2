@@ -34,7 +34,7 @@ is( $GLOBAL_TEMPLATE_VARS{ 'release' },
 #
 #  Load the plugin
 #
-Chronicle::Plugin::Version::on_initiate( undef, undef, undef );
+Chronicle::Plugin::Version::on_initiate();
 
 #
 #  Now the release variable should be populated.
