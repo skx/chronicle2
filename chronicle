@@ -299,10 +299,12 @@ for my $plugin ( Chronicle->plugins() )
 
     next if ($skip);
 
+
     #
     #  Ensure our plugin has the method we want to invoke.
     #
     next unless $plugin->can('on_initiate');
+    $CONFIG{'verbose'} && print "Calling $plugin - on_initiate\n";
     $plugin->on_initiate( \%CONFIG, $dbh );
 
 }
@@ -344,6 +346,7 @@ for my $plugin ( Chronicle->plugins() )
     #  Ensure our plugin has the method we want to invoke.
     #
     next unless $plugin->can('on_terminate');
+    $CONFIG{'verbose'} && print "Calling $plugin - on_terminate\n";
     $plugin->on_terminate( \%CONFIG, $dbh );
 
 }
@@ -580,6 +583,7 @@ sub insertPost
         #  Ensure our plugin has the method we want to invoke.
         #
         next unless $plugin->can('modify_entry');
+        $CONFIG{'verbose'} && print "Calling $plugin - modify_entry\n";
         my $m = $plugin->modify_entry( \%meta );
         %meta = %$m;
     }
@@ -964,6 +968,14 @@ sub load_template
     );
 
     #
+    #  Legacy options.
+    #
+    $tmpl->param( blog_title => $CONFIG{ 'blog_title' } )
+      if ( $CONFIG{ 'blog_title' } );
+    $tmpl->param( blog_subtitle => $CONFIG{ 'blog_subtitle' } )
+      if ( $CONFIG{ 'blog_subtitle' } );
+
+    #
     #  If we have global options then set them.
     #
     $tmpl->param( \%GLOBAL_TEMPLATE_VARS );
@@ -1019,6 +1031,10 @@ sub parseCommandLine
             # plugins
             "list-plugins",      \$CONFIG{ 'list-plugins' },
             "exclude-plugins=s", \$CONFIG{ 'exclude-plugins' },
+
+            # title
+            "blog-title=s",    \$CONFIG{ 'blog_title' },
+            "blog-subtitle=s", \$CONFIG{ 'blog_subtitle' },
 
             # prefix
             "url-prefix=s", \$CONFIG{ 'top' },
