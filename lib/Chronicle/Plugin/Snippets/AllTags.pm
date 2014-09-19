@@ -18,7 +18,10 @@ etc.
 
 sub on_initiate
 {
-    my ( $self, $config, $dbh ) = (@_);
+    my ( $self, %args ) = (@_);
+
+    my $dbh    = $args{ 'dbh' };
+    my $config = $args{ 'config' };
 
     #
     # Get the tags, and their count.
@@ -61,20 +64,20 @@ sub on_initiate
 
 =begin doc
 
-Ensure we get called early.
+This plugin must be called "early".
+
+This means we're called prior to any of the page-generation plugins, such
+that any page-templates which make use of the data-structure we've created
+are called after that structure is setup.
 
 =end doc
 
 =cut
 
-sub on_initiate_order
+sub _order
 {
     return 0;
 }
 
 
 1;
-
-
-
-

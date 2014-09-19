@@ -6,7 +6,7 @@ Chronicle::Plugin::Generate::Pages - Generate each blog page.
 =head1 DESCRIPTION
 
 This module will be invoked automatically when your site is built
-via the C<on_terminate> hook which Chronicle provides.
+via the C<on_generate> hook which Chronicle provides.
 
 It is responsible for creating each distinct blog post page.
 
@@ -51,9 +51,13 @@ without any explicit action being required.
 =cut
 
 
-sub on_terminate
+sub on_generate
 {
-    my ( $self, $config, $dbh ) = (@_);
+    my ( $self, %args ) = (@_);
+
+    my $dbh    = $args{ 'dbh' };
+    my $config = $args{ 'config' };
+
 
     my $all = $dbh->prepare("SELECT id FROM blog") or
       die "Failed to find posts";
@@ -63,6 +67,8 @@ sub on_terminate
     $all->execute() or die "Failed to execute:" . $dbh->errstr();
     my $id;
     $all->bind_columns( undef, \$id );
+
+    my $c = Chronicle::load_template("entry.tmpl");
 
     while ( $all->fetch() )
     {
@@ -93,7 +99,6 @@ sub on_terminate
           print "Creating : $config->{'output'}/$entry->{'link'}\n";
 
 
-        my $c = Chronicle::load_template("entry.tmpl");
         $c->param( top => $config->{ 'top' } );
         $c->param($entry);
 
@@ -110,7 +115,7 @@ sub on_terminate
                                    } );
         }
 
-        open( my $handle, ">:encoding(UTF-8)",
+        open( my $handle, ">:utf8",
               $config->{ 'output' } . "/" . $entry->{ 'link' } ) or
           die "Failed to open";
         print $handle $c->output();

@@ -6,7 +6,7 @@ Chronicle::Plugin::Generate::Archive - Generate archive pages.
 =head1 DESCRIPTION
 
 This module will be invoked automatically when your site is built
-via the C<on_terminate> hook which Chronicle provides.
+via the C<on_generate> hook which Chronicle provides.
 
 It is responsible for creating the top-level /archive/ pages
 which contain a list of previously created posts.
@@ -46,9 +46,12 @@ This is not yet complete and will need more love.
 
 =cut
 
-sub on_terminate
+sub on_generate
 {
-    my ( $self, $config, $dbh ) = (@_);
+    my ( $self, %args ) = (@_);
+
+    my $dbh    = $args{ 'dbh' };
+    my $config = $args{ 'config' };
 
 
     my %mons = ( "01" => 'January',
@@ -134,6 +137,8 @@ sub on_terminate
     close($handle);
 
 
+    $c = Chronicle::load_template("/archive.tmpl");
+
     #
     #  Foreach year/mon pair
     #
@@ -180,12 +185,11 @@ sub on_terminate
           print
           "Creating : $config->{'output'}/archive/$year/$mon/index.html\n";
 
-        my $c = Chronicle::load_template("/archive.tmpl");
         $c->param( top        => $config->{ 'top' } );
         $c->param( entries    => $entries );
         $c->param( month      => $mon, year => $year );
         $c->param( month_name => $mons{ $mon } );
-        open( my $handle, ">:encoding(UTF-8)",
+        open( my $handle, ">:utf8",
               "$config->{'output'}/archive/$year/$mon/index.html" ) or
           die "Failed to open";
         print $handle $c->output();

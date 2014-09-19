@@ -6,7 +6,7 @@ Chronicle::Plugin::Generate::Sitemap - Generate a sitemap automatically
 =head1 DESCRIPTION
 
 This module will be invoked automatically when your site is built
-via the C<on_terminate> hook that Chronicle provides.
+via the C<on_generate> hook that Chronicle provides.
 
 It is responsible for creating the top-level C</sitemap.xml> file
 which you use for search engine submission, etc.
@@ -44,9 +44,13 @@ Write out a sitemap at the output directory
 
 =cut
 
-sub on_terminate
+sub on_generate
 {
-    my ( $self, $config, $dbh ) = (@_);
+    my ( $self, %args ) = (@_);
+
+    my $dbh    = $args{ 'dbh' };
+    my $config = $args{ 'config' };
+
 
     #
     #  Load our HTML::Template file

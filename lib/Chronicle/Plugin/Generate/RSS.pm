@@ -6,7 +6,7 @@ Chronicle::Plugin::Generate::RSS - Generate RSS output.
 =head1 DESCRIPTION
 
 This module will be invoked automatically when your site is built
-via the C<on_terminate> hook which Chronicle provides.
+via the C<on_generate> hook which Chronicle provides.
 
 It is responsible for creating the top-level /index.rss file
 which is your blogs main RSS feed.
@@ -44,9 +44,12 @@ This is a sneaky hook that outputs the /index.rss file.
 
 =cut
 
-sub on_terminate
+sub on_generate
 {
-    my ( $self, $config, $dbh ) = (@_);
+    my ( $self, %args ) = (@_);
+
+    my $dbh    = $args{ 'dbh' };
+    my $config = $args{ 'config' };
 
     my $recent = $dbh->prepare(
         "SELECT id FROM blog ORDER BY date DESC LIMIT 0,$config->{'rss-count'}")
@@ -73,7 +76,7 @@ sub on_terminate
     my $c = Chronicle::load_template("index.rss");
     $c->param( top     => $config->{ 'top' } );
     $c->param( entries => $entries );
-    open( my $handle, ">:encoding(UTF-8)", "$config->{'output'}/index.rss" ) or
+    open( my $handle, ">:utf8", "$config->{'output'}/index.rss" ) or
       die "Failed to open";
     print $handle $c->output();
     close($handle);

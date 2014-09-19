@@ -61,7 +61,11 @@ use Date::Parse;
 
 sub on_insert
 {
-    my ( $self, $data ) = (@_);
+    my ( $self, %args ) = (@_);
+
+    my $dbh    = $args{ 'dbh' };
+    my $config = $args{ 'config' };
+    my $data   = $args{ 'data' };
 
     #
     #  Disabled

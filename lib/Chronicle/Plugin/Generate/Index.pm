@@ -6,7 +6,7 @@ Chronicle::Plugin::Generate::Index - Generate the blog-index.
 =head1 DESCRIPTION
 
 This module will be invoked automatically when your site is built
-via the C<on_terminate> hook which Chronicle provides.
+via the C<on_generate> hook which Chronicle provides.
 
 It is responsible for creating the top-level /index.html file
 which is your blogs front-page.
@@ -43,9 +43,13 @@ This is a sneaky hook that outputs the /index.html file.
 
 =cut
 
-sub on_terminate
+sub on_generate
 {
-    my ( $self, $config, $dbh ) = (@_);
+    my ( $self, %args ) = (@_);
+
+    my $dbh    = $args{ 'dbh' };
+    my $config = $args{ 'config' };
+
 
     #
     #  The number of posts to show on the front-page
@@ -76,7 +80,7 @@ sub on_terminate
     my $c = Chronicle::load_template("index.tmpl");
     $c->param( top     => $config->{ 'top' } );
     $c->param( entries => $entries );
-    open( my $handle, ">:encoding(UTF-8)", "$config->{'output'}/index.html" ) or
+    open( my $handle, ">:utf8", "$config->{'output'}/index.html" ) or
       die "Failed to open";
     print $handle $c->output();
     close($handle);

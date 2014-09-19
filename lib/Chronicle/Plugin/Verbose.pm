@@ -38,7 +38,10 @@ use warnings;
 
 sub on_initiate
 {
-    my ( $self, $config, $dbh ) = (@_);
+    my ( $self, %args ) = (@_);
+
+    my $dbh    = $args{ 'dbh' };
+    my $config = $args{ 'config' };
 
     #
     #  Disabled.

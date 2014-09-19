@@ -14,9 +14,13 @@ to generate the tag-output pages.
 
 =cut
 
-sub on_terminate
+sub on_generate
 {
-    my ( $self, $config, $dbh ) = (@_);
+    my ( $self, %args ) = (@_);
+
+    my $dbh    = $args{ 'dbh' };
+    my $config = $args{ 'config' };
+
 
     outputTags( $config, $dbh );
 
@@ -47,6 +51,8 @@ sub outputTags
     $all->execute() or die "Failed to execute:" . $dbh->errstr();
     my $tag;
     $all->bind_columns( undef, \$tag );
+
+    my $c = Chronicle::load_template("tag.tmpl");
 
     while ( $all->fetch() )
     {
@@ -82,14 +88,11 @@ sub outputTags
         }
 
 
-
-
-        my $c = Chronicle::load_template("tag.tmpl");
         $c->param( top     => $config->{ 'top' } );
         $c->param( entries => $entries ) if ($entries);
         $c->param( tag     => $tag );
-        open( my $handle, ">:encoding(UTF-8)",
-              "$config->{'output'}/tags/$tag/index.html" ) or
+        open( my $handle, ">:utf8", "$config->{'output'}/tags/$tag/index.html" )
+          or
           die "Failed to open";
         print $handle $c->output();
         close($handle);

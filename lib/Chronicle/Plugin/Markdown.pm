@@ -51,7 +51,11 @@ if that header has a value of 'textile'.
 
 sub on_insert
 {
-    my ( $self, $data ) = (@_);
+    my ( $self, %args ) = (@_);
+
+    my $dbh    = $args{ 'dbh' };
+    my $config = $args{ 'config' };
+    my $data   = $args{ 'data' };
 
     if ( $data->{ 'format' } && lc( $data->{ 'format' } ) eq "markdown" )
     {

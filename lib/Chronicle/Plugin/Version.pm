@@ -48,7 +48,10 @@ Update the global variables with a reference to our release version.
 
 sub on_initiate
 {
-    my ( $self, $config, $dbh ) = (@_);
+    my ( $self, %args ) = (@_);
+
+    my $dbh    = $args{ 'dbh' };
+    my $config = $args{ 'config' };
 
     $Chronicle::GLOBAL_TEMPLATE_VARS{ "release" } = $Chronicle::VERSION;
 }

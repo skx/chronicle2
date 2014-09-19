@@ -6,7 +6,7 @@ Chronicle::Plugin::Snippets::RecentPosts - Generate recent posts.
 =head1 DESCRIPTION
 
 This module will be invoked automatically when your site is built
-via the C<on_terminate> hook which Chronicle provides.
+via the C<on_generate> hook which Chronicle provides.
 
 It is responsible for creating the a data-structure to show recent
 posts.  Whether you choose to use this in your templates is up to you.
@@ -46,7 +46,10 @@ globally available.
 
 sub on_initiate
 {
-    my ( $self, $config, $dbh ) = (@_);
+    my ( $self, %args ) = (@_);
+
+    my $dbh    = $args{ 'dbh' };
+    my $config = $args{ 'config' };
 
     #
     #  The number of posts include.
@@ -85,6 +88,21 @@ sub on_initiate
 }
 
 
-sub on_initiate_order {return 0;}
+=begin doc
+
+This plugin must be called "early".
+
+This means we're called prior to any of the page-generation plugins, such
+that any page-templates which make use of the data-structure we've created
+are called after that structure is setup.
+
+=end doc
+
+=cut
+
+sub _order
+{
+    return 0;
+}
 
 1;
