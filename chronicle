@@ -124,7 +124,7 @@ via our included code:
 This is called prior to any processing, with a reference to the configuration
 options and the database handle used for storage.
 
-=item modify_entry
+=item on_insert
 This method is invoked as a blog entry is read to disk before it is inserted into the database for the first time - or when the item on disk has been changed and the database must be refreshed.  This method is designed to handle Markdown expansion, etc.
 
 =item on_terminate
@@ -565,9 +565,9 @@ sub insertPost
         #
         #  Ensure our plugin has the method we want to invoke.
         #
-        next unless $plugin->can('modify_entry');
-        $CONFIG{ 'verbose' } && print "Calling $plugin - modify_entry\n";
-        my $m = $plugin->modify_entry( \%meta );
+        next unless $plugin->can('on_insert');
+        $CONFIG{ 'verbose' } && print "Calling $plugin - on_insert\n";
+        my $m = $plugin->on_insert( \%meta );
         %meta = %$m;
     }
 
@@ -1071,7 +1071,7 @@ sub parseCommandLine
             if ( $CONFIG{ 'verbose' } )
             {
                 foreach my $method (
-                              sort qw! on_terminate on_initiate modify_entry ! )
+                              sort qw! on_terminate on_initiate on_insert ! )
                 {
                     if ( $plugin->can($method) )
                     {

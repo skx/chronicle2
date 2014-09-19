@@ -142,15 +142,13 @@ The core calls three methods, an all available plugins:
    * This is called prior to any processing, with a reference to the configuration options and the database handle used for storage.
    * This is a good place to call code that generates common snippets, or populates global-variables.
 
-* `modify_entry`
+* `on_insert`
    * This method is invoked as a blog entry is read to disk before it is inserted into the database for the first time - or when the item on disk has been changed and the database must be refreshed.
    * This method is designed to handle Markdown/Textile conversion, etc.
 
 * `on_terminate`
    * This is called after the database has been populated, again with a reference to the configuration options, and the database handle is provided.
    * This is where pages are output.
-
->**NOTE**: The names will probably change in the future.
 
 
 

@@ -26,7 +26,7 @@ $data{ 'body' } = "This is *bold*";
 #
 #  (Because no "format" key exists in the hash.)
 #
-my $f = Chronicle::Plugin::Textile::modify_entry( undef, \%data );
+my $f = Chronicle::Plugin::Textile::on_insert( undef, \%data );
 is( $f->{ 'body' }, $data{ 'body' },
     "Body is unchanged with no formatter set" );
 
@@ -38,7 +38,7 @@ foreach my $type (qw! Textile TEXTILE textile !)
 {
     $data{ 'format' } = $type;
 
-    my $out = Chronicle::Plugin::Textile::modify_entry( undef, \%data );
+    my $out = Chronicle::Plugin::Textile::on_insert( undef, \%data );
 
     is( $out->{ 'body' },
         "<p>This is <strong>bold</strong></p>",

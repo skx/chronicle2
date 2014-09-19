@@ -49,7 +49,7 @@ if that header has a value of 'textile'.
 
 =cut
 
-sub modify_entry
+sub on_insert
 {
     my ( $self, $data ) = (@_);
 
