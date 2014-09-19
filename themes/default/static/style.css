@@ -1,0 +1,121 @@
+
+body {
+	padding: 0 10px;
+	padding-top: 1px;
+	padding-bottom: 1em;
+	background-color: white;
+	color: black;
+	margin: 0;
+	margin-right: 185px;
+	border-right: 1px solid rgb(128, 128, 128);
+
+}
+
+div.title {
+}
+
+div.title h1 {
+        margin: 0px -10px;
+	padding: 5px 10px 0px 10px;
+	text-align: center;
+}
+
+div.title a {
+	color: black !important;
+	text-decoration: none !important;
+}
+div.title a:hover {
+	color: black !important;
+	text-decoration: none !important;
+}
+
+div.title h2 {
+	margin: 0 0 1ex 0;
+	padding: 0;
+        text-align: right;
+}
+
+/*
+ * Special markup for weblog entries.
+ */
+div.entry {
+	border-left: 1px solid rgb(128, 128, 128);
+	border-right: 1px solid rgb(128, 128, 128);
+	border-top: 1px solid rgb(128, 128, 128);
+	border-bottom: 1px solid rgb(128, 128, 128);
+        margin: 10px 0px;
+}
+
+div.padding {
+        padding-top: 15px;
+        padding-bottom: 15px;
+}
+div.entry div.body {
+	padding: 10px 10px;
+}
+
+div.entry .title {
+	background-color: #eee;
+	border-bottom: 1px solid rgb(128, 128, 128);
+	font-weight: bold;
+	font-size: 120%;
+	padding: 0.26ex 10px;
+	
+}
+div.entry div.date {
+        text-align: right;
+}
+div.entry div.title a {
+	color: black !important;
+	text-decoration: none !important;
+}
+div.entry div.title a:hover {
+	color: black !important;
+	text-decoration: none !important;
+}
+
+div.entry div.tags {
+	border-top: 1px solid rgb(128, 128, 128);
+	font-style: italic;
+	font-family: Verdana, Georgia, Arial, sans-serif;
+	font-size: 90%;
+	text-align: right;
+}
+div.entry div.tags span.comments {
+        padding-left: 5px;
+        float: left;
+}
+
+div.entry div.xrefs {
+	font-style: italic;
+	font-family: Verdana, Georgia, Arial, sans-serif;
+	font-size: 90%;
+	text-align: right;
+}
+
+
+div#sidebar {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 165px;
+
+	font-family: sans-serif;
+	font-size: 80%;
+
+	text-align: justify;
+
+	padding: 0 10px;
+
+	background-color: white;
+	border-left: 1px solid rgb(128, 128, 128);
+	margin: 0;
+}
+
+pre {
+	overflow:	auto;
+	background:	rgb(230,230,230);
+	border:		solid;
+	border-width:	thin;
+	padding: 5px  10px;
+}

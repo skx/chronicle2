@@ -302,6 +302,21 @@ foreach my $plugin ( get_plugins_for_method("on_generate") )
 
 
 #
+#  Copy any static content from the theme-directory.
+#
+my $ts = $CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' } . "/static";
+if ( -d $ts )
+{
+
+    #
+    #  This could be improved, but it will cope with subdirectories, etc,
+    # so for the moment it will remain.
+    #
+    system("/bin/tar -C $ts -cpf - . | /bin/tar -C $CONFIG{'output'} -xf -");
+}
+
+
+#
 #  Now we're done.
 #
 $dbh->disconnect();
