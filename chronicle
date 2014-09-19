@@ -258,6 +258,11 @@ my $dbh = getDatabase();
 
 
 #
+#  Parse/update blog posts from our data/ directory.
+#
+updateDatabase($dbh);
+
+#
 #  Call any on_initiate plugins we might have loaded.
 #
 for my $plugin ( Chronicle->plugins() )
@@ -292,11 +297,6 @@ for my $plugin ( Chronicle->plugins() )
 
 }
 
-
-#
-#  Parse/update blog posts from our data/ directory.
-#
-updateDatabase($dbh);
 
 
 #
