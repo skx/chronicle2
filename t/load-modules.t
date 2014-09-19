@@ -12,7 +12,7 @@ BEGIN
     #  General plugins
     #
     use_ok( "Chronicle::Plugin::Archived", "Loaded module" );
-    use_ok( "Chronicle::Plugin::Timer",    "Loaded module" );
+    use_ok( "Chronicle::Plugin::DBTweak",  "Loaded module" );
     use_ok( "Chronicle::Plugin::Markdown", "Loaded module" );
     use_ok( "Chronicle::Plugin::Textile",  "Loaded module" );
     use_ok( "Chronicle::Plugin::Verbose",  "Loaded module" );
@@ -21,7 +21,7 @@ BEGIN
     #
     #  Snippets
     #
-    use_ok( "Chronicle::Plugin::Snippets::AllTags",  "Loaded module" );
+    use_ok( "Chronicle::Plugin::Snippets::AllTags",     "Loaded module" );
     use_ok( "Chronicle::Plugin::Snippets::RecentTags",  "Loaded module" );
     use_ok( "Chronicle::Plugin::Snippets::RecentPosts", "Loaded module" );
 
