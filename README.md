@@ -1,3 +1,12 @@
+
+* Homepage:
+   * http://www.steve.org.uk/Software/chronicle/
+* Git Repository:
+   * http://github.com/skx/chronicle2
+* Real World Use:
+   * http://blog.steve.org.uk/
+
+
 chronicle
 ---------
 
