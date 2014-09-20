@@ -10,6 +10,7 @@ lib/Chronicle/Plugin/Generate/RSS.pm
 lib/Chronicle/Plugin/Generate/Sitemap.pm
 lib/Chronicle/Plugin/Generate/Tags.pm
 lib/Chronicle/Plugin/Markdown.pm
+lib/Chronicle/Plugin/SkipDrafts.pm
 lib/Chronicle/Plugin/Snippets/AllTags.pm
 lib/Chronicle/Plugin/Snippets/RecentPosts.pm
 lib/Chronicle/Plugin/Snippets/RecentTags.pm
@@ -42,6 +43,7 @@ themes/blog.steve.org.uk/inc/sidebar.inc
 themes/blog.steve.org.uk/inc/style.inc
 themes/blog.steve.org.uk/index.rss
 themes/blog.steve.org.uk/index.tmpl
+themes/blog.steve.org.uk/static/spiral.gif
 themes/blog.steve.org.uk/tag.tmpl
 themes/blog.steve.org.uk/tag_index.tmpl
 themes/default/archive.tmpl
@@ -58,4 +60,17 @@ themes/default/static/style.css
 themes/default/static/xml.gif
 themes/default/tag.tmpl
 themes/default/tag_index.tmpl
-
+themes/leftbar/archive.tmpl
+themes/leftbar/archive_index.tmpl
+themes/leftbar/entry.tmpl
+themes/leftbar/inc/add-comment.inc
+themes/leftbar/inc/analytics.inc
+themes/leftbar/inc/blog-post.inc
+themes/leftbar/inc/comment-loop.inc
+themes/leftbar/inc/sidebar.inc
+themes/leftbar/inc/style.inc
+themes/leftbar/index.rss
+themes/leftbar/index.tmpl
+themes/leftbar/static/spiral.gif
+themes/leftbar/tag.tmpl
+themes/leftbar/tag_index.tmpl
