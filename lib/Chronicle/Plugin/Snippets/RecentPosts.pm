@@ -9,7 +9,32 @@ This module will be invoked automatically when your site is built
 via the C<on_generate> hook which Chronicle provides.
 
 It is responsible for creating the a data-structure to show recent
-posts.  Whether you choose to use this in your templates is up to you.
+posts.  The number of posts defaults to ten, but can be changed if
+you're using a configuration file, via:
+
+=for example begin
+
+   recent-post-count = 20
+
+=for example end
+
+To use this in your theme add the following:
+
+=for example begin
+
+     <!-- tmpl_if name='recent_posts' -->
+     <h3>Recent Posts</h3>
+     <ul>
+       <!-- tmpl_loop name='recent_posts' -->
+       <li><b><!-- tmpl_var name='date' --></b>
+       <ul>
+          <li><a href="<!-- tmpl_var name='top' --><!-- tmpl_var name='link' -->"><!-- tmpl_var name='title' --></a></li>
+       </ul></li>
+       <!-- /tmpl_loop -->
+     </ul>
+     <!-- /tmpl_if name='recent_posts' -->
+
+=for example end
 
 =cut
 
@@ -52,9 +77,9 @@ sub on_initiate
     my $config = $args{ 'config' };
 
     #
-    #  The number of posts include.
+    #  The number of posts to include.
     #
-    my $count = $config->{ 'entry-count' } || 10;
+    my $count = $config->{ 'recent-post-count' } || 10;
 
     my $recent =
       $dbh->prepare("SELECT id FROM blog ORDER BY date DESC LIMIT 0,$count") or
