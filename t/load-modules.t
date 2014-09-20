@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 15;
+use Test::More tests => 16;
 
 BEGIN
 {
@@ -11,12 +11,13 @@ BEGIN
     #
     #  General plugins
     #
-    use_ok( "Chronicle::Plugin::Archived", "Loaded module" );
-    use_ok( "Chronicle::Plugin::DBTweak",  "Loaded module" );
-    use_ok( "Chronicle::Plugin::Markdown", "Loaded module" );
-    use_ok( "Chronicle::Plugin::Textile",  "Loaded module" );
-    use_ok( "Chronicle::Plugin::Verbose",  "Loaded module" );
-    use_ok( "Chronicle::Plugin::Version",  "Loaded module" );
+    use_ok( "Chronicle::Plugin::Archived",   "Loaded module" );
+    use_ok( "Chronicle::Plugin::DBTweak",    "Loaded module" );
+    use_ok( "Chronicle::Plugin::Markdown",   "Loaded module" );
+    use_ok( "Chronicle::Plugin::Textile",    "Loaded module" );
+    use_ok( "Chronicle::Plugin::Verbose",    "Loaded module" );
+    use_ok( "Chronicle::Plugin::Version",    "Loaded module" );
+    use_ok( "Chronicle::Plugin::SkipDrafts", "Loaded module" );
 
     #
     #  Snippets
