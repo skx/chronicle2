@@ -413,7 +413,7 @@ sub insertPost
         $CONFIG{ 'verbose' } && print "Replacing DB post: $id\n";
 
         #
-        #  Delete the tags
+        #  Delete the tags referring to this old post.
         #
         my $del_tags = $dbh->prepare("DELETE FROM tags WHERE blog_id=?") or
           die "Failed to prepare ";
@@ -491,11 +491,6 @@ sub insertPost
     }
     close($handle);
 
-    if ( !$meta{ 'date' } )
-    {
-        die "Post is missing a date header - $filename\n";
-    }
-
 
     #
     #  Generate the link from the title of the post.
@@ -507,6 +502,11 @@ sub insertPost
     $meta{ 'link' } = lc( $meta{ 'link' } );
 
     #
+    #  Are we going to skip this post?
+    #
+    my $skip = 0;
+
+    #
     #  Update our meta-data via any loaded plugins.
     #
     foreach my $plugin ( get_plugins_for_method("on_insert") )
@@ -516,13 +516,48 @@ sub insertPost
                                     dbh    => $dbh,
                                     data   => \%meta
                                   );
-        %meta = %$m;
+
+        if ( !$m )
+        {
+            #
+            #  We'll skip any post if the insert plugin returned an
+            # empty value.
+            #
+            $skip = 1;
+        }
+        else
+        {
+            #
+            #  If we know we're going to skip this post then we'll
+            # not update the meta-data, which will ensure that
+            # future plugins won't have empty data-structures.
+            #
+            #  This isn't essential but it helps avoid warnings or
+            # weirdness.
+            #
+            %meta = %$m;
+        }
     }
+
+
+    if ($skip)
+    {
+        $CONFIG{ 'verbose' } && print "Skipping post: $filename\n";
+        return;
+    }
+
 
     #
     #  Convert the date to a seconds past epoch.
     #
-    $meta{ 'date' } = str2time( $meta{ 'date' } );
+    if ( !$meta{ 'date' } )
+    {
+        die "Post is missing a date header - $filename\n";
+    }
+    else
+    {
+        $meta{ 'date' } = str2time( $meta{ 'date' } );
+    }
 
     #
     #  Now insert
