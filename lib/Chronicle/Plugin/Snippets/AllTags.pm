@@ -1,4 +1,49 @@
 
+=head1 NAME
+
+Chronicle::Plugin::Snippets::AllTags - Generate a list of tags.
+
+=head1 DESCRIPTION
+
+This module will be invoked automatically when your site is built
+via the C<on_generate> hook which Chronicle provides.
+
+It is responsible for creating the a data-structure to show all
+previously-used tags.
+
+To use this in your templates add the following:
+
+=for example begin
+
+    <!-- tmpl_if name='all_tags' -->
+      <li>
+      <!-- tmpl_loop name='all_tags' -->
+        <li><a href="/tags/<!-- tmpl_var name='tag' -->"><!-- tmpl_var name='tag' --></a></li>
+      <!-- /tmpl_loop name='all_tags' -->
+      </ul>
+    <!-- /tmpl_if name='all_tags' -->
+
+=for example end
+
+
+=cut
+
+=head1 AUTHOR
+
+Steve Kemp <steve@steve.org.uk>
+
+=cut
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2014 Steve Kemp <steve@steve.org.uk>.
+
+This library is free software. You can modify and or distribute it under
+the same terms as Perl itself.
+
+=cut
+
+
 package Chronicle::Plugin::Snippets::AllTags;
 
 use strict;
