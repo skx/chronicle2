@@ -129,8 +129,8 @@ sub on_generate
       print "Creating : $config->{'output'}/archive/index.html\n";
 
     my $c = Chronicle::load_template("archive_index.tmpl");
-    $c->param( top     => $config->{ 'top' } );
-    $c->param( archive => $data );
+    $c->param( top => $config->{ 'top' } );
+    $c->param( archive => $data ) if ($data);
     open( my $handle, ">", "$config->{'output'}/archive/index.html" ) or
       die "Failed to open";
     print $handle $c->output();

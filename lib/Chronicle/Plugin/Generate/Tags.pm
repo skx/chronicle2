@@ -158,9 +158,16 @@ sub outputTagCloud
     $config->{ 'verbose' } &&
       print "Creating : $config->{'output'}/tags/index.html\n";
 
+    File::Path::make_path( "$config->{'output'}/tags",
+                           {  verbose => 0,
+                              mode    => oct("755"),
+                           } ) unless ( -d "$config->{'output'}/tags/" );
+
+
+
     my $c = Chronicle::load_template("tag_index.tmpl");
-    $c->param( all_tags => $tags );
-    $c->param( top      => $config->{ 'top' } );
+    $c->param( all_tags => $tags ) if ($tags);
+    $c->param( top => $config->{ 'top' } );
     open( my $handle, ">", "$config->{'output'}/tags/index.html" ) or
       die "Failed to open";
     print $handle $c->output();

@@ -96,7 +96,7 @@ sub on_generate
 
     if ( $config->{ 'verbose' } )
     {
-        print "Wrote " . scalar(@$urls) . " URLS to $output\n";
+        print "Wrote " . ( $urls ? scalar(@$urls) : 0 ) . " URLS to $output\n";
     }
 
 }

@@ -74,14 +74,14 @@ sub on_generate
       print "Creating : $config->{'output'}/index.rss\n";
 
     my $c = Chronicle::load_template("index.rss");
-    $c->param( top     => $config->{ 'top' } );
-    $c->param( entries => $entries );
+    $c->param( top => $config->{ 'top' } );
+    $c->param( entries => $entries ) if ($entries);
     open( my $handle, ">:utf8", "$config->{'output'}/index.rss" ) or
       die "Failed to open";
     print $handle $c->output();
     close($handle);
 
-    if ( $config->{ 'verbose' } )
+    if ( $config->{ 'verbose' } && $entries )
     {
         print "Wrote " . scalar(@$entries) .
           " items to $config->{'output'}/index.rss\n";
