@@ -55,17 +55,16 @@ The key observation which has lead to this prototype is that rebuilding a
 blog with chronicle is slow because every file must be parsed and processed
 in a large data-structure, in ram, on every run.
 
-However 90% of the time a blog is rebuilt it is only done so to include a
-new user-submitted comment - there is no new blog entry, or change to an
-existing post.
+However 90% of the time when a blog is rebuilt it is only to include a
+new user-submitted comment, or a new entry.  There are rarely changes
+applied to previous posts.
 
 If we parse all the blog entries *ONCE* and insert into a persistent SQLite
 database we can query that for reading tag-data, archives, etc, and this
-will be just as fast as reading our previous in-RAM data-structure, if not
-faster.
+will be even faster thanreading our previous in-RAM data-structure.
 
-Because people are fallible we'll read the `mtime` of the blog-posts
-and include that in the database, this will allow us to incorporate new
+Because people are fallible we'll store the `mtime` of the blog-posts
+and include that in the database too, this will allow us to incorporate new
 posts and edits to old posts, without having to throw away our database.
 
 The average run of a blog with 1000 entries, and no changes, is 3 seconds
@@ -77,9 +76,17 @@ win.
 
 =head1 DATABASE STRUCTURE
 
-A table for tags, storing the tag-name and associated blog-entry.
+We create a simple SQLite database with two tables:
 
-A table for posts, which contains the following columns:
+=over 8
+
+=item A table for tags, storing the tag-name and associated blog-entry.
+
+=item A table for blog entries.
+
+=back
+
+The blog-entry table contains the following columns:
 
 =over 8
 
@@ -103,9 +110,15 @@ The title of the blog-post itself.
 
 The core of this script is responsible for a small amount of things:
 
-* Finding blog posts.
-* Parsing them into the SQLite database.
-* Cleaning up.
+=over 8
+
+=item Finding blog posts.
+
+=item Parsing them into the SQLite database.
+
+=item Cleaning up.
+
+=back
 
 Actually generating output is delegated to a series of plugins each of
 which is responsible for outputing one thing.  For example all of the
@@ -142,17 +155,6 @@ script starts.
 Much of the core functionality, such as the generation of the main RSS feed,
 is implemented as plugins.  You might wish to disable plugins, and this
 can be done via command-line flags such as C<--exclude-plugin=RSS,Verbose>.
-
-=cut
-
-=head1 OPERATIONS
-
-If you delete a post you MUST trash your database, because posts
-are only output/updated/overwritten but never deleted.
-
-Similarly if you remove a tag from a post then the /tag/$old-tag will
-still remain, because missing tags are added but additional ones are
-not purged.
 
 =cut
 
