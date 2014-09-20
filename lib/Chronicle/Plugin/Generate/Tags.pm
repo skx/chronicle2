@@ -91,8 +91,8 @@ sub outputTags
         $c->param( top     => $config->{ 'top' } );
         $c->param( entries => $entries ) if ($entries);
         $c->param( tag     => $tag );
-        open( my $handle, ">:utf8", "$config->{'output'}/tags/$tag/index.html" )
-          or
+        open( my $handle, ">:encoding(UTF-8)",
+              "$config->{'output'}/tags/$tag/index.html" ) or
           die "Failed to open";
         print $handle $c->output();
         close($handle);

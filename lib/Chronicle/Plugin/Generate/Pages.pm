@@ -115,7 +115,7 @@ sub on_generate
                                    } );
         }
 
-        open( my $handle, ">:utf8",
+        open( my $handle, ">:encoding(UTF-8)",
               $config->{ 'output' } . "/" . $entry->{ 'link' } ) or
           die "Failed to open";
         print $handle $c->output();

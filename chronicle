@@ -441,7 +441,7 @@ sub insertPost
     #  Read the actual entry from disk.
     #
     my $inHeader = 1;
-    open my $handle, "<:utf8", $filename or
+    open my $handle, "<:encoding(utf-8)", $filename or
       die "Failed to read $filename $!";
 
     #
@@ -642,6 +642,8 @@ sub getDatabase
 
 
     my $dbh = DBI->connect( "dbi:SQLite:dbname=$CONFIG{'database'}", "", "" );
+
+    $dbh->{ sqlite_unicode } = 1;
 
     if ( !$present )
     {
@@ -856,7 +858,7 @@ sub getComments
             }
         }
 
-        open my $comment, "<:utf8", $file or
+        open my $comment, "<:encoding(utf-8)", $file or
           next;
 
         foreach my $line (<$comment>)
@@ -974,8 +976,8 @@ sub load_template
 
 
     my $tmpl = HTML::Template->new(
-                    utf8     => 1,
-                    filename => $path,
+                    open_mode => '<:encoding(UTF-8)',
+                    filename  => $path,
                     path => [$CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' }],
                     die_on_bad_params => 0,
                     loop_context_vars => 1,
@@ -1159,7 +1161,7 @@ sub readConfigurationFile
 
     my $line = "";
 
-    open my $handle, "<:utf8", $file or
+    open my $handle, "<:encoding(utf-8)", $file or
       die "Cannot read file '$file' - $!";
     while ( defined( $line = <$handle> ) )
     {

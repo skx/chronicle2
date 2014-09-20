@@ -189,7 +189,7 @@ sub on_generate
         $c->param( entries    => $entries );
         $c->param( month      => $mon, year => $year );
         $c->param( month_name => $mons{ $mon } );
-        open( my $handle, ">:utf8",
+        open( my $handle, ">:encoding(UTF-8)",
               "$config->{'output'}/archive/$year/$mon/index.html" ) or
           die "Failed to open";
         print $handle $c->output();
