@@ -44,7 +44,7 @@ sub on_insert
     #
     #  We'll return undef here, which will stop the insertion process
     #
-    return undef if ( $data->{'draft'} );
+    return undef if ( $data->{ 'draft' } );
 
     #
     #  Otherwise return the unmodified data.

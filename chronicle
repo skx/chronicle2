@@ -519,6 +519,7 @@ sub insertPost
 
         if ( !$m )
         {
+
             #
             #  We'll skip any post if the insert plugin returned an
             # empty value.
@@ -527,6 +528,7 @@ sub insertPost
         }
         else
         {
+
             #
             #  If we know we're going to skip this post then we'll
             # not update the meta-data, which will ensure that
