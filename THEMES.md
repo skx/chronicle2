@@ -4,7 +4,11 @@ Themes
 Themes in Chronicle are simple collections of files which are populated
 and rendered via the Perl [HTML::Template](http://search.cpan.org/perldoc?HTML%3A%3ATemplate) module.
 
-To create a new theme the simplest approach is to take an existing theme and modify it.
+To create a new theme the simplest approach is to take an existing theme and modify it.  Once you have a local theme you can cause it to be used like so:
+
+    chronicle --theme-dir=./themes --theme=local
+
+This will ensure that your theme-templates are read from `./themes/local/`.
 
 
 Theme Files

@@ -55,7 +55,7 @@ The blog format is very simple, and the following file is a sample:
     However much there is of it.
 
 
-The entry is prefixed by a small header, consisting of several pseudo-header fieilds. The header __MUST__ be separated from the body by at least one empty line.
+The entry is prefixed by a small header, consisting of several pseudo-header fields. The header __MUST__ be separated from the body by at least one empty line.
 
 Header values which are unknown are ignored, and no part of the header is included in the output which is generated.
 
@@ -67,7 +67,8 @@ The following header values are recognised:
     * The date this entry was created. If not present the creation time of the file is used.
 * Tags:
     * If any tags are present they will be used to categorise the entry.
-
+* Format:
+    * This allows you to specify if you're writing in markdown, or textile.  If you are then the blog-body will be processed correctly.
 
 
 Simple Usage
@@ -85,37 +86,29 @@ the directory `/path/to/output/` creating that directory if missing.
 The SQLite database will be created at `~/blog.db`, and if it is
 deleted it will be regenerated.
 
-For more advanced usage please consult the help.
+For more advanced usage please consult the help.  Obvious changes would
+be to set the title of the blog, and the subtitle:
 
-To user your own theme then copy one of the included ones and
-use:
+   --title="Steve Kemp's Blog" --sub-title="Writings about cake"
 
-    chronicle --theme-dir=./themes --theme=local
-
-This will ensure that theme-templates are read from `themes/local/`.
+If you start setting multiple values you might prefer to use a configuration
+file instead.  Chronicle will read  `/etc/chronicle/config`, and `~/.chronicle/config` prior to starting.  Failing that you can specify a configuration file of your own via `--config=/path/to/conf`.
 
 
 User-Visible Changes
 --------------------
 
-In an ideal would you should be able to migrate from Chronicle directly
-to this codebase, as there are a lot of commonalities:
+In an ideal would you should be able to migrate from previous Chronicle releases directly to this codebase, as the purpose and main operation is identical:
 
-* Blog entries are are still read from `data/`.
+* Blog entries are are still read from `data/`, unless you specify a different path via "`--input`".
+* We still assume `*.txt` are the blog entries, unless you specify `--pattern=*.blog`".
 * Blog entries are still built up of a header and the entry.
 * Entries are still parsed in HTML, Markdown, and Textile formats.
 
 However there are changes, and these largely relate to the templates,
 along with the implementation differences.
 
-The previous Chronicle codebase was comprised of a few different binaries,
-the new has only the single driver `chronicle` and a collection of plugins.
-
-The driver script parse arguments, and the blog posts, but the actual
-generation of your site is entirely plugin-based.  The plugins are standard
-Perl modules located beneath the `Chronicle::Plugin` namespace, and
-although you don't need to know any of the details they can be ordered
-thanks to the use of [Module::Pluggable::Ordered](http://search.cpan.org/perldoc?Module%3A%3APluggable%3A%3AOrdered) class.
+As of Chronicle 5 the main script parse arguments, reads the blog posts, but the actual generation of your site is entirely plugin-based.  The plugins are standard Perl modules located beneath the `Chronicle::Plugin` namespace, and although you don't need to know any of the details they can be ordered thanks to the use of [Module::Pluggable::Ordered](http://search.cpan.org/perldoc?Module%3A%3APluggable%3A%3AOrdered) class.
 
 The template changes are a little more signficant than I'd like, but
 happily these changes largely consist of new locations for things,
