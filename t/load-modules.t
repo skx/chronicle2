@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 16;
+use Test::More tests => 17;
 
 BEGIN
 {
@@ -23,6 +23,7 @@ BEGIN
     #  Snippets
     #
     use_ok( "Chronicle::Plugin::Snippets::AllTags",     "Loaded module" );
+    use_ok( "Chronicle::Plugin::Snippets::Archives",    "Loaded module" );
     use_ok( "Chronicle::Plugin::Snippets::RecentTags",  "Loaded module" );
     use_ok( "Chronicle::Plugin::Snippets::RecentPosts", "Loaded module" );
 
