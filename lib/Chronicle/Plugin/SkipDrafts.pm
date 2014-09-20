@@ -39,12 +39,18 @@ sub on_insert
 {
     my ( $self, %args ) = (@_);
 
-    my $data = $args{ 'data' };
+    my $config = $args{ 'config' };
+    my $data   = $args{ 'data' };
 
     #
     #  We'll return undef here, which will stop the insertion process
     #
-    return undef if ( $data->{ 'draft' } );
+    if ( $data->{ 'draft' } )
+    {
+        $config->{ 'verbose' } &&
+          print "Skipping draft: $data->{'filename'} \n";
+        return undef;
+    }
 
     #
     #  Otherwise return the unmodified data.
