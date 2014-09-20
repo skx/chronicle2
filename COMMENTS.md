@@ -12,7 +12,7 @@ The basic use of chronicle is to convert a collection of text files into a HTML 
 There are two ways this software is typically used:
 
 * On a single host.
-   * The blog input is stored upon your web-server and you generate the output directly to a http-accessible directory upon that machine.
+   * The blog input is stored upon your web-server and you generate the output directly to a HTTP-accessible directory upon that machine.
 * With multiple hosts.
   *  The blog input lives upon one machine, and once you've generated the output you copy it over to a remote web-server where it may be viewed.
 
