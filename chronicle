@@ -506,6 +506,11 @@ sub insertPost
     $meta{ 'link' } = lc( $meta{ 'link' } );
 
     #
+    #  Let any plugins have access to the filename.
+    #
+    $meta{ 'file' } = $filename;
+
+    #
     #  Are we going to skip this post?
     #
     my $skip = 0;
