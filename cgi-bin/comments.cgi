@@ -30,19 +30,19 @@ use strict;
 use warnings;
 
 use CGI;
+use Encode 'decode_utf8';
+use Text::Markdown;
 use POSIX qw(strftime);
 
 
-
 #
-#  The directory to store comments in.
+#  The directory to store comments in
 #
-# NOTE:  This should be writeable to the www-data user, and shouldn't
-#        be inside your web-root - or you open up security hole.
-#
-# my $COMMENT = "/home/www/comments/";
+#  In this case ~/comments/
 #
 my $COMMENT = $ENV{ 'DOCUMENT_ROOT' } . "../comments/";
+#my $COMMENT = (getpwuid $>)[7]  . "/comments";
+
 
 #
 #  The notification addresses - leave blank to disable
@@ -52,33 +52,37 @@ my $FROM = 'weblog@steve.org.uk';
 
 
 #
-#  Use textile?
-#
-my $TEXTILE = 1;
-
-
-#
-#  Find sendmail
-#
-my $SENDMAIL = undef;
-foreach my $file (qw ! /usr/lib/sendmail /usr/sbin/sendmail !)
-{
-    $SENDMAIL = $file if ( -x $file );
-}
-
-
-#
-#  Get the parameters from the request.
+# Get the parameters from the request - decoding them because UTF-8
+# is the way of the future.  Yeah, I laughed too.
 #
 my $cgi = new CGI();
 
-my $name = $cgi->param('name')    || undef;
-my $mail = $cgi->param('mail')    || undef;
-my $body = $cgi->param('body')    || undef;
-my $id   = $cgi->param('id')      || undef;
-my $cap  = $cgi->param('captcha') || undef;
-my $link = $cgi->param('link')    || undef;
-my $ajax = $cgi->param("ajax")    || 0;
+my $name = $cgi->param('name') || undef;
+$name = decode_utf8($name) if ($name);
+
+my $mail = $cgi->param('mail') || undef;
+$mail = decode_utf8($mail) if ($mail);
+
+my $body = $cgi->param('body') || undef;
+$body = decode_utf8($body) if ($body);
+
+my $id = $cgi->param('id') || undef;
+$id = decode_utf8($id) if ($id);
+
+my $link = $cgi->param('link') || undef;
+$link = decode_utf8($link) if ($link);
+
+my $cap  = $cgi->param('robot') || undef;
+my $ajax = $cgi->param('ajax')  || 0;
+
+
+#
+# Strip newlins
+#
+$link =~ s/[\r\n]//g if ($link);
+$id   =~ s/[\r\n]//g if ($id);
+$name =~ s/[\r\n]//g if ($name);
+$mail =~ s/[\r\n]//g if ($mail);
 
 
 #
@@ -96,7 +100,7 @@ if ( !defined($name) ||
     if ($ajax)
     {
         print "Content-type: text/html\n\n";
-        print "<p>Some of the files were empty; please try again.\n";
+        print "Missing fields.\n";
     }
     else
     {
@@ -104,6 +108,7 @@ if ( !defined($name) ||
     }
     exit;
 }
+
 
 #
 #  Does the captcha value contain text?  If so spam.
@@ -124,30 +129,9 @@ if ( defined($cap) && length($cap) )
 
 
 #
-#  Convert the message to HTML if textile is in use
+#  Convert the message to crude HTML.
 #
-if ($TEXTILE)
-{
-
-    #
-    #  If we can load the module
-    #
-    my $test = "use Text::Textile;";
-    eval($test);
-
-    #
-    #  There were no errors
-    #
-    if ( !$@ )
-    {
-
-        #
-        #  Convert
-        #
-        my $textile = new Text::Textile;
-        $body = $textile->process($body);
-    }
-}
+$body =~ s/\n$/<br>\n/mg;
 
 #
 #  Otherwise save them away.
@@ -174,32 +158,60 @@ my $timestr = strftime "%e-%B-%Y-%H:%M:%S", gmtime;
 
 
 #
+#  Is the body spam?
+#
+my $url = 0;
+my $tmp = $body;
+$tmp =~ s/[\r\n]//g;
+while ( $tmp =~ /(.*)URL=(.*)/ )
+{
+    $url += 1;
+    $tmp = $2;
+}
+$COMMENT .= "spam/" if ( $url >= 5 );
+
+
+#
 #  Open the file.
 #
 my $file = $COMMENT . "/" . $id . "." . $timestr;
-$file =~ s/[^a-z0-9\/]/_/gi;
-
-open( FILE, ">", $file );
+$file =~ s/[ \t]//g;
+open( FILE, ">:encoding(UTF-8)", $file );
 print FILE "Name: $name\n";
 print FILE "Mail: $mail\n";
+print FILE "Link: $link\n" if ( defined($link) );
 print FILE "User-Agent: $ENV{'HTTP_USER_AGENT'}\n";
 print FILE "IP-Address: $ENV{'REMOTE_ADDR'}\n";
-print FILE "Link: $link\n" if ($link);
 print FILE "\n";
-print FILE $body;
+
+
+#
+# Process the markdown.
+#
+my $html = Text::Markdown::markdown($body);
+
+print FILE $html;
 close(FILE);
 
 
 #
 #  Send a mail.
 #
-if ( length($TO) && length($FROM) && defined($SENDMAIL) )
+my $bcopy = $body;
+$bcopy =~ s/[ \t\r\n]//g;
+
+if ( length($TO) && length($FROM) && length($bcopy) )
 {
-    open( SENDMAIL, "|$SENDMAIL -t -f $FROM" );
+    open( SENDMAIL, "|/usr/lib/sendmail -t -f $FROM" );
     print SENDMAIL "To: $TO\n";
     print SENDMAIL "From: $FROM\n";
     print SENDMAIL "Subject: New Comment [$id]\n";
     print SENDMAIL "\n\n";
+    print SENDMAIL
+      "\nYou've received a new comment on your blog at http://$ENV{'HTTP_HOST'} :\n\n";
+
+    print SENDMAIL "IP " . $ENV{ 'REMOTE_ADDR' } . "\n\n";
+
     print SENDMAIL $body;
     close(SENDMAIL);
 }
