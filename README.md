@@ -85,7 +85,7 @@ you should be able to generate your blog like so:
 This will read `path/to/input/*.txt` and generate the blog beneath
 the directory `/path/to/output/` creating that directory if missing.
 
-The SQLite database will be created at `~/blog.db`, and if it is
+The SQLite database will be created at `./blog.db` by default, and if it is
 deleted it will be regenerated.
 
 
