@@ -218,7 +218,7 @@ $CONFIG{ 'output' }       = "./output";
 $CONFIG{ 'comment-days' } = 10;
 $CONFIG{ 'entry-count' }  = 10;
 $CONFIG{ 'rss-count' }    = 10;
-$CONFIG{ 'theme-dir' }    = File::ShareDir::dist_dir('App::Chronicle');
+$CONFIG{ 'theme-dir' }    = File::ShareDir::dist_dir('App-Chronicle');
 $CONFIG{ 'theme' }        = "default";
 $CONFIG{ 'verbose' }      = 0;
 $CONFIG{ 'top' }          = "/";
@@ -1067,7 +1067,7 @@ sub parseCommandLine
         #
         #  Global themese
         #
-        my $global = File::ShareDir::dist_dir('App::Chronicle');
+        my $global = File::ShareDir::dist_dir('App-Chronicle');
 
         #
         #  The theme-directories we'll inspect
