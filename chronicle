@@ -186,7 +186,7 @@ use warnings;
 package Chronicle;
 use Module::Pluggable::Ordered require => 1, inner => 0;
 
-our $VERSION = "5.0";
+our $VERSION = "5.0.1";
 
 use DBI;
 use Date::Format;
