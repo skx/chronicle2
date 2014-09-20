@@ -59,14 +59,14 @@ The entry is prefixed by a small header, consisting of several pseudo-header fie
 
 Header values which are unknown are ignored, and no part of the header is included in the output which is generated.
 
-The following header values are recognised:
+The following header values are recognized:
 
 * Title:
     * This holds the name of the post. ("Subject:" may be used as a synonym.) If neither "Title" or "Subject" are present the filename itself is used.
 * Date:
     * The date this entry was created. If not present the creation time of the file is used.
 * Tags:
-    * If any tags are present they will be used to categorise the entry.
+    * If any tags are present they will be used to categorize the entry.
 * Format:
     * This allows you to specify if you're writing in markdown, or textile.  If you are then the blog-body will be processed correctly.
 
@@ -125,7 +125,7 @@ along with the implementation differences.
 
 As of Chronicle 5 the main script parse arguments, reads the blog posts, but the actual generation of your site is entirely plugin-based.  The plugins are standard Perl modules located beneath the `Chronicle::Plugin` namespace, and although you don't need to know any of the details they can be ordered thanks to the use of [Module::Pluggable::Ordered](http://search.cpan.org/perldoc?Module%3A%3APluggable%3A%3AOrdered) class.
 
-The template changes are a little more signficant than I'd like, but
+The template changes are a little more significant than I'd like, but
 happily these changes largely consist of new locations for things,
 and additional pages.
 
