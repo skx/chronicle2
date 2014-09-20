@@ -17,28 +17,32 @@ chronicle - A static blog-compiler.
    --config         Specify a configuration file to read.
    --input          Specify the input directory to use.
    --output         Specify the directory to write output to.
-   --theme-dir      Specify the path to the theme templates.
-   --theme          Specify the theme to use.
    --pattern        Specify the pattern of files to work with.
+   --theme          Specify the theme to use.
+   --theme-dir      Specify the path to the theme templates.
    --url-prefix     Specify the prefix to the generated blog.
 
   Counting Options:
 
-   --entry-count=N       Number of posts to show on the index.
-   --rss-count=N         Number of posts to include on the RSS index feed.
+   --comment-days=N    The maximum age a post may allow comments.
+   --entry-count=N     Number of posts to show on the index.
+   --rss-count=N       Number of posts to include on the RSS index feed.
 
   Optional Features:
 
-   --author       Specify the author's email address
-   --comment-days Specify the number maximum age of posts to accept comments.
-   --force        Always regenerate pages.
+   --author        Specify the author's email address
+   --blog-subtitle Set the title of the blog
+   --blog-title    Set the title of the blog
+   --force         Always regenerate pages.
 
   Help Options:
 
-   --help        Show the help information for this script.
-   --manual      Read the manual for this script.
-   --verbose     Show useful debugging information.
-   --version     Show the version number and exit.
+   --help         Show the help information for this script.
+   --list-plugins List the available plugins.
+   --list-themes  List the available themes.
+   --manual       Read the manual for this script.
+   --verbose      Show useful debugging information.
+   --version      Show the version number and exit.
 
 =cut
 
@@ -997,10 +1001,6 @@ sub parseCommandLine
 
             # prefix
             "url-prefix=s", \$CONFIG{ 'top' },
-
-            # commands
-            "pre-build=s",  \$CONFIG{ 'pre-build' },
-            "post-build=s", \$CONFIG{ 'post-build' },
 
         ) )
     {
