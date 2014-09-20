@@ -15,6 +15,7 @@ chronicle - A static blog-compiler.
 
    --comments       Specify the path to the optional comments directory.
    --config         Specify a configuration file to read.
+   --database       Specify the path to the SQLite database to create/use.
    --input          Specify the input directory to use.
    --output         Specify the directory to write output to.
    --pattern        Specify the pattern of files to work with.
@@ -76,7 +77,7 @@ win.
 
 =head1 DATABASE STRUCTURE
 
-We create a simple SQLite database with two tables:
+We create a simple SQLite database, at C<./blog.db> by default, with two tables:
 
 =over 8
 
@@ -215,6 +216,7 @@ our %CONFIG;
 $CONFIG{ 'input' }        = "./data";
 $CONFIG{ 'pattern' }      = "*.txt";
 $CONFIG{ 'output' }       = "./output";
+$CONFIG{ 'database' }     = "./blog.db";
 $CONFIG{ 'comment-days' } = 10;
 $CONFIG{ 'entry-count' }  = 10;
 $CONFIG{ 'rss-count' }    = 10;
@@ -621,12 +623,25 @@ Create a database handle, if necessary creating the tables first.
 
 sub getDatabase
 {
-    my $file    = $ENV{ 'HOME' } . "/blog.db";
+
+    #
+    #  Is the database already present?
+    #
     my $present = 0;
-    $present = 1 if ( -e $file );
+
+    #
+    #  Ensure we have something specified.
+    #
+    die "No database configured - please use --database=/path/tocreate"
+      unless ( $CONFIG{ 'database' } );
+
+    #
+    #  Does it exist?
+    #
+    $present = 1 if ( -e $CONFIG{ 'database' } );
 
 
-    my $dbh = DBI->connect( "dbi:SQLite:dbname=$file", "", "" );
+    my $dbh = DBI->connect( "dbi:SQLite:dbname=$CONFIG{'database'}", "", "" );
 
     if ( !$present )
     {
@@ -1026,6 +1041,7 @@ sub parseCommandLine
 
             # optional
             "config=s",       \$CONFIG{ 'config' },
+            "database=s",     \$CONFIG{ 'database' },
             "author=s",       \$CONFIG{ 'author' },
             "comment-days=s", \$CONFIG{ 'comment-days' },
             "force",          \$CONFIG{ 'force' },
