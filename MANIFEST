@@ -45,6 +45,7 @@ themes/blog.steve.org.uk/inc/style.inc
 themes/blog.steve.org.uk/index.rss
 themes/blog.steve.org.uk/index.tmpl
 themes/blog.steve.org.uk/static/spiral.gif
+themes/blog.steve.org.uk/static/xml.gif
 themes/blog.steve.org.uk/tag.tmpl
 themes/blog.steve.org.uk/tag_index.tmpl
 themes/default/archive.tmpl
@@ -73,5 +74,6 @@ themes/leftbar/inc/style.inc
 themes/leftbar/index.rss
 themes/leftbar/index.tmpl
 themes/leftbar/static/spiral.gif
+themes/leftbar/static/xml.gif
 themes/leftbar/tag.tmpl
 themes/leftbar/tag_index.tmpl
