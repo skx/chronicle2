@@ -6,3 +6,5 @@ Makefile.old
 debian/
 .*.bak
 MYMETA.yml
+pm_to_blib
+blib/
