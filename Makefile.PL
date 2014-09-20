@@ -16,7 +16,7 @@ install_share dist => 'themes';
 
 
 my %WriteMakefileArgs = (
-    NAME         => 'Chronicle',
+    NAME         => 'App::Chronicle',
     EXE_FILES    => ['chronicle'],
     VERSION_FROM => 'chronicle',
     PREREQ_PM    => {
@@ -32,6 +32,17 @@ my %WriteMakefileArgs = (
         'Module::Pluggable::Ordered' => 0,
         'DBI'                        => 0,
                  },
+
+    TEST_REQUIRES => {
+
+        # solely for the test-suite.
+        'Test::More'      => 0,
+        'Test::Pod'       => 0,
+        'Test::Strict'    => 0,
+        'Test::Exception' => 0,
+        'Test::NoTabs'    => 0,
+
+    },
 
 
     BUILD_REQUIRES => { 'File::ShareDir::Install' => 0,
@@ -50,13 +61,13 @@ my %WriteMakefileArgs = (
     META_MERGE => {
          resources => {
              license  => 'http://dev.perl.org/licenses/',
-             homepage => 'https://github.com/skx/CGI--Application--Plugin--AB/',
+             homepage => 'https://github.com/skx/chronicle2/',
              bugtracker =>
-               'https://github.com/skx/CGI--Application--Plugin--AB/issues',
+               'https://github.com/skx/chronicle2/issues',
              repository =>
-               'https://github.com/skx/CGI--Application--Plugin--AB.git',
+               'https://github.com/skx/chronicle2.git',
              GitMirror =>
-               'http://git.steve.org.uk/cpan/CGI--Application--Plugin--AB',
+               'http://git.steve.org.uk/cpan/chronicle2',
          },
     },
 );
