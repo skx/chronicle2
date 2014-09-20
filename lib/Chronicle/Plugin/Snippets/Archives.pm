@@ -100,27 +100,32 @@ sub on_initiate
 
         foreach my $mon ( $self->_months_in_year( $dbh, $year ) )
         {
+
             #
             #  We have a year and a month.
             #
             my $sql = $dbh->prepare(
-        "SELECT count(id) FROM blog WHERE ( strftime('%Y', date, 'unixepoch')=? AND strftime('%m', date, 'unixepoch') =? )"
-                               ) or
-                                 die "Failed to prepare query";
+                "SELECT count(id) FROM blog WHERE ( strftime('%Y', date, 'unixepoch')=? AND strftime('%m', date, 'unixepoch') =? )"
+              ) or
+              die "Failed to prepare query";
 
-            $sql->execute($year, $mon);
+            $sql->execute( $year, $mon );
             my $count = $sql->fetchrow_array();
 
-            push( @$tmp, { month => $mon,
-                          month_name => $mons{$mon},
-                          count => $count } );
+            push( @$tmp,
+                  {  month      => $mon,
+                     month_name => $mons{ $mon },
+                     count      => $count
+                  } );
 
 
             $sql->finish();
         }
 
-        push( @$data , { year => $year,
-                         months => $tmp } );
+        push( @$data,
+              {  year   => $year,
+                 months => $tmp
+              } );
 
     }
 
@@ -142,7 +147,7 @@ Find distinct years which have had posts in them.
 
 sub _years
 {
-    my( $self, $dbh ) = ( @_ );
+    my ( $self, $dbh ) = (@_);
 
     my @results;
 
@@ -166,7 +171,7 @@ sub _years
 
     $years->finish();
 
-    return( @results );
+    return (@results);
 }
 
 
@@ -181,7 +186,7 @@ Find distinct months which have had posts in them, from the given year.
 
 sub _months_in_year
 {
-    my( $self, $dbh, $year ) = ( @_ );
+    my ( $self, $dbh, $year ) = (@_);
 
     my @results;
 
@@ -204,7 +209,7 @@ sub _months_in_year
 
     $s->finish();
 
-    return( @results );
+    return (@results);
 }
 
 
