@@ -86,13 +86,28 @@ the directory `/path/to/output/` creating that directory if missing.
 The SQLite database will be created at `~/blog.db`, and if it is
 deleted it will be regenerated.
 
-For more advanced usage please consult the help.  Obvious changes would
-be to set the title of the blog, and the subtitle:
 
-   --title="Steve Kemp's Blog" --sub-title="Writings about cake"
+Advanced Usage
+--------------
+
+The previous example showed the basic usage, one obvious change most users would prefer would be to set the title of the blog, and the subtitle:
+
+    chronicle --title="Steve Kemp's Blog" --sub-title="Writings about cake" ..
 
 If you start setting multiple values you might prefer to use a configuration
 file instead.  Chronicle will read  `/etc/chronicle/config`, and `~/.chronicle/config` prior to starting.  Failing that you can specify a configuration file of your own via `--config=/path/to/conf`.
+
+The configuration file matches the command line arguments exactly, so given "--foo=bar" the configuration file would allow the same thing to be set via:
+
+    foo = bar
+
+As we've previously noted the blog-generation largely occurs via a series of plugins.  For example the sidebar might show the list of all tags, which can get unwieldy quickly.  If you wished to disable that you could do so via:
+
+    chronicle --exclude-plugins=AllTags,RecentPosts --force ..
+
+> **NOTE**: The plugins which generate output pages are located beneath `Chronicle::Plugin::Generate`.  The plugins which generate snippets available to all pages are located beneath `Chronicle::Plugin::Snippets`.
+
+> **NOTE**: Because the snippets are included in every page, in the default themes, we've added `--force` to ensure that the output pages are updated.
 
 
 User-Visible Changes
@@ -114,13 +129,6 @@ The template changes are a little more signficant than I'd like, but
 happily these changes largely consist of new locations for things,
 and additional pages.
 
-
-Unsupported Operations
-----------------------
-
-The following features are missing and unlikely to return:
-
-* The inline calandar.
 
 
 Extending
