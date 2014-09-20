@@ -10,7 +10,20 @@ via the C<on_generate> hook which Chronicle provides.
 
 It is responsible for creating the a data-structure to show all tags.
 
-Whether you choose to use this in your templates is up to you.
+To use this plugin add the following to your theme:
+
+=for example begin
+
+   <!-- tmpl_if name='recent_tags' -->
+   <h3>Recent Tags</h3>
+   <ul>
+   <!-- tmpl_loop name='recent_tags' -->
+       <li><a href="/tags/<!-- tmpl_var name='tag' -->"><!-- tmpl_var name='tag' --></a></li>
+   <!-- /tmpl_loop -->
+   </ul>
+   <!-- /tmpl_if name='recent_tags' -->
+
+=for example end
 
 =cut
 
