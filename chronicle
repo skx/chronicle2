@@ -713,7 +713,7 @@ sub getBlog
     #
     my $now = time;
     my $ago = $now - $posted;
-    my $age = ( ( 60 * 60 * 24 ) * ( $CONFIG{'comment-days'} ) );
+    my $age = ( ( 60 * 60 * 24 ) * ( $CONFIG{ 'comment-days' } ) );
 
     if ( $ago < $age )
     {
@@ -920,13 +920,13 @@ sub load_template
 
 
     my $tmpl = HTML::Template->new(
-                                   utf8  => 1,
-                                   filename => $path,
-                                   path => [$CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' }],
-                                   die_on_bad_params => 0,
-                                   loop_context_vars => 1,
-                                   global_vars       => 1,
-                                  );
+                    utf8     => 1,
+                    filename => $path,
+                    path => [$CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' }],
+                    die_on_bad_params => 0,
+                    loop_context_vars => 1,
+                    global_vars       => 1,
+    );
 
     #
     #  Legacy options.
@@ -976,10 +976,10 @@ sub parseCommandLine
             "list-themes", \$CONFIG{ 'list-themes' },
 
             # paths
-            "input=s",   \$CONFIG{ 'input' },
-            "output=s",  \$CONFIG{ 'output' },
-            "pattern=s", \$CONFIG{ 'pattern' },
-            "comments=s", \$CONFIG{'comments'},
+            "input=s",    \$CONFIG{ 'input' },
+            "output=s",   \$CONFIG{ 'output' },
+            "pattern=s",  \$CONFIG{ 'pattern' },
+            "comments=s", \$CONFIG{ 'comments' },
 
             # limits
             "entry-count=s", \$CONFIG{ 'entry-count' },
@@ -1067,8 +1067,10 @@ sub parseCommandLine
 
             if ( $CONFIG{ 'verbose' } )
             {
-                foreach
-                  my $method ( sort qw! on_db_create on_db_load on_insert on_initiate on_generate  ! )
+                foreach my $method (
+                    sort
+                    qw! on_db_create on_db_load on_insert on_initiate on_generate  !
+                  )
                 {
                     if ( $plugin->can($method) )
                     {
