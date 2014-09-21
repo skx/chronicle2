@@ -318,8 +318,6 @@ parseCommandLine();
 #
 $cnf->parseFile( \%CONFIG, $CONFIG{ 'config' } ) if ( defined $CONFIG{ 'config' } );
 
-use Data::Dumper;
-die Dumper( \%CONFIG );
 
 
 #
