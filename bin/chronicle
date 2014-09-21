@@ -1256,7 +1256,7 @@ sub readConfigurationFile
         }
 
         # Find variable settings
-        if ( $line =~ /([^=]+)=([^\n]+)/ )
+        if ( $line =~ /([^=]+)=([^\n]*)/ )
         {
             my $key = $1;
             my $val = $2;
@@ -1264,11 +1264,11 @@ sub readConfigurationFile
             # Strip leading and trailing whitespace.
             $key =~ s/^\s+//;
             $key =~ s/\s+$//;
-            $val =~ s/^\s+//;
-            $val =~ s/\s+$//;
+            $val =~ s/^\s+// if ($val);
+            $val =~ s/\s+$// if ($val);
 
             # command expansion?
-            if ( $val =~ /(.*)`([^`]+)`(.*)/ )
+            if ( $val && ( $val =~ /(.*)`([^`]+)`(.*)/ ) )
             {
 
                 # store
