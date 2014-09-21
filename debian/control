@@ -12,6 +12,8 @@ Build-Depends-Indep: libdbi-perl,
  libtest-pod-perl,
  libtest-strict-perl,
  libtimedate-perl,
+ libtext-markdown-perl,
+ libtext-textile-perl,
  perl,
  perl-base (>= 5.14.2-21+deb7u1),
  perl-modules
@@ -29,6 +31,7 @@ Depends: ${misc:Depends}, ${perl:Depends},
  perl,
  perl-base (>= 5.14.2-21+deb7u1),
  perl-modules
+Recommends: libtext-markdown-perl, libtext-textile-perl
 Description: A static blog-compiler.
  Convert a directory of simple  text files into a static HTML weblog,
  (or blog if you prefer).
