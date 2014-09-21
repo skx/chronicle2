@@ -3,13 +3,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More tests => 6;
 
 #
 #  Load the module.
 #
-BEGIN {use_ok('Chronicle::Plugin::Textile');}
-require_ok('Chronicle::Plugin::Textile');
 BEGIN {use_ok('Chronicle::Plugin::Textile');}
 require_ok('Chronicle::Plugin::Textile');
 

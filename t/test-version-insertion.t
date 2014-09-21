@@ -3,13 +3,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Test::More tests => 8;
 
 #
 #  Load the module.
 #
-BEGIN {use_ok('Chronicle::Plugin::Version');}
-require_ok('Chronicle::Plugin::Version');
 BEGIN {use_ok('Chronicle::Plugin::Version');}
 require_ok('Chronicle::Plugin::Version');
 

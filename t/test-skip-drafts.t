@@ -3,13 +3,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 11;
+use Test::More tests => 9;
 
 #
 #  Load the module.
 #
-BEGIN {use_ok('Chronicle::Plugin::SkipDrafts');}
-require_ok('Chronicle::Plugin::SkipDrafts');
 BEGIN {use_ok('Chronicle::Plugin::SkipDrafts');}
 require_ok('Chronicle::Plugin::SkipDrafts');
 
