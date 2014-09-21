@@ -1,4 +1,4 @@
-5.0.3 - XX
+5.0.3 - 21st September 2014
 	* Avoid hardwiring two plugins as disabled in the code.
 	* Updated POD in script and plugins.
 	* Moved our main chronicle script into bin/.
