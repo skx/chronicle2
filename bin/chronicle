@@ -303,7 +303,7 @@ our %GLOBAL_TEMPLATE_VARS = ();
 #  Read the global and per-user configuration file, if present.
 #
 my $cnf = Chronicle::Config::Reader->new();
-$cnf->parseFile( \%CONFIG, "/etc/chronicle/config");
+$cnf->parseFile( \%CONFIG, "/etc/chronicle/config" );
 $cnf->parseFile( \%CONFIG, $ENV{ 'HOME' } . "/.chronicle/config" );
 
 
@@ -316,7 +316,8 @@ parseCommandLine();
 #
 #  If we have a configuration file then read it.
 #
-$cnf->parseFile( \%CONFIG, $CONFIG{ 'config' } ) if ( defined $CONFIG{ 'config' } );
+$cnf->parseFile( \%CONFIG, $CONFIG{ 'config' } )
+  if ( defined $CONFIG{ 'config' } );
 
 
 
@@ -1253,7 +1254,11 @@ sub get_plugins_for_method
                 # skip empty tags.
                 next if ( !length($exclude) );
 
-                $skip = 1 if ( $plugin =~ /\Q$exclude\E/i );
+                if ( $plugin =~ /\Q$exclude\E/i )
+                {
+                    $CONFIG{ 'verbose' } && print "Skipping plugin: $plugin\n";
+                    $skip = 1;
+                }
             }
         }
 
