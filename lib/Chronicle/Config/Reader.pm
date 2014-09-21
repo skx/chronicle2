@@ -20,24 +20,30 @@ Chronicle::Config::Reader - Simple configuration file reader.
 =head1 DESCRIPTION
 
 This module is contains the code required to read a chronicle configuration
-file.  The configuration files it reads are simple "key=value" files,
-with a couple of additional features
+file.  The configuration files it reads are simple files consisting of lines
+which are of the form "key=value".
 
-The two obvious features relate to the expansion of configuration values:
+Additional features include:
 
 =over 8
 
-=item Environmental variables
+=item Comment Handling
+
+Comments are begun with the C<#> character and continue to the end of the line.
+
+Comments may occur at the start, middle, or end of a line.
+
+=item Environmental variable expansion
 
 Environmental variables are expanded if they are detected.
 
-=item Command Execution.
+=item Command-execution and expansion
 
 If backticks are found in configuration values they will be replaced with the output of the specified command.
 
 =back
 
-The following example shows these two features:
+The following snippet demonstrates these features:
 
 =for example begin
 
@@ -94,7 +100,8 @@ sub new
 
 =begin doc
 
-Parse a configuration file.
+Parse a configuration file, and insert any values into the provided
+hash-reference.
 
 =end doc
 
@@ -143,7 +150,6 @@ Parse a single line.
 sub parseLine
 {
     my ( $self, $ref, $line ) = (@_);
-
 
     # Skip lines beginning with comments
     return if ( $line =~ /^([ \t]*)\#/ );
