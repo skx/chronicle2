@@ -49,7 +49,10 @@ sub on_insert
     {
         $config->{ 'verbose' } &&
           print "Skipping draft: $data->{'filename'} \n";
+
+        ## no critic (ReturnUndef)
         return undef;
+        ## use critic
     }
 
     #
