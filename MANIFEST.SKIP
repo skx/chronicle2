@@ -2,7 +2,7 @@
 ^.gitignore
 output/
 data/
-Makefile
+Makefile$
 Makefile.old
 debian/
 .*.bak
