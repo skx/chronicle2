@@ -47,7 +47,7 @@ sub on_insert
     #
     if ( $data->{ 'draft' } )
     {
-        $config->{ 'verbose' } &&
+        $config->{ 'verbose' } && $data->{'filename'} &&
           print "Skipping draft: $data->{'filename'} \n";
 
         ## no critic (ReturnUndef)
