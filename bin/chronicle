@@ -264,6 +264,8 @@ use HTML::Template;
 use Pod::Usage;
 
 
+use Chronicle::Config::Reader;
+
 
 #
 #  Default options - These may be overridden by the command-line
@@ -300,8 +302,9 @@ our %GLOBAL_TEMPLATE_VARS = ();
 #
 #  Read the global and per-user configuration file, if present.
 #
-readConfigurationFile("/etc/chronicle/config");
-readConfigurationFile( $ENV{ 'HOME' } . "/.chronicle/config" );
+my $cnf = Chronicle::Config::Reader->new();
+$cnf->parseFile( \%CONFIG, "/etc/chronicle/config");
+$cnf->parseFile( \%CONFIG, $ENV{ 'HOME' } . "/.chronicle/config" );
 
 
 #
@@ -313,7 +316,10 @@ parseCommandLine();
 #
 #  If we have a configuration file then read it.
 #
-readConfigurationFile( $CONFIG{ 'config' } ) if ( defined $CONFIG{ 'config' } );
+$cnf->parseFile( \%CONFIG, $CONFIG{ 'config' } ) if ( defined $CONFIG{ 'config' } );
+
+use Data::Dumper;
+die Dumper( \%CONFIG );
 
 
 #
@@ -1211,89 +1217,6 @@ sub parseCommandLine
     }
 }
 
-
-=begin doc
-
-Read the specified configuration file if it exists.
-
-=end doc
-
-=cut
-
-sub readConfigurationFile
-{
-    my ($file) = (@_);
-
-    #
-    #  If it doesn't exist ignore it.
-    #
-    return if ( !-e $file );
-
-
-    my $line = "";
-
-    open my $handle, "<:encoding(utf-8)", $file or
-      die "Cannot read file '$file' - $!";
-    while ( defined( $line = <$handle> ) )
-    {
-        chomp $line;
-        if ( $line =~ s/\\$// )
-        {
-            $line .= <FILE>;
-            redo unless eof(FILE);
-        }
-
-        # Skip lines beginning with comments
-        next if ( $line =~ /^([ \t]*)\#/ );
-
-        # Skip blank lines
-        next if ( length($line) < 1 );
-
-        # Strip trailing comments.
-        if ( $line =~ /(.*)\#(.*)/ )
-        {
-            $line = $1;
-        }
-
-        # Find variable settings
-        if ( $line =~ /([^=]+)=([^\n]*)/ )
-        {
-            my $key = $1;
-            my $val = $2;
-
-            # Strip leading and trailing whitespace.
-            $key =~ s/^\s+//;
-            $key =~ s/\s+$//;
-            $val =~ s/^\s+// if ($val);
-            $val =~ s/\s+$// if ($val);
-
-            # environment expansion?
-            $val =~ s/\$(\w+)/$ENV{$1}/g if ( $val && ( $val =~ /\$/ ) );
-
-            # command expansion?
-            if ( $val && ( $val =~ /(.*)`([^`]+)`(.*)/ ) )
-            {
-
-                # store
-                my $pre  = $1;
-                my $cmd  = $2;
-                my $post = $3;
-
-                # get output
-                my $output = `$cmd`;
-                chomp($output);
-
-                # build up replacement.
-                $val = $pre . $output . $post;
-            }
-
-            # Store value.
-            $CONFIG{ $key } = $val;
-        }
-    }
-
-    close($handle);
-}
 
 
 =begin doc

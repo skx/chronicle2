@@ -3,6 +3,7 @@ cgi-bin/comments.cgi
 ChangeLog
 chronicle
 COMMENTS.md
+lib/Chronicle/Config/Reader.pm
 lib/Chronicle/Plugin/Archived.pm
 lib/Chronicle/Plugin/DBTweak.pm
 lib/Chronicle/Plugin/Generate/Archive.pm
@@ -29,6 +30,7 @@ t/load-modules.t
 t/manifest.t
 t/pod.t
 t/style-no-tabs.t
+t/test-config-reader.t
 t/test-markdown-formatter.t
 t/test-skip-drafts.t
 t/test-strict.t

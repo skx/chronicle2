@@ -3,10 +3,14 @@
 use strict;
 use warnings;
 
-use Test::More tests => 17;
+use Test::More tests => 18;
 
 BEGIN
 {
+    #
+    #  Helpers
+    #
+    use_ok( "Chronicle::Config::Reader", "Loaded module" );
 
     #
     #  General plugins
