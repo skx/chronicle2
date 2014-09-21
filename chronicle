@@ -287,6 +287,9 @@ $CONFIG{ 'theme-dir' }    = File::ShareDir::dist_dir('App-Chronicle');
 $CONFIG{ 'theme' }        = "default";
 $CONFIG{ 'verbose' }      = 0;
 $CONFIG{ 'top' }          = "/";
+$CONFIG{ 'exclude-plugins' } =
+  "Chronicle::Plugin::Archived,Chronicle::Plugin::Verbose";
+
 
 #
 #  Options here are passed to all templates
