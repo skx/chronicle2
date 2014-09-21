@@ -11,7 +11,7 @@ Markdown format.
 Add the "C<format: markdown>" header to your entries and they
 will be automatically converted as part of the import process.
 
-NOTE:  If you enable/disable this plugin you will need to regenerate
+B<NOTE>  If you enable/disable this plugin you will need to regenerate
 your SQLite database, because the conversion happens at import-time.
 
 =cut

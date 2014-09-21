@@ -1,3 +1,7 @@
+5.0.3 - XX
+	* Avoid hardwiring two plugins as disabled in the code.
+	* Updated POD in script and plugins.
+
 5.0.2 - 21st September 2014
 
 	* This release was primarily made to fix CPAN testers warnings.

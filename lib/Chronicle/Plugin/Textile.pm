@@ -5,13 +5,12 @@ Chronicle::Plugin::Textile - Support textile-formatted input.
 
 =head1 DESCRIPTION
 
-The module allows you to write your input blog-entries in the
-textile format.
+The module allows you to write your input blog-entries in the textile format.
 
 Add the "C<format: textile>" header to your entries and they
 will be automatically converted as part of the import process.
 
-NOTE:  If you enable/disable this plugin you will need to regenerate
+B<NOTE> If you enable/disable this plugin you will need to regenerate
 your SQLite database, because the conversion happens at import-time.
 
 =cut
