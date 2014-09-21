@@ -32,6 +32,7 @@ t/load-modules.t
 t/manifest.t
 t/pod.t
 t/style-no-tabs.t
+t/test-archive-links.t
 t/test-config-reader.t
 t/test-markdown-formatter.t
 t/test-skip-drafts.t
