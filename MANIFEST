@@ -19,7 +19,6 @@ lib/Chronicle/Plugin/Textile.pm
 lib/Chronicle/Plugin/Verbose.pm
 lib/Chronicle/Plugin/Version.pm
 LICENSE
-Makefile
 Makefile.PL
 MANIFEST
 MANIFEST.SKIP
@@ -29,6 +28,7 @@ t/manifest.t
 t/pod.t
 t/style-no-tabs.t
 t/test-markdown-formatter.t
+t/test-skip-drafts.t
 t/test-strict.t
 t/test-textile-formatter.t
 t/test-version-insertion.t
