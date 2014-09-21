@@ -1267,6 +1267,9 @@ sub readConfigurationFile
             $val =~ s/^\s+// if ($val);
             $val =~ s/\s+$// if ($val);
 
+            # environment expansion?
+            $val =~ s/\$(\w+)/$ENV{$1}/g if ( $val && ( $val =~ /\$/ ) );
+
             # command expansion?
             if ( $val && ( $val =~ /(.*)`([^`]+)`(.*)/ ) )
             {
