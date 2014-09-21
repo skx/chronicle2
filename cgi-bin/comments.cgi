@@ -31,7 +31,6 @@ use warnings;
 
 use CGI;
 use Encode 'decode_utf8';
-use Text::Markdown;
 use POSIX qw(strftime);
 
 
