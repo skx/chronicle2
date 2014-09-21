@@ -228,7 +228,7 @@ are called after that structure is setup.
 
 sub _order
 {
-    return 0;
+    return 10;
 }
 
 1;
