@@ -1,4 +1,5 @@
 cgi-bin/comments.cgi
+ChangeLog
 chronicle
 COMMENTS.md
 lib/Chronicle/Plugin/Archived.pm

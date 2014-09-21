@@ -1,0 +1,16 @@
+5.0.2 - 21st September 2014
+
+	* This release was primarily made to fix CPAN testers warnings.
+	* Added ChangeLog
+	* Removed Makefile from distribution.
+	* Declare dependencies on Text::Markdown, Text::Textile.
+	* Added POD for Chronicle::Plugin::Generate::Tags.
+
+5.0.1 - 21st September 2014
+
+	* Misc. cleanups.
+
+
+5.0.0 - 20th September 2014
+
+	* Initial release of the new codebase.
