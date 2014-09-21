@@ -44,12 +44,6 @@ sub on_initiate
     my $config = $args{ 'config' };
 
     #
-    #  Disabled.
-    #
-    return;
-
-
-    #
     #  This is how you'd update the global config
     #
     $config->{ 'verbose' } = 1;

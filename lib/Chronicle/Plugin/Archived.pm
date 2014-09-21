@@ -5,31 +5,14 @@ Chronicle::Plugin::Archived - Generate dated-posts.
 
 =head1 DESCRIPTION
 
-This module is disabled by default.
+This module is disabled by default, but if it is enabled your generated
+blog will contain links to dated posts.
 
-The module allows you to created dated blog-posts.  By default
-posts you make will be located at:
+For example by default a blog entry might be generated with a URL such
+as C<http://example.com/my_first_post.html>.  With this module enabled
+that will change to C<http://example.com/2014/09/my_first_post.html>.
 
-=over 8
-
-=item http://example.com/this_is_my_first_entry.html
-
-=item http://example.com/this_is_my_second_post.html
-
-=back
-
-With this plugin enabled your posts will instead be located
-in named sub-directories based upon the date, for example:
-
-=over 8
-
-=item http://example.com/2014/09/this_is_my_first_post.html
-
-=item http://example.com/2014/09/this_is_my_second_post.html
-
-=back
-
-NOTE:  If you enable/disable this plugin you will need to regenerate
+B<NOTE> If you enable or disable this plugin you will need to regenerate
 your SQLite database.
 
 =cut
@@ -68,12 +51,6 @@ sub on_insert
     my $data   = $args{ 'data' };
 
     #
-    #  Disabled
-    #
-    return ($data);
-
-
-    #
     #  Convert the date of the post to a seconds past epoch.
     #
     my $date = str2time( $data->{ 'date' } );
@@ -84,9 +61,10 @@ sub on_insert
     $date = time2str( "%Y/%m/", $date );
 
     #
-    #  And prepend that.
+    #  And prepend that to the link.
     #
     $data->{ 'link' } = $date . $data->{ 'link' };
+
     return ($data);
 }
 
