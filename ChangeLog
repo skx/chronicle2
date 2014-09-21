@@ -1,6 +1,7 @@
 5.0.3 - XX
 	* Avoid hardwiring two plugins as disabled in the code.
 	* Updated POD in script and plugins.
+	* Move script into bin/
 
 5.0.2 - 21st September 2014
 

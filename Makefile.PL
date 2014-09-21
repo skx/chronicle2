@@ -17,8 +17,8 @@ install_share dist => 'themes';
 
 my %WriteMakefileArgs = (
     NAME         => 'App::Chronicle',
-    EXE_FILES    => ['chronicle'],
-    VERSION_FROM => 'chronicle',
+    EXE_FILES    => ['bin/chronicle'],
+    VERSION_FROM => 'bin/chronicle',
     PREREQ_PM    => {
 
         'DBI'                        => 0,
