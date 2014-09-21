@@ -195,8 +195,18 @@ sub parseLine
             $val = $pre . $output . $post;
         }
 
-        # Store value.
-        $ref->{ $key } = $val;
+        if ( $key =~ /^(pre|post)-build$/ )
+        {
+            push( @{ $ref->{ $key } }, $val );
+        }
+        else
+        {
+
+            #
+            # The general case is store the value in the key.
+            #
+            $ref->{ $key } = $val;
+        }
     }
 
 }
