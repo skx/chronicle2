@@ -5,6 +5,7 @@
 	* Allow empty values to be set in the configuration file,
 	  specifically so that "exclude-plugins=" will work.
 	* Perform environmental variable expansion in the config file values.
+	* Added pre-build and post-build command-execution support.
 
 5.0.2 - 21st September 2014
 
