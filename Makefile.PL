@@ -20,18 +20,22 @@ my %WriteMakefileArgs = (
     EXE_FILES    => ['chronicle'],
     VERSION_FROM => 'chronicle',
     PREREQ_PM    => {
-        'HTML::Template' => 0,
-        'Date::Format'   => 0,
-        'Date::Parse'    => 0,
-        'Digest::MD5'    => 0,
-        'File::Path'     => 0,
-        'File::Basename' => 0,
-        'Getopt::Long'   => 0,
-        'Pod::Usage'     => 0,
 
-        'Module::Pluggable::Ordered' => 0,
         'DBI'                        => 0,
-                 },
+        'Date::Format'               => 0,
+        'Date::Parse'                => 0,
+        'Digest::MD5'                => 0,
+        'File::Basename'             => 0,
+        'File::Path'                 => 0,
+        'Getopt::Long'               => 0,
+        'HTML::Template'             => 0,
+        'Module::Pluggable::Ordered' => 0,
+        'Pod::Usage'                 => 0,
+
+        # optional
+        'Text::Markdown' => 0,
+        'Text::Textile'  => 0
+    },
 
     TEST_REQUIRES => {
 
@@ -59,17 +63,14 @@ my %WriteMakefileArgs = (
     MIN_PERL_VERSION => '5.008',
 
     META_MERGE => {
-         resources => {
-             license  => 'http://dev.perl.org/licenses/',
-             homepage => 'https://github.com/skx/chronicle2/',
-             bugtracker =>
-               'https://github.com/skx/chronicle2/issues',
-             repository =>
-               'https://github.com/skx/chronicle2.git',
-             GitMirror =>
-               'http://git.steve.org.uk/cpan/chronicle2',
-         },
-    },
+                   resources => {
+                       license    => 'http://dev.perl.org/licenses/',
+                       homepage   => 'https://github.com/skx/chronicle2/',
+                       bugtracker => 'https://github.com/skx/chronicle2/issues',
+                       repository => 'https://github.com/skx/chronicle2.git',
+                       GitMirror  => 'http://git.steve.org.uk/cpan/chronicle2',
+                   },
+                  },
 );
 
 
