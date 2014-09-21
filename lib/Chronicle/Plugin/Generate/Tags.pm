@@ -1,4 +1,33 @@
 
+=head1 NAME
+
+Chronicle::Plugin::Generate::Tags - Generate tags pages.
+
+=head1 DESCRIPTION
+
+This module will be invoked automatically when your site is built
+via the C<on_generate> hook which Chronicle provides.
+
+It is responsible for creating the top-level C</tags/> hierarchy.
+
+=cut
+
+=head1 AUTHOR
+
+Steve Kemp <steve@steve.org.uk>
+
+=cut
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2014 Steve Kemp <steve@steve.org.uk>.
+
+This library is free software. You can modify and or distribute it under
+the same terms as Perl itself.
+
+=cut
+
+
 package Chronicle::Plugin::Generate::Tags;
 
 use strict;
