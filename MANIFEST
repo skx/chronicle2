@@ -13,6 +13,8 @@ lib/Chronicle/Plugin/Generate/RSS.pm
 lib/Chronicle/Plugin/Generate/Sitemap.pm
 lib/Chronicle/Plugin/Generate/Tags.pm
 lib/Chronicle/Plugin/Markdown.pm
+lib/Chronicle/Plugin/PostBuild.pm
+lib/Chronicle/Plugin/PreBuild.pm
 lib/Chronicle/Plugin/SkipDrafts.pm
 lib/Chronicle/Plugin/Snippets/AllTags.pm
 lib/Chronicle/Plugin/Snippets/Archives.pm
