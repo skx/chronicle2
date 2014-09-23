@@ -47,6 +47,7 @@ my %WriteMakefileArgs = (
         'Test::Strict'        => 0,
         'Test::Exception'     => 0,
         'Test::NoTabs'        => 0,
+        'HTML::Tree'          => 0,
 
     },
 
