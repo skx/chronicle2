@@ -13,21 +13,11 @@ which is your blogs main RSS feed.
 
 =cut
 
-=head1 AUTHOR
+=head1 METHODS
 
-Steve Kemp <steve@steve.org.uk>
-
-=cut
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2014 Steve Kemp <steve@steve.org.uk>.
-
-This library is free software. You can modify and or distribute it under
-the same terms as Perl itself.
+Now follows documentation on the available methods.
 
 =cut
-
 
 
 package Chronicle::Plugin::Generate::RSS;
@@ -36,11 +26,15 @@ use strict;
 use warnings;
 
 
-=begin doc
 
-This is a sneaky hook that outputs the /index.rss file.
+=head2 on_generate
 
-=end doc
+The C<on_generate> method is automatically invoked to generate output
+pages.  This particular plugin method is invoked I<after> any
+C<on_initiate> methods which might be present.
+
+This method is responsible for generating the RSS-feed of your
+blog site, via the theme-template C<index.rxx>.
 
 =cut
 

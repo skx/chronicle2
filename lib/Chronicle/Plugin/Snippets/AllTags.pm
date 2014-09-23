@@ -25,24 +25,14 @@ To use this in your templates add the following:
 
 =for example end
 
-
 =cut
 
-=head1 AUTHOR
 
-Steve Kemp <steve@steve.org.uk>
+=head1 METHODS
 
-=cut
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2014 Steve Kemp <steve@steve.org.uk>.
-
-This library is free software. You can modify and or distribute it under
-the same terms as Perl itself.
+Now follows documentation on the available methods.
 
 =cut
-
 
 package Chronicle::Plugin::Snippets::AllTags;
 
@@ -52,12 +42,15 @@ use warnings;
 
 
 
-=begin doc
+=head2 on_initiate
 
-Generate the global variable 'all_tags' which can be used in the side-bar,
-etc.
+The C<on_initiate> method is automatically invoked just before any
+C<on_generate> methods which might be present.
 
-=end doc
+This method updates the global variables, which are made available to
+all loaded templates, to define a C<all_tags> variable containing the
+all the tags which have ever been used within a blog, along with their
+use-counts.
 
 =cut
 
@@ -107,15 +100,13 @@ sub on_initiate
 }
 
 
-=begin doc
+=head2 _order
 
 This plugin must be called "early".
 
 This means we're called prior to any of the page-generation plugins, such
 that any page-templates which make use of the data-structure we've created
 are called after that structure is setup.
-
-=end doc
 
 =cut
 

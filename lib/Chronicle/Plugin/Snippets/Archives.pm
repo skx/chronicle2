@@ -32,21 +32,6 @@ history.
 
 =cut
 
-=head1 AUTHOR
-
-Steve Kemp <steve@steve.org.uk>
-
-=cut
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2014 Steve Kemp <steve@steve.org.uk>.
-
-This library is free software. You can modify and or distribute it under
-the same terms as Perl itself.
-
-=cut
-
 
 package Chronicle::Plugin::Snippets::Archives;
 
@@ -54,12 +39,19 @@ use strict;
 use warnings;
 
 
-=begin doc
+=head2 on_initiate
 
-This is a sneaky hook that builds the data-structure, and makes it
-globally available.
+The C<on_initiate> method is automatically invoked just before any
+C<on_generate> methods which might be present.
 
-=end doc
+This method updates the global variables, which are made available to
+all loaded templates, to define a C<archived_posts> variable containing
+a nested loop of all the posts made ever.
+
+The outer-loop contains the years that have posts, and for each distinct
+year there is a nested loop containing references to the posts in each
+month of that year.
+
 
 =cut
 
@@ -137,11 +129,9 @@ sub on_initiate
 }
 
 
-=begin doc
+=head2 _years
 
 Find distinct years which have had posts in them.
-
-=end doc
 
 =cut
 
@@ -176,11 +166,9 @@ sub _years
 
 
 
-=begin doc
+=head2 _months_in_year
 
 Find distinct months which have had posts in them, from the given year.
-
-=end doc
 
 =cut
 

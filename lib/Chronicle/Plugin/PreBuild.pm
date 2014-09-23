@@ -1,18 +1,18 @@
 
 =head1 NAME
 
-Chronicle::Plugin::PreBuild - Execute a command pre-build
+Chronicle::Plugin::PreBuild - Execute commands before building the blog
 
 =head1 DESCRIPTION
 
-This is module exists to provide compatibility with previous
-releases, which allowed the user to specify a command to be
-executed prior to the blog-generation.
+This module exists to provide compatibility with previous
+releases of chronicle, which allowed the user to specify
+commands to be executed prior to the blog generation.
 
-If your configuration file defines a command to execute prior
-to building your blog this module will ensure it is executed.
+If your configuration file defines a command to before
+building your blog this module will ensure it is executed.
 
-For example:
+For example you might write this in your configuration file:
 
 =for example begin
 
@@ -20,22 +20,14 @@ For example:
 
 =for example end
 
-B<NOTE> The working directory will not be changed prior to executing the command.
+Multiple commands may be defined, and they will be executed
+in the order listed.
 
 =cut
 
-=head1 AUTHOR
+=head1 METHODS
 
-Steve Kemp <steve@steve.org.uk>
-
-=cut
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2014 Steve Kemp <steve@steve.org.uk>.
-
-This library is free software. You can modify and or distribute it under
-the same terms as Perl itself.
+Now follows documentation on the available methods.
 
 =cut
 
@@ -45,6 +37,16 @@ use strict;
 use warnings;
 
 
+
+=head2 on_initiate
+
+The C<on_initiate> method is automatically invoked just before any
+C<on_generate> methods which might be present.
+
+This method merely looks for defined pre-build commands, and if any
+are encountered they are executed via C<system>.
+
+=cut
 
 sub on_initiate
 {
@@ -63,6 +65,13 @@ sub on_initiate
     }
 }
 
+
+=head2 _order
+
+We ensure that this plugin is invoked last by setting a priority of 0,
+which is lower than the default supported by L<Module::Pluggable::Ordered>.
+
+=cut
 
 sub _order
 {

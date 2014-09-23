@@ -12,21 +12,11 @@ It is responsible for creating the top-level C</tags/> hierarchy.
 
 =cut
 
-=head1 AUTHOR
+=head1 METHODS
 
-Steve Kemp <steve@steve.org.uk>
-
-=cut
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2014 Steve Kemp <steve@steve.org.uk>.
-
-This library is free software. You can modify and or distribute it under
-the same terms as Perl itself.
+Now follows documentation on the available methods.
 
 =cut
-
 
 package Chronicle::Plugin::Generate::Tags;
 
@@ -34,12 +24,31 @@ use strict;
 use warnings;
 
 
-=begin doc
+=head2 on_generate
 
-This method is called when all the parsing is done, and we use this
-to generate the tag-output pages.
+The C<on_generate> method is automatically invoked to generate output
+pages.  This particular plugin method is invoked I<after> any
+C<on_initiate> methods which might be present.
 
-=end doc
+This method is responsible for generating the tag-output, which
+includes two sets of pages:
+
+=over 8
+
+=item C</tags/index.html>
+
+This is created using the C<tag_index.tmpl> theme-template, and contains
+a list of all the tags which have ever been used.
+
+=item C</tags/$tag/index.html>
+
+This is created for each distinct tag, from the theme-template
+C<tag.tmpl>
+
+=back
+
+If either template is missing then this plugin will skip that part of
+the generation.
 
 =cut
 
@@ -51,22 +60,20 @@ sub on_generate
     my $config = $args{ 'config' };
 
 
-    outputTags( $config, $dbh );
+    _outputTags( $config, $dbh );
 
-    outputTagCloud( $config, $dbh );
+    _outputTagCloud( $config, $dbh );
 }
 
 
-=begin doc
+=head2 _outputTags
 
 Output a page (`output/tags/$tag/index.html`) for each distinct tag
 we've ever used.
 
-=end doc
-
 =cut
 
-sub outputTags
+sub _outputTags
 {
     my ( $config, $dbh ) = (@_);
 
@@ -139,16 +146,14 @@ sub outputTags
 
 
 
-=begin doc
+=head2 _outputTagCloud
 
 Output `output/tags/index.html` containing a complete tag-cloud of the
 tags we've ever used.
 
-=end doc
-
 =cut
 
-sub outputTagCloud
+sub _outputTagCloud
 {
     my ( $config, $dbh ) = (@_);
 

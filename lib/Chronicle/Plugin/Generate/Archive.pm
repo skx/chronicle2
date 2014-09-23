@@ -13,21 +13,11 @@ which contain a list of previously created posts.
 
 =cut
 
-=head1 AUTHOR
+=head1 METHODS
 
-Steve Kemp <steve@steve.org.uk>
-
-=cut
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2014 Steve Kemp <steve@steve.org.uk>.
-
-This library is free software. You can modify and or distribute it under
-the same terms as Perl itself.
+Now follows documentation on the available methods.
 
 =cut
-
 
 
 package Chronicle::Plugin::Generate::Archive;
@@ -36,13 +26,31 @@ use strict;
 use warnings;
 
 
-=begin doc
+=head2 on_generate
 
-Output pages for each year/month we've ever seen `output/archive/$year/$mon`.
+The C<on_generate> method is automatically invoked to generate output
+pages.  This particular plugin method is invoked I<after> any
+C<on_initiate> methods which might be present.
 
-This is not yet complete and will need more love.
+This method is responsible for generating the archive-output, which
+includes two sets of pages:
 
-=end doc
+=over 8
+
+=item C</archive/index.html>
+
+This is created using the C<archive_index.tmpl> theme-template, and contains
+a list of all the year/month pairs which have blog-posts present for them.
+
+=item C</archive/$year/$mon/index.html>
+
+This is created for each distinct year/month pair, from the theme-template
+C<archive.tmpl>
+
+=back
+
+If either template is missing then this plugin will skip that part of
+the generation.
 
 =cut
 

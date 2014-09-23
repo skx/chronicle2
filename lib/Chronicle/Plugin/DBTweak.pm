@@ -1,11 +1,11 @@
 
 =head1 NAME
 
-Chronicle::Plugin::DBTweak - Speedup import process
+Chronicle::Plugin::DBTweak - Speedup the import process
 
 =head1 DESCRIPTION
 
-This plugin is responsible for turning off Database synchronization,
+This plugin is responsible for turning off database synchronization,
 which results in a significantly faster import process.
 
 The downside is that we're at risk of data-lass within the SQLite
@@ -16,21 +16,11 @@ For our use-case this is not a concern.
 
 =cut
 
-=head1 AUTHOR
+=head1 METHODS
 
-Steve Kemp <steve@steve.org.uk>
-
-=cut
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2014 Steve Kemp <steve@steve.org.uk>.
-
-This library is free software. You can modify and or distribute it under
-the same terms as Perl itself.
+Now follows documentation on the available methods.
 
 =cut
-
 
 package Chronicle::Plugin::DBTweak;
 
@@ -39,15 +29,12 @@ use warnings;
 
 
 
-=begin doc
+=head2 on_db_load
 
 This method is called when the database is opened, regardless of whether
 the database was created or already existed.
 
-If you only wish to invoke code when the database is created, to add
-new columns or tables for example, you should ues `on_db_create`.
-
-=end doc
+Here we set the pragmas to speedup the insertion process of new entries.
 
 =cut
 

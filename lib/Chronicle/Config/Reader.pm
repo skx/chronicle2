@@ -13,6 +13,7 @@ Chronicle::Config::Reader - Simple configuration file reader.
       my %config;
 
       my $helper = Chronicle::Config::Reader->new();
+
       $helper->parseFile( \%config, "/etc/foo.rc" );
 
 =cut
@@ -57,21 +58,12 @@ The following snippet demonstrates these features:
 
 =cut
 
-=head1 AUTHOR
 
-Steve Kemp <steve@steve.org.uk>
+=head1 METHODS
 
-=cut
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2014 Steve Kemp <steve@steve.org.uk>.
-
-This library is free software. You can modify and or distribute it under
-the same terms as Perl itself.
+Now follows documentation on the available methods.
 
 =cut
-
 
 package Chronicle::Config::Reader;
 
@@ -79,11 +71,9 @@ use strict;
 use warnings;
 
 
-=begin doc
+=head2 new
 
-Constructor.  No arguments required/expected.
-
-=end doc
+This is the constructor, no arguments are required or expected.
 
 =cut
 
@@ -98,12 +88,10 @@ sub new
 
 
 
-=begin doc
+=head2 parseFile
 
 Parse a configuration file, and insert any values into the provided
 hash-reference.
-
-=end doc
 
 =cut
 
@@ -139,11 +127,9 @@ sub parseFile
 
 
 
-=begin doc
+=head2 parseLine
 
 Parse a single line.
-
-=end doc
 
 =cut
 

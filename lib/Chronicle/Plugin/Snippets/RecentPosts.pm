@@ -38,21 +38,11 @@ To use this in your theme add the following:
 
 =cut
 
-=head1 AUTHOR
+=head1 METHODS
 
-Steve Kemp <steve@steve.org.uk>
-
-=cut
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2014 Steve Kemp <steve@steve.org.uk>.
-
-This library is free software. You can modify and or distribute it under
-the same terms as Perl itself.
+Now follows documentation on the available methods.
 
 =cut
-
 
 package Chronicle::Plugin::Snippets::RecentPosts;
 
@@ -60,12 +50,17 @@ use strict;
 use warnings;
 
 
-=begin doc
+=head2 on_initiate
 
-This is a sneaky hook that builds the data-structure, and makes it
-globally available.
+The C<on_initiate> method is automatically invoked just before any
+C<on_generate> methods which might be present.
 
-=end doc
+This method updates the global variables, which are made available to
+all loaded templates, to define a C<recent_posts> variable containing
+references to the most recent posts.
+
+The number of tags included in that list will default to 10, but can
+be changed via the C<recent-post-count> setting in the configuration file.
 
 =cut
 
@@ -113,15 +108,13 @@ sub on_initiate
 }
 
 
-=begin doc
+=head2 _order
 
 This plugin must be called "early".
 
 This means we're called prior to any of the page-generation plugins, such
 that any page-templates which make use of the data-structure we've created
 are called after that structure is setup.
-
-=end doc
 
 =cut
 

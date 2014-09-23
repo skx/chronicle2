@@ -13,20 +13,12 @@ which you use for search engine submission, etc.
 
 =cut
 
-=head1 AUTHOR
+=head1 METHODS
 
-Steve Kemp <steve@steve.org.uk>
-
-=cut
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2014 Steve Kemp <steve@steve.org.uk>.
-
-This library is free software. You can modify and or distribute it under
-the same terms as Perl itself.
+Now follows documentation on the available methods.
 
 =cut
+
 
 
 package Chronicle::Plugin::Generate::Sitemap;
@@ -36,11 +28,31 @@ use warnings;
 
 
 
-=begin doc
+=head2 on_generate
 
-Write out a sitemap at the output directory
+The C<on_generate> method is automatically invoked to generate output
+pages.  This particular plugin method is invoked I<after> any
+C<on_initiate> methods which might be present.
 
-=end doc
+This method is responsible for generating a sitemap for your site.
+
+Unlike all the other plugins it doesn't need to use a template because
+it can keep track of each distinct page which has been generated.
+
+The generated sitemap file includes:
+
+=over 8
+
+=item All the distinct posts ever made.
+
+=item A link to the tag-index.
+
+=item A link to the archive-index.
+
+=back
+
+If you merge any static pages, such as C</about/> then these will not be
+included in the map.
 
 =cut
 

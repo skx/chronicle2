@@ -13,18 +13,9 @@ which is your blogs front-page.
 
 =cut
 
-=head1 AUTHOR
+=head1 METHODS
 
-Steve Kemp <steve@steve.org.uk>
-
-=cut
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2014 Steve Kemp <steve@steve.org.uk>.
-
-This library is free software. You can modify and or distribute it under
-the same terms as Perl itself.
+Now follows documentation on the available methods.
 
 =cut
 
@@ -35,11 +26,14 @@ use strict;
 use warnings;
 
 
-=begin doc
+=head2 on_generate
 
-This is a sneaky hook that outputs the /index.html file.
+The C<on_generate> method is automatically invoked to generate output
+pages.  This particular plugin method is invoked I<after> any
+C<on_initiate> methods which might be present.
 
-=end doc
+This method is responsible for generating the front-page of your
+blog site, via the theme-template C<index.tmpl>.
 
 =cut
 

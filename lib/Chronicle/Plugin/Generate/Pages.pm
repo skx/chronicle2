@@ -12,21 +12,11 @@ It is responsible for creating each distinct blog post page.
 
 =cut
 
-=head1 AUTHOR
+=head1 METHODS
 
-Steve Kemp <steve@steve.org.uk>
-
-=cut
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2014 Steve Kemp <steve@steve.org.uk>.
-
-This library is free software. You can modify and or distribute it under
-the same terms as Perl itself.
+Now follows documentation on the available methods.
 
 =cut
-
 
 package Chronicle::Plugin::Generate::Pages;
 
@@ -36,17 +26,28 @@ use warnings;
 
 
 
-=begin doc
+=head2 on_generate
 
-Write out each distinct blog-post.
+The C<on_generate> method is automatically invoked to generate output
+pages.  This particular plugin method is invoked I<after> any
+C<on_initiate> methods which might be present.
 
-We avoid overwriting pages which already exist - unless the source has
-been modified in the past ten days.
+This method is responsible for generating each distinct blog-post for
+your site, via the theme-template C<entry.tmpl>.
 
-This is designed to ensure that new comments are added to existing pages
-without any explicit action being required.
+If pages have previously been generated, and exist on-disk already,
+then we skip regenerating them unless either:
 
-=end doc
+=over 8
+
+=item The C<--force> flag was used.
+
+=item The post was written within the past ten days.
+
+=back
+
+The latter point is designed to ensure that a rebuild will pick up
+any recent comments added to your posts without manual attention.
 
 =cut
 
