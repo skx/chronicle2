@@ -1,6 +1,8 @@
 
 * Homepage:
     * http://www.steve.org.uk/Software/chronicle/
+* CPAN:
+    * http://search.cpan.org/dist/App-Chronicle/
 * Git Repository:
     * http://github.com/skx/chronicle2
 * Git mirror:
