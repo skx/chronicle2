@@ -22,6 +22,7 @@ my %WriteMakefileArgs = (
     PREREQ_PM    => {
 
         'DBI'                        => 0,
+        'Date::Language'             => 0,
         'Date::Format'               => 0,
         'Date::Parse'                => 0,
         'Digest::MD5'                => 0,

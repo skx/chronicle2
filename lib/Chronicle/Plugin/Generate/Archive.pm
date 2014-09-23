@@ -25,6 +25,7 @@ package Chronicle::Plugin::Generate::Archive;
 use strict;
 use warnings;
 
+use Date::Language;
 
 =head2 on_generate
 
@@ -61,21 +62,27 @@ sub on_generate
     my $dbh    = $args{ 'dbh' };
     my $config = $args{ 'config' };
 
+    #
+    #  Get our language
+    #
+    my $language = $ENV{ 'MONTHS' } || "English";
 
-    my %mons = ( "01" => 'January',
-                 "02" => 'February',
-                 "03" => 'March',
-                 "04" => 'April',
-                 "05" => 'May',
-                 "06" => 'June',
-                 "07" => 'July',
-                 "08" => 'August',
-                 "09" => 'September',
-                 "10" => 'October',
-                 "11" => 'November',
-                 "12" => 'December'
-               );
+    #
+    #  Now populate @MONTHS with the month names of that language.
+    #
+    my $fmt    = Date::Language->new($language);
+    my $fmtref = ref($fmt);
 
+    my $names_var = sprintf( '%s::MoY', $fmtref );
+    my @MONTHS;
+
+    {
+        ## no critic (ProhibitNoStrict)
+        no strict 'refs';
+        @MONTHS = @{ $names_var };
+        use strict 'refs';
+        ## use critic
+    }
 
 
     #
@@ -118,7 +125,7 @@ sub on_generate
             push( @$data,
                   {  year       => $year,
                      month      => $mon,
-                     month_name => $mons{ $mon },
+                     month_name => $MONTHS[$mon - 1],
                      count      => $index{ $year }{ $mon } } );
         }
     }
@@ -141,7 +148,8 @@ sub on_generate
           print "Creating : $config->{'output'}/archive/index.html\n";
         $c->param( top => $config->{ 'top' } );
         $c->param( archive => $data ) if ($data);
-        open( my $handle, ">", "$config->{'output'}/archive/index.html" ) or
+        open( my $handle, ">:encoding(UTF-8)",
+              "$config->{'output'}/archive/index.html" ) or
           die "Failed to open";
         print $handle $c->output();
         close($handle);
@@ -200,7 +208,7 @@ sub on_generate
         $c->param( top        => $config->{ 'top' } );
         $c->param( entries    => $entries );
         $c->param( month      => $mon, year => $year );
-        $c->param( month_name => $mons{ $mon } );
+        $c->param( month_name => $MONTHS[$mon - 1] );
         open( my $handle, ">:encoding(UTF-8)",
               "$config->{'output'}/archive/$year/$mon/index.html" ) or
           die "Failed to open";

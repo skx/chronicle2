@@ -246,6 +246,21 @@ new data available to all the templates.
 This is how the global tag-cloud, recent posts, and similar data is able
 to be included in the sidebar in the default template.
 
+=item How do I generate non-English month names?
+
+Chronicle uses the L<Date::Language> module for outputing month-names
+in the archive index.
+
+By default "English" is used, but if you set the environmental variable
+C<MONTHS> then the contents will be used.  For example you might enjoy
+the Finnish month-names, which can be achieved via:
+
+=for example begin
+
+    MONTHS=Finnish chronicle ...
+
+=for example end
+
 =back
 
 =cut
