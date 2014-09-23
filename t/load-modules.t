@@ -25,7 +25,6 @@ BEGIN
     use_ok( "Chronicle::Plugin::SkipDrafts", "Loaded module" );
     use_ok( "Chronicle::Plugin::Textile",    "Loaded module" );
     use_ok( "Chronicle::Plugin::Tidy",       "Loaded module" );
-    use_ok( "Chronicle::Plugin::Version",    "Loaded module" );
     use_ok( "Chronicle::Plugin::YouTube",    "Loaded module" );
 
     #
@@ -35,6 +34,7 @@ BEGIN
     use_ok( "Chronicle::Plugin::Snippets::Archives",    "Loaded module" );
     use_ok( "Chronicle::Plugin::Snippets::RecentPosts", "Loaded module" );
     use_ok( "Chronicle::Plugin::Snippets::RecentTags",  "Loaded module" );
+    use_ok( "Chronicle::Plugin::Snippets::Version",     "Loaded module" );
 
     #
     #  Generators
