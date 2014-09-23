@@ -42,6 +42,7 @@ t/test-skip-drafts.t
 t/test-strict.t
 t/test-textile-formatter.t
 t/test-version-insertion.t
+t/test-youtube.t
 THEMES.md
 themes/blog.steve.org.uk/archive.tmpl
 themes/blog.steve.org.uk/archive_index.tmpl
@@ -87,4 +88,3 @@ themes/leftbar/static/spiral.gif
 themes/leftbar/static/xml.gif
 themes/leftbar/tag.tmpl
 themes/leftbar/tag_index.tmpl
-TODO
