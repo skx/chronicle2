@@ -133,19 +133,23 @@ sub on_generate
     }
 
 
-    $config->{ 'verbose' } &&
-      print "Creating : $config->{'output'}/archive/index.html\n";
 
     my $c = Chronicle::load_template("archive_index.tmpl");
-    $c->param( top => $config->{ 'top' } );
-    $c->param( archive => $data ) if ($data);
-    open( my $handle, ">", "$config->{'output'}/archive/index.html" ) or
-      die "Failed to open";
-    print $handle $c->output();
-    close($handle);
+    if ($c)
+    {
+        $config->{ 'verbose' } &&
+          print "Creating : $config->{'output'}/archive/index.html\n";
+        $c->param( top => $config->{ 'top' } );
+        $c->param( archive => $data ) if ($data);
+        open( my $handle, ">", "$config->{'output'}/archive/index.html" ) or
+          die "Failed to open";
+        print $handle $c->output();
+        close($handle);
+    }
 
 
     $c = Chronicle::load_template("/archive.tmpl");
+    return if ( !$c );
 
     #
     #  Foreach year/mon pair

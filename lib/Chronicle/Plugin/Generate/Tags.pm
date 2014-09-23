@@ -89,6 +89,7 @@ sub _outputTags
     $all->bind_columns( undef, \$tag );
 
     my $c = Chronicle::load_template("tag.tmpl");
+    return unless ($c);
 
     while ( $all->fetch() )
     {
@@ -200,6 +201,8 @@ sub _outputTagCloud
 
 
     my $c = Chronicle::load_template("tag_index.tmpl");
+    return unless ($c);
+
     $c->param( all_tags => $tags ) if ($tags);
     $c->param( top => $config->{ 'top' } );
     open( my $handle, ">", "$config->{'output'}/tags/index.html" ) or
