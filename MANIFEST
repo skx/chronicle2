@@ -1,11 +1,11 @@
 bin/chronicle
 cgi-bin/comments.cgi
 ChangeLog
-chronicle
 COMMENTS.md
 lib/Chronicle/Config/Reader.pm
 lib/Chronicle/Plugin/Archived.pm
 lib/Chronicle/Plugin/DBTweak.pm
+lib/Chronicle/Plugin/Filter.pm
 lib/Chronicle/Plugin/Generate/Archive.pm
 lib/Chronicle/Plugin/Generate/Index.pm
 lib/Chronicle/Plugin/Generate/Pages.pm
@@ -20,9 +20,10 @@ lib/Chronicle/Plugin/Snippets/AllTags.pm
 lib/Chronicle/Plugin/Snippets/Archives.pm
 lib/Chronicle/Plugin/Snippets/RecentPosts.pm
 lib/Chronicle/Plugin/Snippets/RecentTags.pm
+lib/Chronicle/Plugin/Snippets/Version.pm
 lib/Chronicle/Plugin/Textile.pm
-lib/Chronicle/Plugin/Verbose.pm
-lib/Chronicle/Plugin/Version.pm
+lib/Chronicle/Plugin/Tidy.pm
+lib/Chronicle/Plugin/YouTube.pm
 LICENSE
 Makefile.PL
 MANIFEST
@@ -30,10 +31,12 @@ MANIFEST.SKIP
 README.md
 t/load-modules.t
 t/manifest.t
+t/pod-coverage.t
 t/pod.t
 t/style-no-tabs.t
 t/test-archive-links.t
 t/test-config-reader.t
+t/test-html-tidy.t
 t/test-markdown-formatter.t
 t/test-skip-drafts.t
 t/test-strict.t
@@ -84,3 +87,4 @@ themes/leftbar/static/spiral.gif
 themes/leftbar/static/xml.gif
 themes/leftbar/tag.tmpl
 themes/leftbar/tag_index.tmpl
+TODO
