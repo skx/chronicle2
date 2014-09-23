@@ -154,6 +154,9 @@ sub on_insert
 We want this plugin to be called I<after> the other plugins which
 filter new entries.
 
+This method is present such that L<Module::Pluggable::Ordered> can
+order our plugins.
+
 =cut
 
 sub _order

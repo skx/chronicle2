@@ -71,6 +71,9 @@ sub on_initiate
 We ensure that this plugin is invoked last by setting a priority of 0,
 which is lower than the default supported by L<Module::Pluggable::Ordered>.
 
+This method is present such that L<Module::Pluggable::Ordered> can
+order our plugins.
+
 =cut
 
 sub _order

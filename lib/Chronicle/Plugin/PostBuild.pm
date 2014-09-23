@@ -70,6 +70,9 @@ sub on_generate
 We ensure that this plugin is invoked last by setting a priority of 999,
 which is greater than the default supported by L<Module::Pluggable::Ordered>.
 
+This method is present such that L<Module::Pluggable::Ordered> can
+order our plugins.
+
 =cut
 
 sub _order

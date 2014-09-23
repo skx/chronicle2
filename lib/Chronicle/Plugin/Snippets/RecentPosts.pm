@@ -116,6 +116,9 @@ This means we're called prior to any of the page-generation plugins, such
 that any page-templates which make use of the data-structure we've created
 are called after that structure is setup.
 
+This method is present such that L<Module::Pluggable::Ordered> can
+order our plugins.
+
 =cut
 
 sub _order
