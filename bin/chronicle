@@ -142,9 +142,17 @@ This is called when an existing SQLite database is opened, and we use it to set 
 
 This method is invoked as a blog entry is read to disk before it is inserted into the database for the first time - or when the item on disk has been changed and the database entry must be refreshed.
 
-This method is the perfect place to handle format conversion, such as converting input entries from Markdown, Textile, or some other format to HTML.
+This method is the perfect place to handle format conversion, which is demonstrated in the following two plugins:
 
-It could be used to expand links, macros, or similar shortcuts too.
+=over 8
+
+=item L<Chronicle::Plugin::Markdown>
+
+=item L<Chronicle::Plugin::Textile>
+
+=back
+
+Beyond format conversion this method is also good for expanding macros, or snippets of HTML.  (This is done by L<Chronicle::Plugin::YouTube> for example.)
 
 =item on_initiate
 
