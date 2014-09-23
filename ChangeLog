@@ -1,3 +1,11 @@
+5.0.4 - XXX September 2014
+	* Added plugin to tidy HTML.
+	* Added plugin to allow blog-posts to be filtered.
+	* Added plugin to allow inline youtube videos.
+	* Significant POD updates.
+	* Added Test::Pod::Coverage to ensure our modules are documented.
+
+
 5.0.3 - 21st September 2014
 	* Avoid hardwiring two plugins as disabled in the code.
 	* Updated POD in script and plugins.

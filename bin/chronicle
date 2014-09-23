@@ -1078,6 +1078,11 @@ sub load_template
     my $path =
       $CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' } . "/" . $filename;
 
+    #
+    #  If the template doesn't exist return undef.
+    #
+    return unless( -e $path );
+
 
     my $tmpl = HTML::Template->new(
                     open_mode => '<:encoding(UTF-8)',
