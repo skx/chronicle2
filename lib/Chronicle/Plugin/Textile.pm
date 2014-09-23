@@ -39,7 +39,7 @@ The method is designed to return an updated blog-post structure,
 after performing any massaging required.  If the method returns undef
 then the post is not inserted.
 
-If the new entry has a C<format:> header which contains the value C<markdown>
+If the new entry has a C<format:> header which contains the value C<textile>
 we invoke the L<Text::Textile> module to perform the HTML conversion.
 
 =cut
