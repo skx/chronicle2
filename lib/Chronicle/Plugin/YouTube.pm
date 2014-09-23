@@ -73,7 +73,7 @@ sub on_insert
     # tokenize by line
     foreach my $line ( split( /[\r\n]/, $old_body ) )
     {
-        if ( $line =~ /^(.*)<youtube>([^<]+)<\/youtube>(.*)$/i )
+        while ( $line =~ /^(.*)<youtube>([^<]+)<\/youtube>(.*)$/i )
         {
             my $pre  = $1;
             my $vid  = $2;
