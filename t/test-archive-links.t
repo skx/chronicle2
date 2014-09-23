@@ -72,4 +72,5 @@ $mon  += 1;
 #
 $mon = sprintf( "%02d", $mon );
 
-is( $out->{'link'}, "$year/$mon/$link", "We got the link we expected: $out->{'link'}" );
+is( $out->{ 'link' },
+    "$year/$mon/$link", "We got the link we expected: $out->{'link'}" );
