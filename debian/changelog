@@ -1,3 +1,9 @@
+libchronicle-perl (5.0.4-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Steve Kemp <steve@steve.org.uk>  Tue, 23 Sep 2014 07:44:45 +0000
+
 libchronicle-perl (5.0.3-1) unstable; urgency=low
 
   * New upstream release.
