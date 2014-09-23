@@ -5,8 +5,7 @@ Chronicle::Plugin::Tidy - Attempt to fix malformed HTML.
 
 =head1 DESCRIPTION
 
-This plugin is designed to try to prevent malformed HTML from being
-generated.
+This plugin is designed to prevent malformed HTML from being generated.
 
 It does that by using the L<HTML::TreeBuilder> module to parse the
 HTML that has been inserted into the SQLite database and then rewalks
@@ -116,6 +115,9 @@ sub on_insert
 
 We want this plugin to be called I<after> the other plugins which
 filter new entries - so that we can fix their broken HTML.
+
+This method is present such that L<Module::Pluggable::Ordered> can
+order our plugins.
 
 =cut
 
