@@ -269,27 +269,38 @@ the Finnish month-names, which can be achieved via:
 
 =for example end
 
+=item How do I ignore draft-posts?
+
+If you add the header C<draft: 1> to your pending post then it will
+be excluded from the blog, via the L<Chronicle::Plugin::SkipDrafts>
+plugin.
+
+=item How do I schedule future-posts?
+
+If you add a C<publish:> header, rather than a C<date:> header, to your
+posts it will allow you to schedule the release of future posts via the
+L<Chronicle::Plugin::PostSpooler> plugin.
+
 =back
-
-=cut
-
-
-=head1 AUTHOR
-
- Steve
- --
- http://www.steve.org.uk/
 
 =cut
 
 =head1 LICENSE
 
-Copyright (c) 2014 by Steve Kemp.  All rights reserved.
+This module is free software; you can redistribute it and/or modify it
+under the terms of either:
 
-This module is free software;
-you can redistribute it and/or modify it under
-the same terms as Perl itself.
-The LICENSE file contains the full text of the license.
+a) the GNU General Public License as published by the Free Software
+Foundation; either version 2, or (at your option) any later version,
+or
+
+b) the Perl "Artistic License".
+
+=cut
+
+=head1 AUTHOR
+
+Steve Kemp <steve@steve.org.uk>
 
 =cut
 
@@ -1104,7 +1115,7 @@ sub load_template
     #
     #  If the template doesn't exist return undef.
     #
-    return unless( -e $path );
+    return unless ( -e $path );
 
 
     my $tmpl = HTML::Template->new(
