@@ -34,13 +34,16 @@ Now follows documentation on the available methods.
 
 package Chronicle::Plugin::PostSpooler;
 
+
 use strict;
 use warnings;
 
-use Date::Format;
-use Date::Parse;
 
 our $VERSION = "5.0.5";
+
+
+use Date::Format;
+use Date::Parse;
 
 
 =head2 on_insert

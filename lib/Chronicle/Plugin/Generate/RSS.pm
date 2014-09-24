@@ -22,9 +22,12 @@ Now follows documentation on the available methods.
 
 package Chronicle::Plugin::Generate::RSS;
 
+
 use strict;
 use warnings;
 
+
+our $VERSION = "5.0.5";
 
 
 =head2 on_generate
@@ -82,9 +85,27 @@ sub on_generate
         print "Wrote " . scalar(@$entries) .
           " items to $config->{'output'}/index.rss\n";
     }
-
 }
 
 
-
 1;
+
+
+=head1 LICENSE
+
+This module is free software; you can redistribute it and/or modify it
+under the terms of either:
+
+a) the GNU General Public License as published by the Free Software
+Foundation; either version 2, or (at your option) any later version,
+or
+
+b) the Perl "Artistic License".
+
+=cut
+
+=head1 AUTHOR
+
+Steve Kemp <steve@steve.org.uk>
+
+=cut

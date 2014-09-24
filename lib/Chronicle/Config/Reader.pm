@@ -71,6 +71,10 @@ use strict;
 use warnings;
 
 
+
+our $VERSION = "5.0.5";
+
+
 =head2 new
 
 This is the constructor, no arguments are required or expected.
@@ -92,6 +96,20 @@ sub new
 
 Parse a configuration file, and insert any values into the provided
 hash-reference.
+
+The two parameters required are a hash-reference, which will be updated
+with the configuration-values, and the name of the configuration file
+to parse.
+
+If the file specified does not exist no action is taken.
+
+Sample usage:
+
+=for example begin
+
+      $cfg->parse( \%config, "/etc/foo/config" );
+
+=for example end
 
 =cut
 
@@ -130,6 +148,25 @@ sub parseFile
 =head2 parseLine
 
 Parse a single line.
+
+This method is called internally, but it is exposed in case it might
+be useful to other callers.
+
+The two parameters required are a hash-reference, which will be updated
+with the configuration-values, and a line of configuration-file content
+which should be parsed.
+
+If the line is missing, or consistes entirely of a comment, this is
+not a problem. (e.g. C<"# this is a comment"> will result in no update
+to the hash-reference, but also raise no error.)
+
+Sample usage:
+
+=for example begin
+
+     $cfg->parseLine( \%config, 'user = $USER' );
+
+=for example end
 
 =cut
 
@@ -200,3 +237,23 @@ sub parseLine
 
 
 1;
+
+
+=head1 LICENSE
+
+This module is free software; you can redistribute it and/or modify it
+under the terms of either:
+
+a) the GNU General Public License as published by the Free Software
+Foundation; either version 2, or (at your option) any later version,
+or
+
+b) the Perl "Artistic License".
+
+=cut
+
+=head1 AUTHOR
+
+Steve Kemp <steve@steve.org.uk>
+
+=cut
