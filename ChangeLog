@@ -1,5 +1,10 @@
-5.0.6 -
+5.0.6 - 24rd September 2014
 	* Correctly load templates inside loops to avoid parameter reuse.
+	* Updated all plugins to declare a version.
+	* Updated all plugins and main script to include explicit license.
+	* Added top-level LICENSE.md file too, for redundency.
+	* Added Chronicle::Plugin::PostSpooler plugin.
+
 
 5.0.5 - 23rd September 2014
 	* Fixed POD for Chronicle::Plugin::Snippets::RecentTags
@@ -15,6 +20,7 @@
 	* Added Test::Pod::Coverage to ensure our modules are documented.
 	* Don't generate output tags/archive if templates are missing.
 
+
 5.0.3 - 21st September 2014
 	* Avoid hardwiring two plugins as disabled in the code.
 	* Updated POD in script and plugins.
@@ -24,19 +30,18 @@
 	* Perform environmental variable expansion in the config file values.
 	* Added pre-build and post-build command-execution support.
 
-5.0.2 - 21st September 2014
 
+5.0.2 - 21st September 2014
 	* This release was primarily made to fix CPAN testers warnings.
 	* Added ChangeLog
 	* Removed Makefile from distribution.
 	* Declare dependencies on Text::Markdown, Text::Textile.
 	* Added POD for Chronicle::Plugin::Generate::Tags.
 
-5.0.1 - 21st September 2014
 
+5.0.1 - 21st September 2014
 	* Misc. cleanups.
 
 
 5.0.0 - 20th September 2014
-
 	* Initial release of the new codebase.

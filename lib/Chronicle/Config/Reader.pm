@@ -72,7 +72,7 @@ use warnings;
 
 
 
-our $VERSION = "5.0.5";
+our $VERSION = "5.0.6";
 
 
 =head2 new

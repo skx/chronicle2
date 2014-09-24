@@ -38,7 +38,7 @@ use strict;
 use warnings;
 
 
-our $VERSION = "5.0.5";
+our $VERSION = "5.0.6";
 
 
 use IPC::Open2;
