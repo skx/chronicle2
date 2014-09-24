@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 22;
+use Test::More tests => 23;
 
 BEGIN
 {
@@ -21,6 +21,7 @@ BEGIN
     use_ok( "Chronicle::Plugin::Filter",     "Loaded module" );
     use_ok( "Chronicle::Plugin::Markdown",   "Loaded module" );
     use_ok( "Chronicle::Plugin::PostBuild",  "Loaded module" );
+    use_ok( "Chronicle::Plugin::PostSpooler","Loaded module" );
     use_ok( "Chronicle::Plugin::PreBuild",   "Loaded module" );
     use_ok( "Chronicle::Plugin::SkipDrafts", "Loaded module" );
     use_ok( "Chronicle::Plugin::Textile",    "Loaded module" );
