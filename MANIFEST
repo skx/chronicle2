@@ -25,7 +25,7 @@ lib/Chronicle/Plugin/Snippets/Version.pm
 lib/Chronicle/Plugin/Textile.pm
 lib/Chronicle/Plugin/Tidy.pm
 lib/Chronicle/Plugin/YouTube.pm
-LICENSE
+LICENSE.md
 Makefile.PL
 MANIFEST
 MANIFEST.SKIP
