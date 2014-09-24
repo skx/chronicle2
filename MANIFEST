@@ -48,7 +48,6 @@ themes/blog.steve.org.uk/archive.tmpl
 themes/blog.steve.org.uk/archive_index.tmpl
 themes/blog.steve.org.uk/entry.tmpl
 themes/blog.steve.org.uk/inc/add-comment.inc
-themes/blog.steve.org.uk/inc/analytics.inc
 themes/blog.steve.org.uk/inc/blog-post.inc
 themes/blog.steve.org.uk/inc/comment-loop.inc
 themes/blog.steve.org.uk/inc/sidebar.inc
