@@ -68,6 +68,8 @@ sub on_generate
       print "Creating : $config->{'output'}/index.rss\n";
 
     my $c = Chronicle::load_template("index.rss");
+    return unless ($c);
+
     $c->param( top => $config->{ 'top' } );
     $c->param( entries => $entries ) if ($entries);
     open( my $handle, ">:encoding(UTF-8)", "$config->{'output'}/index.rss" ) or

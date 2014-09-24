@@ -72,6 +72,8 @@ sub on_generate
       print "Creating : $config->{'output'}/index.html\n";
 
     my $c = Chronicle::load_template("index.tmpl");
+    return unless ($c);
+
     $c->param( top => $config->{ 'top' } );
     $c->param( entries => $entries ) if ($entries);
     open( my $handle, ">:encoding(UTF-8)", "$config->{'output'}/index.html" ) or

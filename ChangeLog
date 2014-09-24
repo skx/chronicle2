@@ -1,3 +1,6 @@
+5.0.6 -
+	* Correctly load templates inside loops to avoid parameter reuse.
+
 5.0.5 - 23rd September 2014
 	* Fixed POD for Chronicle::Plugin::Snippets::RecentTags
 	* Updated each _order method to link to Module::Pluggable::Ordered

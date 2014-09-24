@@ -156,8 +156,6 @@ sub on_generate
     }
 
 
-    $c = Chronicle::load_template("/archive.tmpl");
-    return if ( !$c );
 
     #
     #  Foreach year/mon pair
@@ -204,6 +202,10 @@ sub on_generate
         $config->{ 'verbose' } &&
           print
           "Creating : $config->{'output'}/archive/$year/$mon/index.html\n";
+
+
+        $c = Chronicle::load_template("/archive.tmpl");
+        return if ( !$c );
 
         $c->param( top        => $config->{ 'top' } );
         $c->param( entries    => $entries );

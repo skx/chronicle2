@@ -69,8 +69,6 @@ sub on_generate
     my $id;
     $all->bind_columns( undef, \$id );
 
-    my $c = Chronicle::load_template("entry.tmpl");
-
     while ( $all->fetch() )
     {
 
@@ -100,6 +98,7 @@ sub on_generate
           print "Creating : $config->{'output'}/$entry->{'link'}\n";
 
 
+        my $c = Chronicle::load_template("entry.tmpl");
         $c->param( top => $config->{ 'top' } );
         $c->param($entry);
 

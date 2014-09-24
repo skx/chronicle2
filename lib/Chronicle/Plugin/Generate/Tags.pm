@@ -88,8 +88,6 @@ sub _outputTags
     my $tag;
     $all->bind_columns( undef, \$tag );
 
-    my $c = Chronicle::load_template("tag.tmpl");
-    return unless ($c);
 
     while ( $all->fetch() )
     {
@@ -124,6 +122,9 @@ sub _outputTags
             push( @$entries, Chronicle::getBlog( $dbh, $id ) );
         }
 
+
+        my $c = Chronicle::load_template("tag.tmpl");
+        return unless ($c);
 
         $c->param( top     => $config->{ 'top' } );
         $c->param( entries => $entries ) if ($entries);
