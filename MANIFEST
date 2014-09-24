@@ -14,6 +14,7 @@ lib/Chronicle/Plugin/Generate/Sitemap.pm
 lib/Chronicle/Plugin/Generate/Tags.pm
 lib/Chronicle/Plugin/Markdown.pm
 lib/Chronicle/Plugin/PostBuild.pm
+lib/Chronicle/Plugin/PostSpooler.pm
 lib/Chronicle/Plugin/PreBuild.pm
 lib/Chronicle/Plugin/SkipDrafts.pm
 lib/Chronicle/Plugin/Snippets/AllTags.pm
@@ -38,6 +39,7 @@ t/test-archive-links.t
 t/test-config-reader.t
 t/test-html-tidy.t
 t/test-markdown-formatter.t
+t/test-publish-future.t
 t/test-skip-drafts.t
 t/test-strict.t
 t/test-textile-formatter.t
