@@ -74,9 +74,7 @@ The following header values are recognized:
 * Format:
     * This allows you to specify if you're writing in markdown, or textile.  If you are then the blog-body will be processed correctly.
 
-Additional headers may be inserted, which will be ignored by default, for access by particular plugins.  For example the `Chronicle::Plugin::SkipDrafts` plugin will ensure that blog entries are ignored if they are still drafts - and include a `draft:` header.
-
-Similarly there is a plugin called `PostSpooler` which will ignore posts until their due data, and that uses the special `publish` header - rather than the default `date`.
+Additional headers may be inserted, which will be ignored by default, for access by particular plugins.  For example the `Chronicle::Plugin::SkipDrafts` plugin will ensure that blog entries are ignored if they are still drafts - and include a `draft:1` header.  Similarly there is a plugin called `PostSpooler` which will ignore posts until their due data, and that uses the special `publish` header - rather than the default `date`.
 
 
 Simple Usage
