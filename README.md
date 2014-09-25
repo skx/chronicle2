@@ -124,8 +124,7 @@ In an ideal would you should be able to migrate from previous Chronicle releases
 * Blog entries are still built up of a header and the entry.
 * Entries are still parsed in HTML, Markdown, and Textile formats.
 
-However there are changes, and these largely relate to the templates,
-along with the implementation differences.
+However there are changes, and these largely relate to the templates, along with the implementation differences.
 
 As of Chronicle 5 the main script parse arguments, reads the blog posts, but the actual generation of your site is entirely plugin-based.  The plugins are standard Perl modules located beneath the `Chronicle::Plugin` namespace, and although you don't need to know any of the details they can be ordered thanks to the use of [Module::Pluggable::Ordered](http://search.cpan.org/perldoc?Module%3A%3APluggable%3A%3AOrdered) class.
 
@@ -144,22 +143,18 @@ is carried out by plugins.
 The core will call the following methods if present in plugins:
 
 * `on_db_create`
-   * This is called if the SQLite database does not exist, and can be used to add new columns, or tables.
-
+    * This is called if the SQLite database does not exist, and can be used to add new columns, or tables.
 * `on_db_open`
-   * This is called when the database is opened, and we use it to set memory/sync options.  It could be used to do more.
-
+    * This is called when the database is opened, and we use it to set memory/sync options.  It could be used to do more.
 * `on_insert`
-   * This method is invoked as a blog entry is read to disk before it is inserted into the database for the first time - or when the item on disk has been changed and the database must be refreshed.
-   * This method is designed to handle Markdown/Textile conversion, etc.
-
+    * This method is invoked as a blog entry is read to disk before it is inserted into the database for the first time - or when the item on disk has been changed and the database must be refreshed.
+    * This method is designed to handle Markdown/Textile conversion, etc.
 * `on_initiate`
-   * This is called prior to any processing, with a reference to the configuration options and the database handle used for storage.
-   * This is a good place to call code that generates common snippets, or populates global-variables.
-
+    * This is called prior to any processing, with a reference to the configuration options and the database handle used for storage.
+    * This is a good place to call code that generates common snippets, or populates global-variables.
 * `on_generate`
-   * This is called to generate the actual output pages.  There is no logical difference between this method and `on_initiate` except that the former plugin methods are guaranteed to have been called prior to `on_generate` being invoked.
-   * This is where pages are output.
+    * This is called to generate the actual output pages.  There is no logical difference between this method and `on_initiate` except that the former plugin methods are guaranteed to have been called prior to `on_generate` being invoked.
+    * This is where pages are output.
 
 
 
