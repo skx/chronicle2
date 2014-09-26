@@ -6,8 +6,8 @@
     <meta name="keywords" content="">
     <meta name="description" content="">
     <title><!-- tmpl_var name='blog_title' --> - Tags</title>
-    <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="/index.rss">
+    <link rel="shortcut icon" href="<!-- tmpL_var name='top' -->favicon.ico">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="<!-- tmpL_var name='top' -->index.rss">
     <link rel="stylesheet" href="<!-- tmpl_var name='top' -->css/bootstrap.css">
     <link rel="stylesheet" href="<!-- tmpl_var name='top' -->css/mezzanine.css">
     <link rel="stylesheet" href="<!-- tmpl_var name='top' -->css/bootstrap-responsive.css">
@@ -34,7 +34,7 @@
               <input class="search-query" placeholder="Search" type="text" name="q" value="">
               <input type="submit" class="btn" value="Go">
             </form>
-            <ul class="nav pull-right"><li class="dropdown" id="dropdown-menu-home"><a href="/">Home</a></li><li class="active" id="dropdown-menu-tags"><a href="/tags/">Tags</a> <li class="dropdown" id="dropdown-menu-archive"><a href="/archive/">Archive</a></li><li class="divider-vertical"></li></ul>
+            <ul class="nav pull-right"><li class="dropdown" id="dropdown-menu-home"><a href="<!-- tmpL_var name='top' -->">Home</a></li><li class="active" id="dropdown-menu-tags"><a href="<!-- tmpL_var name='top' -->tags/">Tags</a> <li class="dropdown" id="dropdown-menu-archive"><a href="<!-- tmpL_var name='top' -->archive/">Archive</a></li><li class="divider-vertical"></li></ul>
           </div>
         </div>
       </div>
@@ -51,7 +51,7 @@
 <!-- tmpl_if name='all_tags' -->
 <ul>
 <!-- tmpl_loop name='all_tags' -->
-<li><a href="/tags/<!-- tmpl_var name='tag' escape='html' -->" title="Used <!-- tmpl_var name='count' --> times"><!-- tmpl_var name='tag' --></a></li>
+<li><a href="<!-- tmpL_var name='top' -->tags/<!-- tmpl_var name='tag' escape='html' -->" title="Used <!-- tmpl_var name='count' --> times"><!-- tmpl_var name='tag' --></a></li>
 <!-- /tmpl_loop -->
 </ul>
 <!-- tmpl_else -->

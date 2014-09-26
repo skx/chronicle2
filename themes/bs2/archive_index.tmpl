@@ -6,8 +6,8 @@
     <meta name="keywords" content="">
     <meta name="description" content="">
     <title><!-- tmpl_var name='blog_title' --> - Archive</title>
-    <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="/index.rss">
+    <link rel="shortcut icon" href="<!-- tmpL_var name='top' -->favicon.ico">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="<!-- tmpL_var name='top' -->index.rss">
     <link rel="stylesheet" href="<!-- tmpl_var name='top' -->css/bootstrap.css">
     <link rel="stylesheet" href="<!-- tmpl_var name='top' -->css/mezzanine.css">
     <link rel="stylesheet" href="<!-- tmpl_var name='top' -->css/bootstrap-responsive.css">
@@ -34,7 +34,7 @@
               <input class="search-query" placeholder="Search" type="text" name="q" value="">
               <input type="submit" class="btn" value="Go">
             </form>
-            <ul class="nav pull-right"><li class="dropdown" id="dropdown-menu-home"><a href="/">Home</a></li><li class="dropdown" id="dropdown-menu-tags"><a href="/tags/">Tags</a> <li class="active" id="dropdown-menu-archive"><a href="/Archive/">Archive</a></li><li class="divider-vertical"></li></ul>
+            <ul class="nav pull-right"><li class="dropdown" id="dropdown-menu-home"><a href="<!-- tmpL_var name='top' -->">Home</a></li><li class="dropdown" id="dropdown-menu-tags"><a href="<!-- tmpL_var name='top' -->tags/">Tags</a> <li class="active" id="dropdown-menu-archive"><a href="<!-- tmpL_var name='top' -->archive/">Archive</a></li><li class="divider-vertical"></li></ul>
           </div>
         </div>
       </div>
@@ -42,7 +42,7 @@
     <div class="container">
       <ul class="breadcrumb">
         <li><a href="<!-- tmpl_var name='top' -->">Home</a> <span class="divider">/</span></li>
-        <li><a href="/archive/">Archive</a></li>
+        <li><a href="<!-- tmpL_var name='top' -->archive/">Archive</a></li>
       </ul>
     </div>
     <div class="container">
@@ -50,7 +50,7 @@
         <div class="span9 middle">
 <dl>
 <!-- tmpl_loop name='archive' -->
-<dt><a href="/archive/<!-- tmpl_var name='year' -->/<!-- tmpl_var name='month' -->"><!-- tmpl_var name='month_name' --> <!-- tmpl_var name='year' --></a></dt>
+<dt><a href="<!-- tmpL_var name='top' -->archive/<!-- tmpl_var name='year' -->/<!-- tmpl_var name='month' -->"><!-- tmpl_var name='month_name' --> <!-- tmpl_var name='year' --></a></dt>
 <dd><p><!-- tmpl_var name='count' --> posts.</p></dd>
 <!-- /tmpl_loop -->
 </dl>
