@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 23;
+use Test::More tests => 24;
 
 BEGIN
 {
@@ -16,17 +16,18 @@ BEGIN
     #
     #  General plugins
     #
-    use_ok( "Chronicle::Plugin::Archived",   "Loaded module" );
-    use_ok( "Chronicle::Plugin::DBTweak",    "Loaded module" );
-    use_ok( "Chronicle::Plugin::Filter",     "Loaded module" );
-    use_ok( "Chronicle::Plugin::Markdown",   "Loaded module" );
-    use_ok( "Chronicle::Plugin::PostBuild",  "Loaded module" );
-    use_ok( "Chronicle::Plugin::PostSpooler","Loaded module" );
-    use_ok( "Chronicle::Plugin::PreBuild",   "Loaded module" );
-    use_ok( "Chronicle::Plugin::SkipDrafts", "Loaded module" );
-    use_ok( "Chronicle::Plugin::Textile",    "Loaded module" );
-    use_ok( "Chronicle::Plugin::Tidy",       "Loaded module" );
-    use_ok( "Chronicle::Plugin::YouTube",    "Loaded module" );
+    use_ok( "Chronicle::Plugin::Archived",      "Loaded module" );
+    use_ok( "Chronicle::Plugin::DBTweak",       "Loaded module" );
+    use_ok( "Chronicle::Plugin::Filter",        "Loaded module" );
+    use_ok( "Chronicle::Plugin::Markdown",      "Loaded module" );
+    use_ok( "Chronicle::Plugin::MultiMarkdown", "Loaded module" );
+    use_ok( "Chronicle::Plugin::PostBuild",     "Loaded module" );
+    use_ok( "Chronicle::Plugin::PostSpooler",   "Loaded module" );
+    use_ok( "Chronicle::Plugin::PreBuild",      "Loaded module" );
+    use_ok( "Chronicle::Plugin::SkipDrafts",    "Loaded module" );
+    use_ok( "Chronicle::Plugin::Textile",       "Loaded module" );
+    use_ok( "Chronicle::Plugin::Tidy",          "Loaded module" );
+    use_ok( "Chronicle::Plugin::YouTube",       "Loaded module" );
 
     #
     #  Snippets
