@@ -49,6 +49,9 @@
       <div class="row">
         <div class="span9 middle">
   <!-- tmpl_include name='inc/blog-post.inc' -->
+  <!-- tmpl_if name='comments' -->
+    <!-- tmpl_include name='inc/comment-loop.inc' -->
+  <!-- /tmpl_if -->
         </div>
         <div class="span3 right">
           <!-- tmpl_include name='inc/sidebar.inc' -->
