@@ -1,3 +1,10 @@
+5.0.7 - XX XX XXX
+	* Added Text::MultiMarkdown support, contributed by Stuart Skelton.
+	* Don't enable comments to the templates if not enabled.
+	* Don't regenerate "recent" blog-posts unless comments are enabled.
+	* Allow recursive detection of posts from beneath ./data/ (or whatever
+	the input path is.)
+
 5.0.6 - 24rd September 2014
 	* Correctly load templates inside loops to avoid parameter reuse.
 	* Updated all plugins to declare a version.
