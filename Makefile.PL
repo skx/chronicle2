@@ -22,11 +22,12 @@ my %WriteMakefileArgs = (
     PREREQ_PM    => {
 
         'DBI'                        => 0,
-        'Date::Language'             => 0,
         'Date::Format'               => 0,
+        'Date::Language'             => 0,
         'Date::Parse'                => 0,
         'Digest::MD5'                => 0,
         'File::Basename'             => 0,
+        'File::Find'                 => 0,
         'File::Path'                 => 0,
         'Getopt::Long'               => 0,
         'HTML::Template'             => 0,
@@ -34,21 +35,21 @@ my %WriteMakefileArgs = (
         'Pod::Usage'                 => 0,
 
         # optional formatters.
-        'Text::Markdown' => 0,
-        'Text::Textile'  => 0,
+        'Text::Markdown'      => 0,
         'Text::MultiMarkdown' => 0,
+        'Text::Textile'       => 0,
     },
 
     TEST_REQUIRES => {
 
         # solely for the test-suite.
+        'HTML::Tree'          => 0,
+        'Test::Exception'     => 0,
         'Test::More'          => 0,
+        'Test::NoTabs'        => 0,
         'Test::Pod'           => 0,
         'Test::Pod::Coverage' => 0,
         'Test::Strict'        => 0,
-        'Test::Exception'     => 0,
-        'Test::NoTabs'        => 0,
-        'HTML::Tree'          => 0,
 
     },
 
