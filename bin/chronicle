@@ -323,6 +323,7 @@ use Digest::MD5 qw(md5_hex);
 use File::Path;
 use File::Basename;
 use File::ShareDir;
+use File::Find;
 use Getopt::Long;
 use HTML::Template;
 use Pod::Usage;
@@ -343,7 +344,7 @@ use Chronicle::Config::Reader;
 #
 our %CONFIG;
 $CONFIG{ 'input' }        = "./data";
-$CONFIG{ 'pattern' }      = "*.txt";
+$CONFIG{ 'pattern' }      = "txt";
 $CONFIG{ 'output' }       = "./output";
 $CONFIG{ 'database' }     = "./blog.db";
 $CONFIG{ 'comment-days' } = 10;
@@ -403,7 +404,8 @@ updateDatabase($dbh);
 File::Path::make_path( $CONFIG{ 'output' },
                        {  verbose => 0,
                           mode    => oct("755"),
-                       } ) unless ( -d $CONFIG{ 'output' } );
+                       } )
+  unless ( -d $CONFIG{ 'output' } );
 
 
 
@@ -482,7 +484,8 @@ sub updateDatabase
     #
     #  Look for posts.
     #
-    foreach my $file ( glob( $CONFIG{ 'input' } . "/" . $CONFIG{ 'pattern' } ) )
+
+    foreach my $file ( get_post_files( $CONFIG{ 'input' }, 'post' ) )
     {
 
         #
@@ -491,7 +494,8 @@ sub updateDatabase
         my ( $dev,   $ino,     $mode, $nlink, $uid,
              $gid,   $rdev,    $size, $atime, $mtime,
              $ctime, $blksize, $blocks
-           ) = stat($file);
+           )
+          = stat($file);
 
 
         #
@@ -1338,4 +1342,21 @@ sub get_plugins_for_method
     }
 
     return (@plugins);
+}
+
+
+
+sub get_post_files
+{
+
+    my ( $dir, $suffix ) = @_;
+
+    my @text_files;
+    my $tf_finder = sub {
+        return if !-f;
+        return if !/\.${suffix}\z/;
+        push @text_files, $File::Find::name;
+    };
+    find( $tf_finder, $dir );
+    return @text_files;
 }
