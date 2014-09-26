@@ -344,7 +344,7 @@ use Chronicle::Config::Reader;
 #
 our %CONFIG;
 $CONFIG{ 'input' }        = "./data";
-$CONFIG{ 'pattern' }      = "txt";
+$CONFIG{ 'pattern' }      = "*.txt";
 $CONFIG{ 'output' }       = "./output";
 $CONFIG{ 'database' }     = "./blog.db";
 $CONFIG{ 'comment-days' } = 10;
@@ -485,7 +485,8 @@ sub updateDatabase
     #  Look for posts.
     #
 
-    foreach my $file ( get_post_files( $CONFIG{ 'input' }, 'post' ) )
+    foreach
+      my $file ( get_post_files( $CONFIG{ 'input' }, $CONFIG{ 'pattern' } ) )
     {
 
         #
@@ -1345,16 +1346,27 @@ sub get_plugins_for_method
 }
 
 
+=begin doc
+
+Return an array of entires from a given folder with a given suffix
+
+=end doc
+
+=cut
 
 sub get_post_files
 {
 
     my ( $dir, $suffix ) = @_;
 
+    #  This allows for backward compatility for the '*.txt' for glob'ing
+    # blog entries
+    $suffix =~ s/\*\.//;
+
     my @text_files;
     my $tf_finder = sub {
         return if !-f;
-        return if !/\.${suffix}\z/;
+        return if !/\.\Q$suffix\E\z/;
         push @text_files, $File::Find::name;
     };
     find( $tf_finder, $dir );
