@@ -148,6 +148,8 @@ This method is the perfect place to handle format conversion, which is demonstra
 
 =item L<Chronicle::Plugin::Markdown>
 
+=item L<Chronicle::Plugin::MultiMarkdown>
+
 =item L<Chronicle::Plugin::Textile>
 
 =back
