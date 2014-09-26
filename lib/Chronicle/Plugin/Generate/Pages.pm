@@ -44,7 +44,7 @@ then we skip regenerating them unless either:
 
 =item The C<--force> flag was used.
 
-=item The post was written within the past ten days.
+=item The post was written within the past ten days, and comments are enabled.
 
 =back
 
@@ -79,20 +79,45 @@ sub on_generate
         my $entry = Chronicle::getBlog( $dbh, $id );
 
         #
-        #  We skip posts that are already present - UNLESS they are posted
-        # within the past ten days.
+        #  Work out where it will be written to
         #
-        #  This means that we automatically include new comments when
-        # rebuilding a recent post.
+        my $out = $config->{ 'output' } . "/" . $entry->{ 'link' };
+
         #
-        #  Of course if you run "make clean" then you'll rebuild all
-        # pages, regardless of the age.
+        #  We skip posts that are already present:
         #
-        next
-          if ( ( -e $config->{ 'output' } . "/" . $entry->{ 'link' } ) &&
-               ( ( $now - $entry->{ 'posted' } ) >
-                 ( 60 * 60 * 24 * $config->{ 'comment-days' } ) ) &&
-               ( !$config->{ 'force' } ) );
+        #  * Unless they were posted recently and comments enabled.
+        #
+        # or
+        #
+        #  * The --force flag was used.
+        #
+
+        my $skip = 0;
+
+        #
+        #  So skip it if it exists.
+        #
+        $skip = 1 if ( -e $out );
+
+        #
+        # Unless --force overrides that.
+        #
+        $skip = 0 if ( $config->{'force'} );
+
+        #
+        # Finally if comments were enabled and this is recent then
+        # we'll also force it to be generated
+        #
+        $skip = 0 if ( ( $config->{'comments'} ) &&
+                       ( ( $now - $entry->{ 'posted' } ) <
+                         ( 60 * 60 * 24 * $config->{ 'comment-days' } ) ) );
+
+
+        #
+        #  Loop again if we're skipping this post.
+        #
+        next if ( $skip );
 
 
         $config->{ 'verbose' } &&
