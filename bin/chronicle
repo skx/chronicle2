@@ -31,9 +31,9 @@ chronicle - A static blog-compiler.
 
   Optional Features:
 
-   --author        Specify the author's email address
-   --blog-subtitle Set the title of the blog
-   --blog-title    Set the title of the blog
+   --author        Specify the author's email address.
+   --blog-subtitle Set the title of the blog.
+   --blog-title    Set the title of the blog.
    --force         Always regenerate pages.
 
   Help Options:
@@ -49,27 +49,25 @@ chronicle - A static blog-compiler.
 
 =head1 ABOUT
 
-Chronicle is a blog-compiler, which will convert a directory full of
+Chronicle is a blog-compiler which will convert a directory full of
 plain-text blog-posts into a fully-featured HTML website containing
 posts, tags, and archives.
 
-All blog-posts from the specified input directory are parsed into an
-SQLite database, which is then used to generate the output pages.
+All blog-posts from a given input directory are parsed into a SQLite
+database which is then used to generate the output pages.
 
 The SQLite database is assumed to persist, such that it will be updated
-if new posts are written, or previous posts are updated, however the
-software will cope if it is removed between runs - it will just be
-regenerated.
+if new posts are written, or previous posts are updated.  However if
+it is removed it will be recreated when needed.
 
 =cut
 
 =head1 DATABASE STRUCTURE
 
 When C<chronicle> is first executed it will create an SQLite database
-if it is not already present.
-
-The database will contain two tables, one for the posts, and one to
-store the tags.
+if it is not already present.  The database will contain two tables,
+one for the posts, and one to store the tags associated with the posts,
+if you choose to use tag sin your entries.
 
 The blog-entry table contains the following columns:
 
@@ -95,7 +93,6 @@ The title of the blog-post itself.
 
 If you wish to add extra tables via a local plugin you're welcome to do so.
 
-
 =cut
 
 =head1 EXTENDING WITH PLUGINS
@@ -108,10 +105,13 @@ The main driver, chronicle, is responsible for only a few small jobs:
 
 By default C<data/*.txt> are read, but you may adjust the input directory via the C<--input> command-line flag.  The pattern may be set with C<--pattern>.
 
+B<NOTE> The pattern is applied recursively, if you wish to create sub-directories with your posts inside them for organizational purposes.
+
 =item Inserting them into the SQLite database.
 
 The header is read to look for things such as the post-date, the subject,
-and the tags.  The body is imported literally.
+and the tags.  The body is imported literally, unless expanded and reformatted
+via a plugin.
 
 =item Executing plugins
 
