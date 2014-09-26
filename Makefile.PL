@@ -33,9 +33,10 @@ my %WriteMakefileArgs = (
         'Module::Pluggable::Ordered' => 0,
         'Pod::Usage'                 => 0,
 
-        # optional
+        # optional formatters.
         'Text::Markdown' => 0,
-        'Text::Textile'  => 0
+        'Text::Textile'  => 0,
+        'Text::MultiMarkdown' => 0,
     },
 
     TEST_REQUIRES => {
