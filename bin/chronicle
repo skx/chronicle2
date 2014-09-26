@@ -25,6 +25,7 @@ chronicle - A static blog-compiler.
 
   Counting Options:
 
+   --no-comments       Globally turns off the comments
    --comment-days=N    The maximum age a post may allow comments.
    --entry-count=N     Number of posts to show on the index.
    --rss-count=N       Number of posts to include on the RSS index feed.
@@ -346,6 +347,7 @@ $CONFIG{ 'input' }        = "./data";
 $CONFIG{ 'pattern' }      = "*.txt";
 $CONFIG{ 'output' }       = "./output";
 $CONFIG{ 'database' }     = "./blog.db";
+$CONFIG{ 'no-comments' }  = 0;
 $CONFIG{ 'comment-days' } = 10;
 $CONFIG{ 'entry-count' }  = 10;
 $CONFIG{ 'rss-count' }    = 10;
@@ -403,7 +405,8 @@ updateDatabase($dbh);
 File::Path::make_path( $CONFIG{ 'output' },
                        {  verbose => 0,
                           mode    => oct("755"),
-                       } ) unless ( -d $CONFIG{ 'output' } );
+                       } )
+  unless ( -d $CONFIG{ 'output' } );
 
 
 
@@ -491,7 +494,8 @@ sub updateDatabase
         my ( $dev,   $ino,     $mode, $nlink, $uid,
              $gid,   $rdev,    $size, $atime, $mtime,
              $ctime, $blksize, $blocks
-           ) = stat($file);
+           )
+          = stat($file);
 
 
         #
@@ -892,34 +896,36 @@ sub getBlog
     #
     #  Add on comments to this post.
     #
-    my $comments = getComments( $data->{ 'link' } );
-    if ($comments)
+    unless ( $CONFIG{ 'no-comments' } == 1 )
     {
-        $data->{ 'comments' } = $comments;
+        my $comments = getComments( $data->{ 'link' } );
+        if ($comments)
+        {
+            $data->{ 'comments' } = $comments;
 
-        my $count = scalar(@$comments);
-        $data->{ 'comment_count' }  = $count;
-        $data->{ 'comment_plural' } = 1
-          if ( ( $count == 0 ) || ( $count > 1 ) );
+            my $count = scalar(@$comments);
+            $data->{ 'comment_count' }  = $count;
+            $data->{ 'comment_plural' } = 1
+              if ( ( $count == 0 ) || ( $count > 1 ) );
+        }
+
+
+        #
+        #  If the post is less than 10 days old
+        #
+        my $now = time;
+        my $ago = $now - $posted;
+        my $age = ( ( 60 * 60 * 24 ) * ( $CONFIG{ 'comment-days' } ) );
+
+        if ( $ago < $age )
+        {
+            $data->{ 'comments_enabled' } = 1;
+        }
+        else
+        {
+            $data->{ 'comments_enabled' } = undef;
+        }
     }
-
-
-    #
-    #  If the post is less than 10 days old
-    #
-    my $now = time;
-    my $ago = $now - $posted;
-    my $age = ( ( 60 * 60 * 24 ) * ( $CONFIG{ 'comment-days' } ) );
-
-    if ( $ago < $age )
-    {
-        $data->{ 'comments_enabled' } = 1;
-    }
-    else
-    {
-        $data->{ 'comments_enabled' } = undef;
-    }
-
     return ($data);
 }
 
@@ -1190,6 +1196,7 @@ sub parseCommandLine
             "config=s",       \$CONFIG{ 'config' },
             "database=s",     \$CONFIG{ 'database' },
             "author=s",       \$CONFIG{ 'author' },
+            "no-comments",    \$CONFIG{ 'no-comments' },
             "comment-days=s", \$CONFIG{ 'comment-days' },
             "force",          \$CONFIG{ 'force' },
 
