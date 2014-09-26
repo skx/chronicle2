@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <title><!-- tmpl_var name='blog_title' --></title>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/index.rss">
+    <link rel="stylesheet" href="<!-- tmpl_var name='top' -->css/bootstrap.css">
+    <link rel="stylesheet" href="<!-- tmpl_var name='top' -->css/mezzanine.css">
+    <link rel="stylesheet" href="<!-- tmpl_var name='top' -->css/bootstrap-responsive.css">
+    <script src="<!-- tmpl_var name='top' -->js/jquery-1.7.1.min.js"></script>
+    <script src="<!-- tmpl_var name='top' -->js/bootstrap.js"></script>
+    <script src="<!-- tmpl_var name='top' -->js/bootstrap-extras.js"></script>
+    <![if lt IE 9]>
+        <script src="<!-- tmpl_var name='top' -->js/html5shiv.js"></script>
+    <![endif]>
+  </head>
+  <body id="body">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="<!-- tmpl_var name='top' -->"><!-- tmpl_var name='blog_title' --></a>
+          <p class="navbar-text"><!-- tmpl_var name='blog_subtitle' --></p>
+          <div class="nav-collapse collapse">
+            <form action="/search/" class="navbar-search pull-right input-append">
+              <input class="search-query" placeholder="Search" type="text" name="q" value="">
+              <input type="submit" class="btn" value="Go">
+            </form>
+            <ul class="nav pull-right"><li class="dropdown" id="dropdown-menu-home"><a href="/">Home</a></li><li class="active" id="dropdown-menu-tags"><a href="/tags/">Tags</a> <li class="dropdown" id="dropdown-menu-archive"><a href="/archive/">Archive</a></li><li class="divider-vertical"></li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <ul class="breadcrumb">
+        <li><a href="<!-- tmpl_var name='top' -->">Home</a> <span class="divider">/</span></li>
+        <li><a href="<!-- tmpl_var name='top' -->tags">Tags</a></li>
+      </ul>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="span9 middle">
+<!-- tmpl_if name='all_tags' -->
+<ul>
+<!-- tmpl_loop name='all_tags' -->
+<li><a href="/tags/<!-- tmpl_var name='tag' escape='html' -->" title="Used <!-- tmpl_var name='count' --> times"><!-- tmpl_var name='tag' --></a></li>
+<!-- /tmpl_loop -->
+</ul>
+<!-- tmpl_else -->
+<p>No tagged posts were found.</p>
+<!-- /tmpl_if -->
+
+        </div>
+        <div class="span3 right">
+          <!-- tmpl_include name='inc/sidebar.inc' -->
+        </div>
+
+      </div>
+    </div>
+    <!-- tmpl_include name='inc/footer.inc' -->
+  </body>
+</html>
