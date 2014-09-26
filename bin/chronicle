@@ -142,7 +142,7 @@ This is called when an existing SQLite database is opened, and we use it to set 
 
 This method is invoked as a blog entry is read to disk before it is inserted into the database for the first time - or when the item on disk has been changed and the database entry must be refreshed.
 
-This method is the perfect place to handle format conversion, which is demonstrated in the following two plugins:
+This method is the perfect place to handle format conversion, which is demonstrated in the following plugins:
 
 =over 8
 
