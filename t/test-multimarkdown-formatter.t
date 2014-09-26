@@ -35,7 +35,7 @@ is( $f->{ 'body' }, $data{ 'body' },
 #  Now we'll set a format type, and ensure that this has caused
 # the expected expansion to happen.
 #
-foreach my $type (qw! multimarkdown multimarkdown multimarkdown !)
+foreach my $type (qw! multimarkdown MULTIMARKDOWN MuLtIMarkDoWN !)
 {
     $data{ 'format' } = $type;
 
