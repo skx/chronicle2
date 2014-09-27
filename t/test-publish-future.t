@@ -37,5 +37,6 @@ $data{ 'publish' } =~ s/2099/1999/g;
 #  This should be present.
 #
 $out = Chronicle::Plugin::PostSpooler::on_insert( undef, data => \%data );
-is( $out->{ 'publish' }, undef, "Thie publish field was removed." );
-ok( $out->{ 'date' } =~ /1999/, "The post is dated in the past." );
+is( $out->{ 'publish' },
+    undef, "Thie publish field was removed in a post to be published." );
+ok( $out->{ 'date' } =~ /1999/, "The post is dated in the past, as expected." );
