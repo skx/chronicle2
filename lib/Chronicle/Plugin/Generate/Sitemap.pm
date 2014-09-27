@@ -103,7 +103,7 @@ sub on_generate
     $template->param( urls => $urls ) if ($urls);
     $template->param( top => $config->{ 'top' } ) if ( $config->{ 'top' } );
 
-    open( my $handle, ">", $output ) or
+    open( my $handle, ">:encoding(UTF-8)", $output ) or
       die "Failed to open output file $output - $!";
     print $handle $template->output();
     close($handle);
