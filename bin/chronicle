@@ -745,8 +745,11 @@ sub insertPost
             # skip empty tags.
             next if ( !length($tag) );
 
+            # Tags are always down-cased
+            $tag = lc($tag);
+
             #
-            #  Find the tag ID
+            #  Add the new tag to the post.
             #
             $tag_add->execute( $blog_id, $tag ) or
               die "Failed to execute:" . $dbh->errstr();
