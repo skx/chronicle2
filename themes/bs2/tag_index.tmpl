@@ -17,6 +17,15 @@
     <![if lt IE 9]>
         <script src="<!-- tmpl_var name='top' -->js/html5shiv.js"></script>
     <![endif]>
+<style type="text/css">
+.twocols{
+    list-style-type: none;
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
+    list-style-position: inside;//this is important addition
+}
+</style>
   </head>
   <body id="body">
     <div class="navbar navbar-fixed-top">
@@ -49,7 +58,7 @@
       <div class="row">
         <div class="span9 middle">
 <!-- tmpl_if name='all_tags' -->
-<ul class="unstyled">
+<ul class="twocols">
 <!-- tmpl_loop name='all_tags' -->
 <li><a href="<!-- tmpL_var name='top' -->tags/<!-- tmpl_var name='tag' escape='html' -->" title="Used <!-- tmpl_var name='count' --> times"><!-- tmpl_var name='tag' --></a></li>
 <!-- /tmpl_loop -->
