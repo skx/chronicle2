@@ -5,6 +5,9 @@
 	* Allow recursive detection of posts from beneath ./data/ (or whatever
 	the input path is.)
 	* New bootstrap2 theme, named 'bs2'.
+	* Tags are output ordered by name, case-insensitively.
+	* Tags are always lower-cased when inserted.
+
 
 5.0.6 - 24rd September 2014
 	* Correctly load templates inside loops to avoid parameter reuse.
