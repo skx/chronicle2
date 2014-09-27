@@ -9,5 +9,6 @@ debian/
 MYMETA.yml
 pm_to_blib
 blib/
+comments/
 blog.db
 .perltidyrc
