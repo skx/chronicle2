@@ -210,7 +210,9 @@ sub _outputTagCloud
 
     $c->param( all_tags => $tags ) if ($tags);
     $c->param( top => $config->{ 'top' } );
-    open( my $handle, ">", "$config->{'output'}/tags/index.html" ) or
+
+    open( my $handle, ">:encoding(UTF-8)",
+          "$config->{'output'}/tags/index.html" ) or
       die "Failed to open";
     print $handle $c->output();
     close($handle);
