@@ -81,7 +81,9 @@ sub _outputTags
 {
     my ( $config, $dbh ) = (@_);
 
-    my $all = $dbh->prepare("SELECT DISTINCT(name) FROM tags") or
+    my $all = $dbh->prepare(
+        "SELECT DISTINCT(name) FROM tags GROUP BY name ORDER by name COLLATE nocase"
+      ) or
       die "Failed to find all tags";
     my $ids = $dbh->prepare(
         "SELECT DISTINCT(a.blog_id) FROM tags AS a JOIN blog AS b WHERE ( a.blog_id = b.id AND a.name=? ) ORDER BY b.date DESC"
@@ -169,7 +171,7 @@ sub _outputTagCloud
     # Now the tags.
     #
     my $sql = $dbh->prepare(
-        'SELECT DISTINCT(name),COUNT(name) AS runningtotal FROM tags GROUP BY name ORDER BY name'
+        "SELECT DISTINCT(name),COUNT(name) AS runningtotal FROM tags GROUP BY name COLLATE nocase"
       ) or
       die "Failed to prepare tag cloud";
     $sql->execute() or die "Failed to execute: " . $dbh->errstr();
