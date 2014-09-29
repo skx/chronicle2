@@ -1,5 +1,6 @@
 output/
 Makefile.old
+MYMETA.json
 MYMETA.yml
 Makefile
 blib/
