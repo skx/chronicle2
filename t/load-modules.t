@@ -34,9 +34,9 @@ BEGIN
     #
     use_ok( "Chronicle::Plugin::Snippets::AllTags",     "Loaded module" );
     use_ok( "Chronicle::Plugin::Snippets::Archives",    "Loaded module" );
+    use_ok( "Chronicle::Plugin::Snippets::Meta",        "Loaded module" );
     use_ok( "Chronicle::Plugin::Snippets::RecentPosts", "Loaded module" );
     use_ok( "Chronicle::Plugin::Snippets::RecentTags",  "Loaded module" );
-    use_ok( "Chronicle::Plugin::Snippets::Version",     "Loaded module" );
 
     #
     #  Generators
