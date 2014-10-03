@@ -149,3 +149,13 @@ theme = blog.steve.org.uk
 # very minimal output.
 #
 exclude-plugins = Chronicle::Plugin::Archived,Chronicle::Plugin::Verbose
+
+
+#
+#  The meta-plugin allows the date/time the blog is rebuilt to be inserted
+# in the theme-templates, along with other variables.
+#
+#  Here we define the date/time formats which are used.
+#
+meta_date_format = %e %b %Y
+meta_time_format = %H:%M:%S

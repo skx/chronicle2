@@ -81,14 +81,18 @@ sub on_initiate
     #
     #  The chronicle build date
     #
+    my $date_fmt = $config->{ 'meta_date_format' } || '%e %b %Y';
+
     $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_date" } =
-      time2str( "%e %b %Y", $time );
+      time2str( $date_fmt, $time );
 
     #
     #  The chronicle build time
     #
+    my $time_fmt = $config->{ 'meta_time_format' } || '%H:%M:%S';
+
     $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_time" } =
-      time2str( "%H:%M:%S", $time );
+      time2str( $time_fmt, $time );
 
 
     #
