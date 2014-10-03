@@ -5,18 +5,24 @@ Chronicle::Plugin::Snippets::Meta - Make meta information available to templates
 
 =head1 DESCRIPTION
 
-This module makes the C<meta> information available to chronicle templates.
-Such as:
+This module makes some meta-information available to chronicle templates,
+which includes:
 
-* Date the blog was (re)built.
-* Time the blog was (re)built.
-* The version of chronicle.
+=over 8
 
-Todo:
-* The hostname of the system which built the blog.
-* The username of the builder.
+=item The ate the blog was (re)built.
 
-This can be used in templates like so:
+=item The time the blog was (re)built.
+
+=item The version of chronicle.
+
+=item The hostname of the system which built the blog.
+
+=item The username of the builder.
+
+=back
+
+These values can be used in templates like so:
 
 =for example begin
 
@@ -64,30 +70,60 @@ sub on_initiate
     my $config = $args{ 'config' };
 
 
-
     #
     #  The chronicle version
     #
     $Chronicle::GLOBAL_TEMPLATE_VARS{ "chronicle_version" } =
       $Chronicle::VERSION;
 
-    my $time = time ;
+    my $time = time;
+
     #
     #  The chronicle build date
     #
-
     $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_date" } =
       time2str( "%e %b %Y", $time );
 
     #
     #  The chronicle build time
     #
-
     $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_time" } =
       time2str( "%H:%M:%S", $time );
 
 
+    #
+    #  The username
+    #
+    if ( $ENV{ 'USER' } )
+    {
+
+        #
+        #  Set the username
+        #
+        $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_username" } = $ENV{ 'USER' };
+
+
+        #
+        #  If we can expand that into a full-name then do so
+        #
+        my ( $name,    $passwd, $uid, $gid,   $quota,
+             $comment, $gcos,   $dir, $shell, $expire
+           ) = getpwnam( $ENV{ 'USER' } );
+
+        #
+        #  Did we get a GCOS field?  If so strip the trailing "," and
+        # set if it is non-empty
+        #
+        if ($gcos)
+        {
+            $gcos =~ s/,+$//g;
+
+            $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_fullname" } = $gcos
+              if ( $gcos && length($gcos) );
+        }
+    }
 }
+
 
 
 1;
@@ -108,6 +144,6 @@ b) the Perl "Artistic License".
 
 =head1 AUTHOR
 
-Stuart Skelton 
+Stuart Skelton
 
 =cut
