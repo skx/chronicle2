@@ -7,6 +7,12 @@
 	* New bootstrap2 theme, named 'bs2'.
 	* Tags are output ordered by name, case-insensitively.
 	* Tags are always lower-cased when inserted.
+	* Populate more global variables via Chronicle::Plugin::Snippets::Meta
+	* Allow the user to define an alternative to the default index file "index.html".
+	* Allow the use of a different suffix to ".html".
+	* Removed the need for themes to duplicate "index.rss".
+	* Added sample configuration-file.
+	* Allow blog-entries to link to next/prev entry.
 
 
 5.0.6 - 24rd September 2014
