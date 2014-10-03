@@ -638,9 +638,26 @@ sub insertPost
     #  Generate the link from the title of the post.
     #
     $meta{ 'link' } = $meta{ 'title' };
-    $meta{ 'link' } =~ s/\.txt//g;
+
+    #
+    #  Remove the extension - regardless of what that might be.
+    #
+    $meta{ 'link' } =~ s/\.[^.]+$//;
+
+    #
+    #  Remove non-alphanumeric characters.
+    #
     $meta{ 'link' } =~ s/[^a-z0-9]/_/gi;
-    $meta{ 'link' } .= ".html";
+
+    #
+    #  Add the suffix for the page
+    #
+    my $suffix = $CONFIG{ 'entry_suffix' } || ".html";
+    $meta{ 'link' } .= $suffix;
+
+    #
+    #  Lower-case
+    #
     $meta{ 'link' } = lc( $meta{ 'link' } );
 
     #
