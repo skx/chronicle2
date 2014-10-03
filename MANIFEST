@@ -57,7 +57,6 @@ themes/blog.steve.org.uk/inc/blog-post.inc
 themes/blog.steve.org.uk/inc/comment-loop.inc
 themes/blog.steve.org.uk/inc/sidebar.inc
 themes/blog.steve.org.uk/inc/style.inc
-themes/blog.steve.org.uk/index.rss
 themes/blog.steve.org.uk/index.tmpl
 themes/blog.steve.org.uk/static/progress.gif
 themes/blog.steve.org.uk/static/spiral.gif
@@ -72,7 +71,6 @@ themes/bs2/inc/blog-post.inc
 themes/bs2/inc/comment-loop.inc
 themes/bs2/inc/footer.inc
 themes/bs2/inc/sidebar.inc
-themes/bs2/index.rss
 themes/bs2/index.tmpl
 themes/bs2/static/css/bootstrap-responsive.css
 themes/bs2/static/css/bootstrap.css
@@ -92,7 +90,6 @@ themes/default/comment-loop.inc
 themes/default/entry.tmpl
 themes/default/footer.inc
 themes/default/header.inc
-themes/default/index.rss
 themes/default/index.tmpl
 themes/default/sidebar.inc
 themes/default/static/style.css
@@ -108,7 +105,6 @@ themes/leftbar/inc/blog-post.inc
 themes/leftbar/inc/comment-loop.inc
 themes/leftbar/inc/sidebar.inc
 themes/leftbar/inc/style.inc
-themes/leftbar/index.rss
 themes/leftbar/index.tmpl
 themes/leftbar/static/spiral.gif
 themes/leftbar/static/xml.gif
