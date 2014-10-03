@@ -71,6 +71,7 @@ themes/bs2/inc/blog-post.inc
 themes/bs2/inc/comment-loop.inc
 themes/bs2/inc/footer.inc
 themes/bs2/inc/sidebar.inc
+themes/bs2/index.rss
 themes/bs2/index.tmpl
 themes/bs2/static/css/bootstrap-responsive.css
 themes/bs2/static/css/bootstrap.css
