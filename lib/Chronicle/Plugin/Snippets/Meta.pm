@@ -108,6 +108,6 @@ b) the Perl "Artistic License".
 
 =head1 AUTHOR
 
-Steve Kemp <steve@steve.org.uk>
+Stuart Skelton 
 
 =cut
