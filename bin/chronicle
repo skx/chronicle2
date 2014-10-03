@@ -1117,7 +1117,7 @@ Paying attention to our theme, load a template.
 
 sub load_template
 {
-    my ($filename) = (@_);
+    my ( $filename, $scalar ) = (@_);
 
     #
     #  Ensure we have a theme.
@@ -1137,25 +1137,49 @@ sub load_template
 
 
     #
-    #  The complete path to the template
+    #  HTML::Template options
     #
-    my $path =
-      $CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' } . "/" . $filename;
-
-    #
-    #  If the template doesn't exist return undef.
-    #
-    return unless ( -e $path );
-
-
-    my $tmpl = HTML::Template->new(
-                    open_mode => '<:encoding(UTF-8)',
-                    filename  => $path,
-                    path => [$CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' }],
+    my %options = ( path => [$CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' }],
                     die_on_bad_params => 0,
                     loop_context_vars => 1,
                     global_vars       => 1,
-    );
+                  );
+
+
+    #
+    #  The HTML::Template Instance.
+    #
+    my $tmpl;
+
+    if ($filename)
+    {
+
+        my $path =
+          $CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' } . "/" . $filename;
+
+        #
+        #  If the template doesn't exist return undef.
+        #
+        return unless ( -e $path );
+
+        #
+        #  Load the template from the given path.
+        #
+        $tmpl = HTML::Template->new( open_mode => '<:encoding(UTF-8)',
+                                     filename  => $path,
+                                     %options,
+                                   );
+    }
+    else
+    {
+
+        #
+        #  Loading via a string-reference
+        #
+        $tmpl = HTML::Template->new( scalarref => \$scalar,
+                                     %options, );
+
+    }
 
     #
     #  Legacy options.
@@ -1166,9 +1190,10 @@ sub load_template
       if ( $CONFIG{ 'blog_subtitle' } );
 
     #
-    #  If we have global options then set them.
+    #  Global options, such as build-time, build-date, etc.
     #
     $tmpl->param( \%GLOBAL_TEMPLATE_VARS );
+
     return ($tmpl);
 }
 

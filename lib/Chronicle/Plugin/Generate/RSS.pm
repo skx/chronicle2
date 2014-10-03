@@ -102,30 +102,9 @@ sub on_generate
         return unless ( $tmpl && length($tmpl) );
 
         #
-        #  Load the template from the given scalar-file.
+        #  Load the template
         #
-        $c = HTML::Template->new( scalarref         => \$tmpl,
-                                  open_mode         => '<:encoding(UTF-8)',
-                                  die_on_bad_params => 0,
-                                  loop_context_vars => 1,
-                                  global_vars       => 1,
-                                );
-
-        #
-        #  Annoying duplication here..
-        #
-        $c->param( blog_title => $config->{ 'blog_title' } )
-          if ( $config->{ 'blog_title' } );
-        $c->param( blog_subtitle => $config->{ 'blog_subtitle' } )
-          if ( $config->{ 'blog_subtitle' } );
-
-        #
-        #  If we have global options then set them.
-        #
-        #  Duplication is bad..
-        #
-        $c->param(%Chronicle::GLOBAL_TEMPLATE_VARS);
-
+        $c = Chronicle::load_template( undef, $tmpl );
     }
 
 

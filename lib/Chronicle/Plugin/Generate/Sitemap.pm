@@ -99,7 +99,10 @@ sub on_generate
     $sql->finish();
 
 
-    my $template = HTML::Template->new( scalarref => \$tmpl );
+    #
+    #  Load the template
+    #
+    my $template = Chronicle::load_template( undef, $tmpl );
     $template->param( urls => $urls ) if ($urls);
     $template->param( top => $config->{ 'top' } ) if ( $config->{ 'top' } );
 
