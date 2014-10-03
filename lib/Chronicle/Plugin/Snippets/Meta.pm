@@ -122,6 +122,55 @@ sub on_initiate
               if ( $gcos && length($gcos) );
         }
     }
+
+
+    #
+    #  Now try to populate the hostname of the build-system too.
+    #
+    #  Again we start from the environment, then run `hostname` if the
+    # environment isn't set.
+    #
+    my $hostname = $ENV{ 'HOSTNAME' };
+    if ( !$hostname )
+    {
+
+        #
+        #  If not we'll look for a hostname
+        #
+        $hostname = `hostname --fqdn`;
+        $hostname =~ s/[\r\n]//g;
+    }
+
+    if ($hostname)
+    {
+
+        #
+        #  If the hostname is qualified
+        #
+        if ( $hostname =~ /^([^.]+)\.(.*)/ )
+        {
+            my $short  = $1;
+            my $domain = $2;
+
+            #
+            #  Set the long/short versions
+            #
+            $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_host_long" }  = $hostname;
+            $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_host_short" } = $short;
+        }
+        else
+        {
+
+            #
+            #  Otherwise we just have the short, and
+            # can't guess the domain name.
+            #
+            #  c.f. `domainname`.
+            #
+            $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_host_short" } = $hostname;
+        }
+    }
+
 }
 
 
