@@ -955,7 +955,8 @@ sub getBlog
 
 =begin doc
 
-Get the cooments associated with a post.
+Get the comments associated with a given post, if comments are
+enabled and there are some present.
 
 =end doc
 
@@ -1109,7 +1110,13 @@ sub getComments
 
 =begin doc
 
-Paying attention to our theme, load a template.
+Load a L<HTML::Template> object, either by reference to the filename
+(which is unqualified and assumed to be located beneath the given
+theme-directory), or via a scalar reference.
+
+Some of the plugins distributed with Chronicle will contain embedded
+C<HTML::Template> snippets in their C<DATA> sections.  These include
+L<Chronicle::Plugin::Generate::RSS> and L<Chronicle::Plugin::Generate::Sitemap>.
 
 =end doc
 
