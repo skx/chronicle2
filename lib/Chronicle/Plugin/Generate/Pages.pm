@@ -154,6 +154,7 @@ sub on_generate
 
 
         my $c = Chronicle::load_template("entry.tmpl");
+        return unless( $c );
         $c->param( top => $config->{ 'top' } );
         $c->param($entry);
 
