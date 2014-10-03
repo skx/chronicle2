@@ -3,13 +3,13 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More tests => 10;
 
 #
 #  Load the module.
 #
-BEGIN {use_ok('Chronicle::Plugin::Snippets::Version');}
-require_ok('Chronicle::Plugin::Snippets::Version');
+BEGIN {use_ok('Chronicle::Plugin::Snippets::Meta');}
+require_ok('Chronicle::Plugin::Snippets::Meta');
 
 
 package Chronicle;
@@ -25,20 +25,27 @@ package main;
 #
 is( $VERSION,            "cake.free", "Our version is sane" );
 is( $Chronicle::VERSION, "cake.free", "The global version is unchanged" );
-is( $GLOBAL_TEMPLATE_VARS{ 'release' },
-    undef, "But the global variable is empty" );
+
+#
+#  We have no global variables
+#
+is( scalar keys %GLOBAL_TEMPLATE_VARS, 0, "We have no global variables" );
+is( $GLOBAL_TEMPLATE_VARS{ 'chronicle_release' },
+    undef, "Which means we have no chronicle version definition" );
 
 
 #
-#  Load the plugin
+#  Invoke the plugin
 #
-Chronicle::Plugin::Snippets::Version::on_initiate();
+Chronicle::Plugin::Snippets::Meta::on_initiate();
 
 #
-#  Now the release variable should be populated.
+#  Now we should have some defined variables.
 #
-is( $GLOBAL_TEMPLATE_VARS{ 'release' },
-    "cake.free", "Now the global variable is empty" );
+ok( scalar keys %GLOBAL_TEMPLATE_VARS >= 2,
+    "We have some global variables defined" );
+is( $GLOBAL_TEMPLATE_VARS{ 'chronicle_version' },
+    "cake.free", "Including the chronicle release" );
 
 #
 #  And the version is unchanged.
