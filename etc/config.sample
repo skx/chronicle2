@@ -1,0 +1,136 @@
+##
+#  Sample configuration file for the chronicle blog compiler.
+#
+#       http://www.steve.org.uk/Software/chronicle/
+#
+##
+#####
+##
+#
+#  When the compiler starts it will look for :
+#
+#    /etc/chronicle/config
+#
+#    ~/.chronicle/config
+#
+#  Both files will be read if present, the latter may override the former.
+#
+#  Alternatively, or additionally, you may pass a configuration file as
+# an argument via "chronicle --config=/path/to/file"
+#
+####
+
+
+
+
+
+
+
+#
+#  Input directory where the blog entries are read from.
+#
+input = ./blog
+
+
+#
+#  The pattern of files to include, these files will be handled
+# recursively.
+#
+# pattern = *.txt
+#
+
+
+#
+#  The directory to write the formatted blog output to.
+#
+output = ./output
+
+
+
+#
+#  The path to the SQLite database used internally.
+#
+# db = `pwd`/blog.db
+#
+
+
+#
+#
+#  Directory containing the theme subdirectories.
+#
+# theme-dir = /usr/share/perl5/auto/share/dist/App-Chronicle/
+
+
+#
+#  The name of the theme to use.
+#
+theme = blog.steve.org.uk
+
+
+#
+#  The number of entries to include on the index.
+#
+# entry-count = 10
+#
+
+#
+#  The number of entries to include in our main index RSS feed.
+#
+# rss-count = 10
+#
+
+
+
+#
+#  The maximum age of posts which are allowed to accept comments.
+#
+# comment-days = 10
+
+
+#
+#  The filename to use for directory-indexes.
+#
+# index_filename = index.html
+#
+
+
+#
+#  Suffix to use for single entries.
+#
+# entry_suffix = .html
+
+
+#
+#  URL prefix, if any.
+#
+# top = http://example.com/
+
+
+#
+#  The title for the site.
+#
+# blog_title    = Steve Kemp's Blog
+# blog_subtitle = Free Software & Debian
+
+
+#
+#  A command to run pre-build.
+#
+# pre-build = cvs update -A -d
+
+
+#
+#  A command to run post-build.
+#
+# post-build = scp -r output/* user@host:/some/path
+#
+
+
+#
+#  Plugins to exclude at run-time.
+#
+#  The names are comma-separated and are treated as regular-expressions
+# so "exclude-plugins = Chronicle" will exclude all plugins and give you
+# very minimal output.
+#
+exclude-plugins = Chronicle::Plugin::Archived,Chronicle::Plugin::Verbose
