@@ -72,15 +72,20 @@ sub on_generate
     $recent->finish();
 
 
+    #
+    #  The index-file to generate
+    #
+    my $index = $config->{ 'index_filename' } || "index.html";
+
     $config->{ 'verbose' } &&
-      print "Creating : $config->{'output'}/index.html\n";
+      print "Creating : $config->{'output'}/$index\n";
 
     my $c = Chronicle::load_template("index.tmpl");
     return unless ($c);
 
     $c->param( top => $config->{ 'top' } );
     $c->param( entries => $entries ) if ($entries);
-    open( my $handle, ">:encoding(UTF-8)", "$config->{'output'}/index.html" ) or
+    open( my $handle, ">:encoding(UTF-8)", "$config->{'output'}/$index" ) or
       die "Failed to open";
     print $handle $c->output();
     close($handle);

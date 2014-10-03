@@ -144,17 +144,20 @@ sub on_generate
                                } );
     }
 
-
+    #
+    #  The index file to generate
+    #
+    my $index = $config->{ 'index_filename' } || "index.html";
 
     my $c = Chronicle::load_template("archive_index.tmpl");
     if ($c)
     {
         $config->{ 'verbose' } &&
-          print "Creating : $config->{'output'}/archive/index.html\n";
+          print "Creating : $config->{'output'}/archive/$index\n";
         $c->param( top => $config->{ 'top' } );
         $c->param( archive => $data ) if ($data);
         open( my $handle, ">:encoding(UTF-8)",
-              "$config->{'output'}/archive/index.html" ) or
+              "$config->{'output'}/archive/$index" ) or
           die "Failed to open";
         print $handle $c->output();
         close($handle);
@@ -205,8 +208,7 @@ sub on_generate
 
 
         $config->{ 'verbose' } &&
-          print
-          "Creating : $config->{'output'}/archive/$year/$mon/index.html\n";
+          print "Creating : $config->{'output'}/archive/$year/$mon/$index\n";
 
 
         $c = Chronicle::load_template("/archive.tmpl");
@@ -217,7 +219,7 @@ sub on_generate
         $c->param( month      => $mon, year => $year );
         $c->param( month_name => $MONTHS[$mon - 1] );
         open( my $handle, ">:encoding(UTF-8)",
-              "$config->{'output'}/archive/$year/$mon/index.html" ) or
+              "$config->{'output'}/archive/$year/$mon/$index" ) or
           die "Failed to open";
         print $handle $c->output();
         close($handle);

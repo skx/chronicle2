@@ -100,7 +100,7 @@ sub on_insert
         # The post will be published in the future,
         # skip it for now.
         #
-        return ;
+        return;
     }
 }
 

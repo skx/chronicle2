@@ -103,8 +103,14 @@ sub _outputTags
           if ( ( -e $config->{ 'output' } . "/tags/$tag" ) &&
                ( !$config->{ 'force' } ) );
 
+
+        #
+        #  The output file to generate
+        #
+        my $index = $config->{ 'index_filename' } || "index.html";
+
         $config->{ 'verbose' } &&
-          print "Creating : $config->{'output'}/tags/$tag/index.html\n";
+          print "Creating : $config->{'output'}/tags/$tag/$index\n";
 
         File::Path::make_path( "$config->{'output'}/tags/$tag",
                                {  verbose => 0,
@@ -136,7 +142,7 @@ sub _outputTags
         $c->param( entries => $entries ) if ($entries);
         $c->param( tag     => $tag );
         open( my $handle, ">:encoding(UTF-8)",
-              "$config->{'output'}/tags/$tag/index.html" ) or
+              "$config->{'output'}/tags/$tag/$index" ) or
           die "Failed to open";
         print $handle $c->output();
         close($handle);
@@ -197,8 +203,13 @@ sub _outputTagCloud
     $sql->finish();
 
 
+    #
+    #  The output file to generate
+    #
+    my $index = $config->{ 'index_filename' } || "index.html";
+
     $config->{ 'verbose' } &&
-      print "Creating : $config->{'output'}/tags/index.html\n";
+      print "Creating : $config->{'output'}/tags/$index\n";
 
     File::Path::make_path( "$config->{'output'}/tags",
                            {  verbose => 0,
@@ -213,8 +224,8 @@ sub _outputTagCloud
     $c->param( all_tags => $tags ) if ($tags);
     $c->param( top => $config->{ 'top' } );
 
-    open( my $handle, ">:encoding(UTF-8)",
-          "$config->{'output'}/tags/index.html" ) or
+    open( my $handle, ">:encoding(UTF-8)", "$config->{'output'}/tags/$index" )
+      or
       die "Failed to open";
     print $handle $c->output();
     close($handle);
