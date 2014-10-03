@@ -61,20 +61,48 @@ sub on_generate
     my $config = $args{ 'config' };
 
 
-    my $all = $dbh->prepare("SELECT id FROM blog") or
+    my $all = $dbh->prepare("SELECT id FROM blog ORDER BY date ASC") or
       die "Failed to find posts";
 
     my $now = time;
+
+    my @all = ();
 
     $all->execute() or die "Failed to execute:" . $dbh->errstr();
     my $id;
     $all->bind_columns( undef, \$id );
 
+    #
+    # Build up the list of all the post IDs
+    #
+    # We could build these on-demand, but instead maintain a list
+    # such that we can add next_link, next_title, etc, and allow
+    # paging through blog-entries.
+    #
     while ( $all->fetch() )
     {
+        push( @all, $id );
+    }
+
+
+    #
+    #  Now we have all the posts we iterate over them in-order.
+    #
+    for my $index ( 0 .. $#all )
+    {
+        my $id = $all[$index];
 
         #
-        #  Read the details of this single entry.
+        #  The previous blog entry and next blog entry, sequentially
+        #
+        my $prev_id = undef;
+        my $next_id = undef;
+
+        $prev_id = $all[$index - 1] if ( $index > 0 );
+        $next_id = $all[$index + 1] if ( $index < $#all );
+
+        #
+        #  Read the details of the main entry.
         #
         my $entry = Chronicle::getBlog( $dbh, $id );
 
@@ -103,21 +131,22 @@ sub on_generate
         #
         # Unless --force overrides that.
         #
-        $skip = 0 if ( $config->{'force'} );
+        $skip = 0 if ( $config->{ 'force' } );
 
         #
         # Finally if comments were enabled and this is recent then
         # we'll also force it to be generated
         #
-        $skip = 0 if ( ( $config->{'comments'} ) &&
-                       ( ( $now - $entry->{ 'posted' } ) <
-                         ( 60 * 60 * 24 * $config->{ 'comment-days' } ) ) );
+        $skip = 0
+          if ( ( $config->{ 'comments' } ) &&
+               ( ( $now - $entry->{ 'posted' } ) <
+                 ( 60 * 60 * 24 * $config->{ 'comment-days' } ) ) );
 
 
         #
         #  Loop again if we're skipping this post.
         #
-        next if ( $skip );
+        next if ($skip);
 
 
         $config->{ 'verbose' } &&
@@ -127,6 +156,24 @@ sub on_generate
         my $c = Chronicle::load_template("entry.tmpl");
         $c->param( top => $config->{ 'top' } );
         $c->param($entry);
+
+        #
+        #  If we have a prev/next entry then add their details too.
+        #
+        if ($prev_id)
+        {
+            my $prev = Chronicle::getBlog( $dbh, $prev_id );
+            $c->param( prev_id    => $prev_id,
+                       prev_title => $prev->{ 'title' },
+                       prev_link  => $prev->{ 'link' } );
+        }
+        if ($next_id)
+        {
+            my $next = Chronicle::getBlog( $dbh, $next_id );
+            $c->param( next_id    => $next_id,
+                       next_title => $next->{ 'title' },
+                       next_link  => $next->{ 'link' } );
+        }
 
         #
         #  Ensure we have a full output path - because a plugin might have given us a dated-path.
