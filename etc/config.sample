@@ -46,7 +46,6 @@ input = ./blog
 output = ./output
 
 
-
 #
 #  The path to the SQLite database used internally.
 #
@@ -55,10 +54,20 @@ output = ./output
 
 
 #
+#  Specify the directory containing themes.
 #
-#  Directory containing the theme subdirectories.
+#  (Each theme is a named sub-directory beneath the single parent.)
+#
+#  The default location will vary depending on your Perl installation,
+# and you can see what is in-use upon your system via:
+#
+#    $ chronicle --list-themes
+#
+#  This configuration setting is useful if you have a local theme
+# that you want to point at, without installing it system-wide.
 #
 # theme-dir = /usr/share/perl5/auto/share/dist/App-Chronicle/
+#
 
 
 #
@@ -79,7 +88,6 @@ theme = blog.steve.org.uk
 #
 # rss-count = 10
 #
-
 
 
 #
@@ -115,16 +123,22 @@ theme = blog.steve.org.uk
 
 
 #
-#  A command to run pre-build.
+#  A series of commands to be executed prior to the building of the
+# blog.
+#
+#  (Commands are executed in the order they are listed here.)
 #
 # pre-build = cvs update -A -d
-
+# pre-build = touch foo
+#
 
 #
-#  A command to run post-build.
+#  A series of commands to run post-build.
+#
+#  (Commands are executed in the order they are listed here.)
 #
 # post-build = scp -r output/* user@host:/some/path
-#
+# post-build = echo 'I am complete'
 
 
 #
