@@ -67,7 +67,7 @@ it is removed it will be recreated when needed.
 When C<chronicle> is first executed it will create an SQLite database
 if it is not already present.  The database will contain two tables,
 one for the posts, and one to store the tags associated with the posts,
-if you choose to use tag sin your entries.
+if you choose to use tags in your entries.
 
 The blog-entry table contains the following columns:
 
