@@ -1,9 +1,9 @@
-5.0.7 - XX XX XXX
+5.0.7 - 4th October 2014
 	* Added Text::MultiMarkdown support, contributed by Stuart Skelton.
 	* Don't enable comments to the templates if not enabled.
 	* Don't regenerate "recent" blog-posts unless comments are enabled.
-	* Allow recursive detection of posts from beneath ./data/ (or whatever
-	the input path is.)
+	* Allow recursive detection of posts from beneath ./data/
+	  (Or whateverthe input path is.)
 	* New bootstrap2 theme, named 'bs2'.
 	* Tags are output ordered by name, case-insensitively.
 	* Tags are always lower-cased when inserted.
