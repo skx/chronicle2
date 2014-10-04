@@ -57,7 +57,8 @@ This plugin will look for lines of the form:
 =for example end
 
 Any such link will be replaced by an inline version of the video,
-and the blog-post will have the tag value updated to include C<youtube>.
+and the blog-post will have the string C<youtube> added to its
+tag-list.
 
 =cut
 
