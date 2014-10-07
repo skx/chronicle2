@@ -46,7 +46,10 @@ package Chronicle::Plugin::Snippets::Meta;
 
 use strict;
 use warnings;
+
 use Date::Format;
+use Sys::Hostname;
+
 
 our $VERSION = "5.0.7";
 
@@ -139,10 +142,20 @@ sub on_initiate
     {
 
         #
-        #  If not we'll look for a hostname
+        #  If not we'll look for a hostname via the Sys::Hostname module.
         #
-        $hostname = `hostname --fqdn`;
-        $hostname =~ s/[\r\n]//g;
+        $hostname = Sys::Hostname::hostname();
+
+        #
+        #  The previous line will have probably returned a short-name.
+        #
+        #  Try to expand it into FQDN.  If that fails - well at least we tried.
+        #
+        my @values = ( gethostbyname($hostname) );
+        if ( scalar @values )
+        {
+            $hostname = $values[0];
+        }
     }
 
     if ($hostname)
