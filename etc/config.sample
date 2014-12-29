@@ -159,3 +159,20 @@ exclude-plugins = Chronicle::Plugin::Archived,Chronicle::Plugin::Verbose
 #
 meta_date_format = %e %b %Y
 meta_time_format = %H:%M:%S
+
+
+#
+#  The entries have a date and time though, which is different from that
+# above.
+#
+#  These may be influenced.
+#
+date_format = %a, %e %b %Y
+time_format = %H:%M:%S
+
+#
+#  If you wish to disable either for some reason then just set to a value
+# which doesn't contain a single "%".  For example:
+#
+#   time_format = ''
+#
