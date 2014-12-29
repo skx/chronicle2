@@ -1,6 +1,6 @@
-5.0.8 - XX-XX-XX
-        * Use Sys::Hostname rather than /bin/hostname for reading the hostname.
-        * Added `date_format` and `time_format` to the configuration file.
+5.0.8 - 29th December 2014
+	* Use Sys::Hostname rather than /bin/hostname for reading the hostname.
+	* Added `date_format` and `time_format` to the configuration file.
 	* Updated the `getBlog` function, available to plugins, to allow configuration variables to be read.
 
 5.0.7 - 4th October 2014
