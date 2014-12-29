@@ -70,7 +70,11 @@ sub on_generate
 
     while ( $recent->fetch() )
     {
-        push( @$entries, Chronicle::getBlog( $dbh, $id ) );
+        push( @$entries,
+              Chronicle::getBlog( dbh    => $dbh,
+                                  id     => $id,
+                                  config => $config
+                                ) );
     }
     $recent->finish();
 

@@ -104,7 +104,10 @@ sub on_generate
         #
         #  Read the details of the main entry.
         #
-        my $entry = Chronicle::getBlog( $dbh, $id );
+        my $entry = Chronicle::getBlog( dbh    => $dbh,
+                                        id     => $id,
+                                        config => $config
+                                      );
 
         #
         #  Work out where it will be written to
@@ -154,7 +157,7 @@ sub on_generate
 
 
         my $c = Chronicle::load_template("entry.tmpl");
-        return unless( $c );
+        return unless ($c);
         $c->param( top => $config->{ 'top' } );
         $c->param($entry);
 
@@ -163,14 +166,22 @@ sub on_generate
         #
         if ($prev_id)
         {
-            my $prev = Chronicle::getBlog( $dbh, $prev_id );
+            my $prev =
+              Chronicle::getBlog( dbh    => $dbh,
+                                  id     => $prev_id,
+                                  config => $config
+                                );
             $c->param( prev_id    => $prev_id,
                        prev_title => $prev->{ 'title' },
                        prev_link  => $prev->{ 'link' } );
         }
         if ($next_id)
         {
-            my $next = Chronicle::getBlog( $dbh, $next_id );
+            my $next =
+              Chronicle::getBlog( dbh    => $dbh,
+                                  id     => $next_id,
+                                  config => $config
+                                );
             $c->param( next_id    => $next_id,
                        next_title => $next->{ 'title' },
                        next_link  => $next->{ 'link' } );
