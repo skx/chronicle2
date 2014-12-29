@@ -849,7 +849,20 @@ Fetch the blog post with the given ID
 
 sub getBlog
 {
-    my ( $dbh, $id ) = (@_);
+    my (%params) = (@_);
+
+    #
+    #  These are compulsary
+    #
+    my $dbh = $params{ 'dbh' } || die "Missing database handle";
+    my $id  = $params{ 'id' }  || die "Missing ID";
+
+    #
+    #  This is optional, and present so that the date/time format
+    # may be changed by the user in their configuration file.
+    #
+    my $config = $params{ 'config' } || undef;
+
 
     #
     #  Get the blog-post
@@ -897,22 +910,59 @@ sub getBlog
     {
         $time = $data->{ 'mtime' };
     }
-    my $hms = time2str( "%H:%M:%S", $time );
-    my $tz  = time2str( "%z",       $time );
 
 
-    if ( $hms eq '00:00:00' )
+    ##
+    ##  Get the format-strings to use for time-formatting.
+    ##
+    my $time_fmt = "%H:%M:%S";
+    if ($config)
     {
-        $hms = time2str( "%H:%M:%S", $data->{ 'mtime' }, "GMT" );
-        $tz = "GMT";
+        $time_fmt = $config->{ "time_format" } || "%H:%M:%S";
+    }
+    $time_fmt = undef if ( $time_fmt !~ /%/ );
+
+
+    ##
+    ##  Ditto for the date-string.
+    ##
+    my $date_fmt = "%a, %e %b %Y";
+    if ($config)
+    {
+        $date_fmt = $config->{ "date_format" } || "%a, %e %b %Y";
+    }
+    $date_fmt = undef if ( $date_fmt !~ /%/ );
+
+
+    #
+    #  The date of the entry - if we have a date-format that contains
+    # at least one % character.
+    #
+    if ( $date_fmt && length($date_fmt) )
+    {
+        $data->{ 'date' } = time2str( $date_fmt, $time );
     }
 
     #
-    #  The date and time of the entry.
+    #  The time of the entry - if we have a time-format that contains
+    # at least one % character.
     #
-    $data->{ 'date' } = time2str( "%a, %e %b %Y", $time );
-    $data->{ 'time' } = $hms;
+    if ( $time_fmt && length($time_fmt) )
+    {
 
+        #
+        #  The time from the import-date.
+        #
+        $data->{ 'time' } = time2str( $time_fmt, $time );
+
+        #
+        #  If that failed then from the modification-time.
+        #
+        if ( $data->{ 'time' } =~ /00:00:00/ )
+        {
+            $data->{ 'time' } = time2str( $time_fmt, $data->{ 'mtime' } );
+        }
+    }
 
     #
     #  If comments are enabled then populate the blog-post with them too.
