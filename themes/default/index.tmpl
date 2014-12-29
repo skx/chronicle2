@@ -12,7 +12,7 @@
     <!-- tmpl_loop name='entries' -->
     <div class="entry">
       <div class="title"><a href="<!-- tmpl_var name='top' --><!-- tmpl_var name='link' escape='html' -->"><!-- tmpl_var name='title' --></a></div>
-      <div class="date"><!-- tmpl_var name='date' escape='html' --></div>
+      <div class="date"><!-- tmpl_var name='date' escape='html' --><!-- tmpl_if name='time' --> at <!-- tmpl_var name='time' --><!-- /tmpl_if --></div>
       <div class="body"><!-- tmpl_var name='body' --></div>
       <div class="tags">
         <!-- tmpl_if name='comment_count' -->

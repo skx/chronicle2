@@ -1,6 +1,6 @@
 <div>
   <h2 style="width:100%; border-bottom:1px solid silver;"><a href="<!-- tmpl_var name='top' --><!-- tmpl_var name='link' escape='html' -->" style="text-decoration:none; color:black;"><!-- tmpl_var name='title' --></a></h2>
-  <p style="text-align:right; width:100%"><!-- tmpl_var name='date' --></p>
+  <p style="text-align:right; width:100%"><!-- tmpl_var name='date' --><!-- tmpl_if name='time' --> at <!-- tmpl_var name='time' --><!-- /tmpl_if --></p>
   <div class="entry-content">
     <!-- tmpl_var name='body' -->
   </div>

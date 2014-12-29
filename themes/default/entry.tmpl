@@ -21,7 +21,7 @@
     <!-- tmpl_include name='header.inc' -->
     <div class="entry">
       <div class="title"><!-- tmpl_var name='title' --></div>
-      <div class="date"><!-- tmpl_var name='date'  escape='html' --></div>
+      <div class="date"><!-- tmpl_var name='date'  escape='html' --><!-- tmpl_if name='time' --> at <!-- tmpl_var name='time' --><!-- /tmpl_if --></div>
       <div class="body"><!-- tmpl_var name='body' --></div>
       <!-- tmpl_if name='tags' -->
       <div class="tags">Tags: <!-- tmpl_loop name='tags' --><a href="<!-- tmpl_var name='top' -->tags/<!-- tmpl_var name='tag' escape='html' -->"><!-- tmpl_var name='tag' escape='html' --></a><!-- tmpl_if name="__last__" -->.<!-- tmpl_else -->, <!-- /tmpl_if --><!-- /tmpl_loop --></div>

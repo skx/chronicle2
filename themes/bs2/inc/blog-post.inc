@@ -4,7 +4,7 @@
 <!-- /tmpl_if -->
 <!-- tmpl_var name='body' -->
 <p class="blog-list-detail">
-Posted <!-- tmpl_var name='date' --> -
+Posted on <!-- tmpl_var name='date' --><!-- tmpl_if name='time' --> at <!-- tmpl_var name='time' --><!-- /tmpl_if --> -
   <!-- tmpl_if name='comment_count' --><a href="<!-- tmpl_var name='top' --><!-- tmpl_var name='link' escape='html' -->"><!-- tmpl_var name='comment_count' --> comment<!-- tmpl_if name='comment_plural' -->s<!-- /tmpl_if -->.</a> <!-- tmpl_else -->No comments <!-- /tmpl_if -->
 </p>
 
