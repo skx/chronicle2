@@ -51,6 +51,11 @@ use strict;
 use warnings;
 
 
+use Date::Format;
+use Date::Parse;
+
+
+
 our $VERSION = "5.0.8";
 
 
@@ -98,8 +103,11 @@ sub on_initiate
                                        config => $config
                                      );
 
+        my $x = $data->{ 'posted' };
+        my $date = time2str( "%e %B %Y", $x );
+
         push( @$entries,
-              {  date  => $data->{ 'date_only' },
+              {  date  => $date,
                  title => $data->{ 'title' },
                  link  => $data->{ 'link' },
                  tags  => $data->{ 'tags' },
