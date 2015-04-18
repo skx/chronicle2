@@ -1,3 +1,7 @@
+5.0.9 - 18th April 2015
+    * Add App::Chronicle module to claim the namespace appropriately.
+	* Bump copyright year to 2015.
+
 5.0.8 - 29th December 2014
 	* Use Sys::Hostname rather than /bin/hostname for reading the hostname.
 	* Added `date_format` and `time_format` to the configuration file.
