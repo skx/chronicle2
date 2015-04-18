@@ -14,7 +14,7 @@ For example the following blog-post will contain an inline video:
 =for example begin
 
     Title: My Title
-    Date: 10th March 2014
+    Date: 10th March 2015
 
     <youtube>XXXXX</youtube>
 

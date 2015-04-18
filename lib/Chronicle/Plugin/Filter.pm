@@ -16,7 +16,7 @@ As an example the following blog-post would be 100% upper-cased:
 =for example begin
 
     Title: My Title
-    Date: 10th March 2014
+    Date: 10th March 2015
     Filter: tr a-z A-Z
 
     <p>This is a line of text.</p>

@@ -10,7 +10,7 @@ blog will contain links to dated posts.
 
 For example by default a blog entry might be generated with a URL such
 as C<http://example.com/my_first_post.html>.  With this module enabled
-that will change to C<http://example.com/2014/09/my_first_post.html>.
+that will change to C<http://example.com/2015/09/my_first_post.html>.
 
 B<NOTE> If you enable or disable this plugin you will need to regenerate
 your SQLite database.
