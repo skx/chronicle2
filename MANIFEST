@@ -3,6 +3,7 @@ cgi-bin/comments.cgi
 ChangeLog
 COMMENTS.md
 etc/config.sample
+lib/App/Chronicle.pm
 lib/Chronicle/Config/Reader.pm
 lib/Chronicle/Plugin/Archived.pm
 lib/Chronicle/Plugin/DBTweak.pm
