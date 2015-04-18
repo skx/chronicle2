@@ -314,7 +314,7 @@ use warnings;
 package Chronicle;
 use Module::Pluggable::Ordered require => 1, inner => 0;
 
-our $VERSION = "5.0.8";
+our $VERSION = "5.0.9";
 
 use DBI;
 use Date::Format;
