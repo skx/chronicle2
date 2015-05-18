@@ -80,6 +80,10 @@ EOF
         }
 
         my $textile = new Text::Textile;
+        if ($data->{ 'truncatedbody' })
+        {
+        $data->{ 'truncatedbody' }  = $textile->process( $data->{ 'truncatedbody' } );
+        }
         $data->{ 'body' } = $textile->process( $data->{ 'body' } );
     }
 

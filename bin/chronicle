@@ -633,7 +633,9 @@ sub insertPost
     }
     close($handle);
 
-
+    # initicate the truncated body.
+    $meta{ 'truncatedbody' } = '';
+  
     #
     #  Generate the link from the title of the post.
     #
@@ -729,7 +731,7 @@ sub insertPost
     #  Now insert
     #
     my $post_add = $dbh->prepare(
-        "INSERT INTO blog (file,date,title,link,mtime,body) VALUES( ?,?,?,?,?,?)"
+        "INSERT INTO blog (file,date,title,link,mtime,body,truncatedbody) VALUES( ?,?,?,?,?,?,?)"
       ) or
       die "Failed to prepare";
 
@@ -737,7 +739,8 @@ sub insertPost
                         $meta{ 'date' },
                         $meta{ 'title' },
                         $meta{ 'link' },
-                        $mtime, $meta{ 'body' } ) or
+                        $mtime, $meta{ 'body' },
+                        $meta{ 'truncatedbody' } ) or
       die "Failed to insert:" . $dbh->errstr();
 
     my $blog_id = $dbh->func('last_insert_rowid');
@@ -812,7 +815,7 @@ sub getDatabase
     {
 
         $dbh->do(
-            "CREATE TABLE blog (id INTEGER PRIMARY KEY, file, date,title, link,mtime, body );"
+            "CREATE TABLE blog (id INTEGER PRIMARY KEY, file, date,title, link,mtime, body, truncatedbody );"
         );
         $dbh->do("CREATE TABLE tags (id INTEGER PRIMARY KEY, name, blog_id );");
 

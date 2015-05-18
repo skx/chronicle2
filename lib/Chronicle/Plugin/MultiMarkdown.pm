@@ -75,7 +75,10 @@ If you're on a Debian GNU/Linux system you can fix this via:
 EOF
             exit(1);
         }
-
+        if ($data->{ 'truncatedbody' })
+        {
+        $data->{ 'truncatedbody' }  = Text::MultiMarkdown::markdown( $data->{ 'truncatedbody' } );
+        }
         $data->{ 'body' } = Text::MultiMarkdown::markdown( $data->{ 'body' } );
 
     }
