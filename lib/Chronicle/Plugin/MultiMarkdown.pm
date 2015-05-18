@@ -54,8 +54,8 @@ sub on_insert
     #
     #  The post data and input format
     #
-    my $data   = $args{ 'data' };
-    my $format = $data->{ 'format' };
+    my $data   = $args{'data'};
+    my $format = $data->{'format'};
 
     if ( $format && ( $format =~ /^multimarkdown$/i ) )
     {
@@ -75,11 +75,11 @@ If you're on a Debian GNU/Linux system you can fix this via:
 EOF
             exit(1);
         }
-        if ($data->{ 'truncatedbody' })
+        foreach my $key (qw! truncatedbody body !)
         {
-        $data->{ 'truncatedbody' }  = Text::MultiMarkdown::markdown( $data->{ 'truncatedbody' } );
+            $data->{$key} = Text::MultiMarkdown::markdown( $data->{$key} )
+                if ( $data->{$key} );
         }
-        $data->{ 'body' } = Text::MultiMarkdown::markdown( $data->{ 'body' } );
 
     }
     return ($data);
