@@ -44,6 +44,12 @@ reader to the rest of the article.
 
 The body text is then cleaned by removing C<__CUT__>. 
 
+:B<NOTE> If there are multiple __CUT__'s within a file, only the first 
+correctly placed __CUT__ will be used.  Other __CUTS__ will be ignored
+and will remain within the body and or in the trunacted body in the case of a
+incorrectly placed __CUT__ prior to a correctly placed __CUT__.
+
+
 
 =cut
 
