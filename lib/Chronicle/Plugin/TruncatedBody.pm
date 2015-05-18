@@ -58,13 +58,14 @@ sub on_insert
     my $body = $data->{'body'};
     my $link = $data->{'link'};
     $link = '' unless $link;
-    if ( $body =~ /(.+)\n\_\_CUT\_\_/s )
+    # we are only concerned with first correct cut
+    if ( $body =~ /^(.+?)\n^__CUT__/ms )
     {
         # assign the text before the cut to cut and add a link to read more
-        $data->{'truncatedbody'} = $1 . "\n\n<a href='$link'>Read More</a>";
+        $data->{'truncatedbody'} = $1 . "\n\n<a href=\"$link\">Read More</a>";
 
         # remove the cut from the main body
-        $data->{'body'} =~ s/__CUT__//;
+        $data->{'body'} =~ s/^(.+?)\n^__CUT__/$1/ms;
     }
     return ($data);
 }
