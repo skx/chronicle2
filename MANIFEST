@@ -27,6 +27,7 @@ lib/Chronicle/Plugin/Snippets/RecentPosts.pm
 lib/Chronicle/Plugin/Snippets/RecentTags.pm
 lib/Chronicle/Plugin/Textile.pm
 lib/Chronicle/Plugin/Tidy.pm
+lib/Chronicle/Plugin/TruncatedBody.pm
 lib/Chronicle/Plugin/YouTube.pm
 LICENSE
 Makefile.PL

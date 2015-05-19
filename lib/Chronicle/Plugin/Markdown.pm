@@ -54,8 +54,8 @@ sub on_insert
     #
     #  The post data and input format
     #
-    my $data   = $args{ 'data' };
-    my $format = $data->{ 'format' };
+    my $data   = $args{'data'};
+    my $format = $data->{'format'};
 
     if ( $format && ( $format =~ /^markdown$/i ) )
     {
@@ -76,7 +76,13 @@ EOF
             exit(1);
         }
 
-        $data->{ 'body' } = Text::Markdown::markdown( $data->{ 'body' } );
+        foreach my $key (qw! truncatedbody body !)
+        {
+            $data->{$key} = Text::Markdown::markdown( $data->{$key} )
+                if ( $data->{$key} );
+        }
+
+
 
     }
     return ($data);
