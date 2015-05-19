@@ -55,8 +55,8 @@ sub on_insert
     #
     #  The post data and input-format
     #
-    my $data   = $args{'data'};
-    my $format = $data->{'format'};
+    my $data   = $args{ 'data' };
+    my $format = $data->{ 'format' };
 
     if ( $format && ( $format =~ /^textile$/i ) )
     {
@@ -83,8 +83,8 @@ EOF
 
         foreach my $key (qw! truncatedbody body !)
         {
-            $data->{$key} = $textile->process( $data->{$key} )
-                if ( $data->{$key} );
+            $data->{ $key } = $textile->process( $data->{ $key } )
+              if ( $data->{ $key } );
         }
 
 

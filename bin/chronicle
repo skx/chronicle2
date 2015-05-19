@@ -635,7 +635,7 @@ sub insertPost
 
     # initicate the truncated body.
     $meta{ 'truncatedbody' } = '';
-  
+
     #
     #  Generate the link from the title of the post.
     #
@@ -739,8 +739,10 @@ sub insertPost
                         $meta{ 'date' },
                         $meta{ 'title' },
                         $meta{ 'link' },
-                        $mtime, $meta{ 'body' },
-                        $meta{ 'truncatedbody' } ) or
+                        $mtime,
+                        $meta{ 'body' },
+                        $meta{ 'truncatedbody' }
+      ) or
       die "Failed to insert:" . $dbh->errstr();
 
     my $blog_id = $dbh->func('last_insert_rowid');
