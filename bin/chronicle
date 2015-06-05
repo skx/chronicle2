@@ -356,6 +356,8 @@ $CONFIG{ 'verbose' }      = 0;
 $CONFIG{ 'top' }          = "/";
 $CONFIG{ 'exclude-plugins' } =
   "Chronicle::Plugin::Archived,Chronicle::Plugin::Verbose";
+$CONFIG{ 'tag-cloud-min-size' } = 5;
+$CONFIG{ 'tag-cloud-max-size' } = 60;
 
 
 #
