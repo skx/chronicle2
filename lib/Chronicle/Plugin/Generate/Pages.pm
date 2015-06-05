@@ -155,8 +155,7 @@ sub on_generate
         $config->{ 'verbose' } &&
           print "Creating : $config->{'output'}/$entry->{'link'}\n";
 
-
-        my $c = Chronicle::load_template("entry.tmpl");
+        my $c = Chronicle::load_template( $entry->{ 'template' } );
         return unless ($c);
         $c->param( top => $config->{ 'top' } );
         $c->param($entry);
