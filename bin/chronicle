@@ -636,6 +636,10 @@ sub insertPost
     # initicate the truncated body.
     $meta{ 'truncatedbody' } = '';
 
+    # initicate the template and change if there is a template is supplied.
+    $meta{ 'template' } = "entry.tmpl";
+    $meta{ 'template' } = '' unless defined $meta{ 'template' };
+
     #
     #  Generate the link from the title of the post.
     #
@@ -731,7 +735,7 @@ sub insertPost
     #  Now insert
     #
     my $post_add = $dbh->prepare(
-        "INSERT INTO blog (file,date,title,link,mtime,body,truncatedbody) VALUES( ?,?,?,?,?,?,?)"
+        "INSERT INTO blog (file,date,title,link,mtime,body,truncatedbody,template) VALUES( ?,?,?,?,?,?,?,?)"
       ) or
       die "Failed to prepare";
 
@@ -741,7 +745,8 @@ sub insertPost
                         $meta{ 'link' },
                         $mtime,
                         $meta{ 'body' },
-                        $meta{ 'truncatedbody' }
+                        $meta{ 'truncatedbody' },
+                        $meta{ 'template' }
       ) or
       die "Failed to insert:" . $dbh->errstr();
 
@@ -817,7 +822,7 @@ sub getDatabase
     {
 
         $dbh->do(
-            "CREATE TABLE blog (id INTEGER PRIMARY KEY, file, date,title, link,mtime, body, truncatedbody );"
+            "CREATE TABLE blog (id INTEGER PRIMARY KEY, file, date,title, link,mtime, body, truncatedbody, template );"
         );
         $dbh->do("CREATE TABLE tags (id INTEGER PRIMARY KEY, name, blog_id );");
 
