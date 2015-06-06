@@ -77,13 +77,17 @@ sub on_initiate
 
     my $tags;
 
+    # Default sizing options
+    my $min  = $config->{ 'tag_cloud_size_min' }  || 5;
+    my $max  = $config->{ 'tag_cloud_size_max' }  || 60;
+    my $step = $config->{ 'tag_cloud_size_step' } || 5;
     #
     # Process the results.
     #
     while ( $sql->fetch() )
     {
-        my $size = $count * 5 + 5;
-        if ( $size > 60 ) {$size = 60;}
+        my $size = $count * $step + $min;
+        $size = $max if ( $size > $max );
 
         push( @$tags,
               {  tag   => $tag,
