@@ -177,6 +177,10 @@ sub _outputTagCloud
 
     my $tags;
 
+    # Default sizing options
+    my $min  = $config->{ 'tag_cloud_size_min' }  || 5;
+    my $max  = $config->{ 'tag_cloud_size_max' }  || 60;
+    my $step = $config->{ 'tag_cloud_size_step' } || 5;
     #
     # Now the tags.
     #
@@ -194,11 +198,8 @@ sub _outputTagCloud
     #
     while ( $sql->fetch() )
     {
-        my $size = $count * 5 + $config->{ 'tag-cloud-min-size' };
-        if ( $size > $config->{ 'tag-cloud-max-size' } )
-        {
-            $size = $config->{ 'tag-cloud-max-size' };
-        }
+        my $size = $count * $step + $min;
+        $size = $max if ( $size > $max );
 
         push( @$tags,
               {  tag   => $tag,
