@@ -81,6 +81,7 @@ sub on_initiate
     my $min  = $config->{ 'tag_cloud_size_min' }  || 5;
     my $max  = $config->{ 'tag_cloud_size_max' }  || 60;
     my $step = $config->{ 'tag_cloud_size_step' } || 5;
+
     #
     # Process the results.
     #
