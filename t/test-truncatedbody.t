@@ -31,12 +31,12 @@ text after the cut";
 my $out = Chronicle::Plugin::TruncatedBody::on_insert( undef,
                                                    data => \%correct_cut_data );
 
-is( $out->{ body }, 'Text before the cut
+is( $out->{ 'body' }, 'Text before the cut
 
 text after the cut', 'one cut body'
 );
 
-is( $out->{ truncatedbody }, "Text before the cut
+is( $out->{ 'truncatedbody' }, "Text before the cut
 
 <a href=\"\">Read More</a>", 'one cut truncatedbody'
 );
@@ -56,13 +56,13 @@ text after the cut";
 $out = Chronicle::Plugin::TruncatedBody::on_insert( undef,
                                                  data => \%incorrect_cut_data );
 
-is( $out->{ body }, 'Text before the cut
+is( $out->{ 'body' }, 'Text before the cut
  __CUT__
 
 text after the cut', 'one incorrect cut body'
 );
 
-is( $out->{ truncatedbody }, undef, 'one incorrect cut truncatedbody' );
+is( $out->{ 'truncatedbody' }, undef, 'one incorrect cut truncatedbody' );
 
 
 #
@@ -82,7 +82,7 @@ text after the cut";
 $out =
   Chronicle::Plugin::TruncatedBody::on_insert( undef, data => \%two_cut_data );
 
-is( $out->{ body }, 'Text before the cut
+is( $out->{ 'body' }, 'Text before the cut
 
 text inbetween the cuts
 
@@ -90,7 +90,7 @@ __CUT__
 text after the cut', 'two cut body'
 );
 
-is( $out->{ truncatedbody }, "Text before the cut
+is( $out->{ 'truncatedbody' }, "Text before the cut
 
 <a href=\"\">Read More</a>", 'two cut truncatedbody'
 );
@@ -113,7 +113,7 @@ text after the cut";
 $out = Chronicle::Plugin::TruncatedBody::on_insert( undef,
                                                     data => \%two_cut_data_1 );
 
-is( $out->{ body }, 'Text before the cut
+is( $out->{ 'body' }, 'Text before the cut
 
 text inbetween the cuts
 
@@ -121,7 +121,7 @@ text inbetween the cuts
 text after the cut', 'two cut body 1'
 );
 
-is( $out->{ truncatedbody }, "Text before the cut
+is( $out->{ 'truncatedbody' }, "Text before the cut
 
 <a href=\"\">Read More</a>", 'two cut truncatedbody 1'
 );
@@ -143,7 +143,7 @@ text after the cut";
 $out = Chronicle::Plugin::TruncatedBody::on_insert( undef,
                                                     data => \%two_cut_data_2 );
 
-is( $out->{ body }, 'Text before the cut
+is( $out->{ 'body' }, 'Text before the cut
  __CUT__
 
 text inbetween the cuts
@@ -151,7 +151,7 @@ text inbetween the cuts
 text after the cut', 'two cut body 2'
 );
 
-is( $out->{ truncatedbody }, "Text before the cut
+is( $out->{ 'truncatedbody' }, "Text before the cut
  __CUT__
 
 text inbetween the cuts
