@@ -121,10 +121,9 @@ sub on_insert
 
 =head2 on_generate
 
-Generates the static page if a "C<page: 1>"
- header is present. The Page is processed
- then removed from futher processing, to avoid
- being treated as a blog post.
+Generates the static page if a "C<page: 1>" header is present. The Page is
+processed then removed from futher processing, to avoid  being treated as a
+blog entry.
 
 =cut
 
@@ -139,7 +138,7 @@ sub on_generate
     my $config = $args{ 'config' };
 
     #
-    #  Retrive all the page data for building
+    #  Fetch all the static-pages.
     #
     my $pages =
       $dbh->prepare("SELECT filename,title,content,template FROM pages") or
@@ -151,14 +150,13 @@ sub on_generate
     $pages->bind_columns( undef, \$filename, \$title, \$content, \$template );
 
     #
-    #   Fetach and build the files one by one
+    #  Build each page.
     #
-
     while ( my $page = $pages->fetch() )
     {
 
         $config->{ 'verbose' } &&
-          print "Writing Title:$title -> $config->{'output'}/$filename\n";
+          print "Generating static-page: Title:$title -> $config->{'output'}/$filename\n";
 
         my $c = Chronicle::load_template($template);
         $c->param( top => $config->{ 'top' } );
@@ -174,11 +172,11 @@ sub on_generate
     $pages->finish();
 }
 
+
+
 sub _order
 {
-
     return 1001;
-
 }
 
 1;
