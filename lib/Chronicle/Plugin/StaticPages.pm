@@ -10,11 +10,11 @@ If your blog-post contains a "C<page: 1>" header then it will
 treat the post as a non-blog static page.
 
 This contains all the methods to handle the storing and generating of
-non-blog pages. 
+non-blog pages.
 
 * on_db_create: creates a table within the blog database to store the pages.
 * on_insert: inserts new and updated pages.
-* on_generate: generates the page. 
+* on_generate: generates the page.
 =cut
 
 =head1 METHODS
@@ -121,9 +121,9 @@ sub on_insert
 
 =head2 on_generate
 
-Generates the static page if a "C<page: 1>" 
- header is present. The Page is processed 
- then removed from futher processing, to avoid 
+Generates the static page if a "C<page: 1>"
+ header is present. The Page is processed
+ then removed from futher processing, to avoid
  being treated as a blog post.
 
 =cut
