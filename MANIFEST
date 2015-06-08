@@ -20,6 +20,7 @@ lib/Chronicle/Plugin/PostBuild.pm
 lib/Chronicle/Plugin/PostSpooler.pm
 lib/Chronicle/Plugin/PreBuild.pm
 lib/Chronicle/Plugin/SkipDrafts.pm
+lib/Chronicle/Plugin/StaticPages.pm
 lib/Chronicle/Plugin/Snippets/AllTags.pm
 lib/Chronicle/Plugin/Snippets/Archives.pm
 lib/Chronicle/Plugin/Snippets/Meta.pm
