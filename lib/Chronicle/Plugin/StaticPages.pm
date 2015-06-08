@@ -69,6 +69,7 @@ sub on_insert
     my $data   = $args{ 'data' };
     my $dbh    = $args{ 'dbh' };
     my $config = $args{ 'config' };
+
     #
     #  Is this a page?
     #
@@ -112,6 +113,7 @@ sub on_insert
     # if its not a page carry on
     else
     {
+
         #
         #  Allow proceeding as normal
         #
@@ -156,7 +158,8 @@ sub on_generate
     {
 
         $config->{ 'verbose' } &&
-          print "Generating static-page: Title:$title -> $config->{'output'}/$filename\n";
+          print
+          "Generating static-page: Title:$title -> $config->{'output'}/$filename\n";
 
         my $c = Chronicle::load_template($template);
         $c->param( top => $config->{ 'top' } );
