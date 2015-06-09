@@ -7,7 +7,7 @@ Chronicle::Plugin::TruncatedBody - Support for Truncating longer blog posts.
 
 The module allows you to truncate longer blog posts.
 
-To use this you need to add C<__CUT__> within the post body to 
+To use this you need to add C<__CUT__> within the post body to
 the start of its own separate line.
 
 =cut
@@ -38,13 +38,13 @@ The method is designed to return an updated blog-post structure,
 after performing any massaging required.  If the method returns undef
 then the post is not inserted.
 
-If the new entry has a C<__CUT__> on its own line, the text before the 
-cut is marked as part of the truncated body and a link pointing the 
+If the new entry has a C<__CUT__> on its own line, the text before the
+cut is marked as part of the truncated body and a link pointing the
 reader to the rest of the article.
 
-The body text is then cleaned by removing C<__CUT__>. 
+The body text is then cleaned by removing C<__CUT__>.
 
-:B<NOTE> If there are multiple __CUT__'s within a file, only the first 
+:B<NOTE> If there are multiple __CUT__'s within a file, only the first
 correctly placed __CUT__ will be used.  Other __CUTS__ will be ignored
 and will remain within the body and or in the truncated body in the case of a
 incorrectly placed __CUT__ prior to a correctly placed __CUT__.
@@ -58,12 +58,23 @@ sub on_insert
     my ( $self, %args ) = (@_);
 
     #
-    #  The post data and input format
+    #  Get access to the post-data, and configuration-object.
     #
-    my $data = $args{ 'data' };
+    my $config = $args{ 'config' };
+    my $data   = $args{ 'data' };
+
+    #
+    #  Get the body of the post, and the link
+    #
     my $body = $data->{ 'body' };
-    my $link = $data->{ 'link' };
-    $link = '' unless $link;
+    my $link = $data->{ 'link' } || '';
+
+    #
+    #  The link needs to be qualified.
+    #
+    my $top = $config->{ 'top' };
+    $link = $top . $link;
+
 
     # we are only concerned with first correct cut
     if ( $body =~ /^(.+?)\n^__CUT__/ms )
