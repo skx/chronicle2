@@ -659,7 +659,6 @@ sub insertPost
         $meta{ 'link' } = $inplacelink . '/' . $meta{ 'title' };
     }
 
-    # die $meta{ 'link'};
     #
     #  Remove the extension - regardless of what that might be.
     #
