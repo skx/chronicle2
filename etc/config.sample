@@ -39,6 +39,15 @@ input = ./blog
 # pattern = *.txt
 #
 
+#
+#  Preserve the folder structure of the input directory in the 
+# output directory. 
+# 0 = move all post to the http doc root
+# 1 = preserve the input directory structure   
+#
+# entry_inplace = 0
+#
+
 
 #
 #  The directory to write the formatted blog output to.
