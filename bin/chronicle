@@ -404,7 +404,8 @@ updateDatabase($dbh);
 File::Path::make_path( $CONFIG{ 'output' },
                        {  verbose => 0,
                           mode    => oct("755"),
-                       } ) unless ( -d $CONFIG{ 'output' } );
+                       } )
+  unless ( -d $CONFIG{ 'output' } );
 
 
 
@@ -494,7 +495,8 @@ sub updateDatabase
         my ( $dev,   $ino,     $mode, $nlink, $uid,
              $gid,   $rdev,    $size, $atime, $mtime,
              $ctime, $blksize, $blocks
-           ) = stat($file);
+           )
+          = stat($file);
 
 
         #
@@ -644,15 +646,29 @@ sub insertPost
     #
     $meta{ 'link' } = $meta{ 'title' };
 
+    if ( $CONFIG{ 'entry_inplace' } )
+    {
+        my $inplacelink = $filename;
+
+        # strip off the source dir with the first '/'
+        # this will be added back later
+        $inplacelink =~ s?$CONFIG{'input'}/??;
+
+        # strip off the name and add the title
+        $inplacelink =~ s?/[^/]+$??;
+        $meta{ 'link' } = $inplacelink . '/' . $meta{ 'title' };
+    }
+
+    # die $meta{ 'link'};
     #
     #  Remove the extension - regardless of what that might be.
     #
     $meta{ 'link' } =~ s/\.[^.]+$//;
 
     #
-    #  Remove non-alphanumeric characters.
+    #  Remove non-alphanumeric and non '/' characters.
     #
-    $meta{ 'link' } =~ s/[^a-z0-9]/_/gi;
+    $meta{ 'link' } =~ s/[^a-z0-9\/]/_/gi;
 
     #
     #  Add the suffix for the page
