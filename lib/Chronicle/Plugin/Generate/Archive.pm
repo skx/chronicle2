@@ -64,13 +64,13 @@ sub on_generate
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh    = $args{ 'dbh' };
-    my $config = $args{ 'config' };
+    my $dbh    = $args{dbh};
+    my $config = $args{config};
 
     #
     #  Get our language
     #
-    my $language = $ENV{ 'MONTHS' } || "English";
+    my $language = $ENV{MONTHS} || "English";
 
     #
     #  Now populate @MONTHS with the month names of that language.
@@ -136,9 +136,9 @@ sub on_generate
     }
 
 
-    if ( !-d "$config->{'output'}/archive/" )
+    if ( !-d "$config->{output}/archive/" )
     {
-        File::Path::make_path( "$config->{'output'}/archive/",
+        File::Path::make_path( "$config->{output}/archive/",
                                {  verbose => 0,
                                   mode    => oct("755"),
                                } );
@@ -147,17 +147,17 @@ sub on_generate
     #
     #  The index file to generate
     #
-    my $index = $config->{ 'index_filename' } || "index.html";
+    my $index = $config->{index_filename} || "index.html";
 
     my $c = Chronicle::load_template("archive_index.tmpl");
     if ($c)
     {
-        $config->{ 'verbose' } &&
-          print "Creating : $config->{'output'}/archive/$index\n";
-        $c->param( top => $config->{ 'top' } );
+        $config->{verbose} &&
+          print "Creating : $config->{output}/archive/$index\n";
+        $c->param( top => $config->{top} );
         $c->param( archive => $data ) if ($data);
         open( my $handle, ">:encoding(UTF-8)",
-              "$config->{'output'}/archive/$index" ) or
+              "$config->{output}/archive/$index" ) or
           die "Failed to open";
         print $handle $c->output();
         close($handle);
@@ -189,10 +189,10 @@ sub on_generate
 
         # skip if it exists.
         next
-          if ( ( -e "$config->{'output'}/archive/$year/$mon" ) &&
-               ( !$config->{ 'force' } ) );
+          if ( ( -e "$config->{output}/archive/$year/$mon" ) &&
+               ( !$config->{force} ) );
 
-        File::Path::make_path( "$config->{'output'}/archive/$year/$mon",
+        File::Path::make_path( "$config->{output}/archive/$year/$mon",
                                {  verbose => 0,
                                   mode    => oct("755"),
                                } );
@@ -211,19 +211,19 @@ sub on_generate
         $ids->finish();
 
 
-        $config->{ 'verbose' } &&
-          print "Creating : $config->{'output'}/archive/$year/$mon/$index\n";
+        $config->{verbose} &&
+          print "Creating : $config->{output}/archive/$year/$mon/$index\n";
 
 
         $c = Chronicle::load_template("/archive.tmpl");
         return if ( !$c );
 
-        $c->param( top        => $config->{ 'top' } );
+        $c->param( top        => $config->{top} );
         $c->param( entries    => $entries );
         $c->param( month      => $mon, year => $year );
         $c->param( month_name => $MONTHS[$mon - 1] );
         open( my $handle, ">:encoding(UTF-8)",
-              "$config->{'output'}/archive/$year/$mon/$index" ) or
+              "$config->{output}/archive/$year/$mon/$index" ) or
           die "Failed to open";
         print $handle $c->output();
         close($handle);

@@ -56,14 +56,14 @@ sub on_generate
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh    = $args{ 'dbh' };
-    my $config = $args{ 'config' };
+    my $dbh    = $args{dbh};
+    my $config = $args{config};
 
-    return unless ( $config->{ 'post-build' } );
+    return unless ( $config->{'post-build'} );
 
-    foreach my $cmd ( @{ $config->{ 'post-build' } } )
+    foreach my $cmd ( @{ $config->{'post-build'} } )
     {
-        $config->{ 'verbose' } && print "PostBuild($cmd)\n";
+        $config->{verbose} && print "PostBuild($cmd)\n";
         system($cmd );
     }
 }

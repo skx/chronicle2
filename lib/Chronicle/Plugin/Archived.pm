@@ -56,14 +56,14 @@ sub on_insert
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh    = $args{ 'dbh' };
-    my $config = $args{ 'config' };
-    my $data   = $args{ 'data' };
+    my $dbh    = $args{dbh};
+    my $config = $args{config};
+    my $data   = $args{data};
 
     #
     #  Convert the date of the post to a seconds past epoch.
     #
-    my $date = str2time( $data->{ 'date' } );
+    my $date = str2time( $data->{date} );
 
     #
     #  Now build up a new prefix for the file
@@ -73,7 +73,7 @@ sub on_insert
     #
     #  And prepend that to the link.
     #
-    $data->{ 'link' } = $date . $data->{ 'link' };
+    $data->{link} = $date . $data->{link};
 
     return ($data);
 }

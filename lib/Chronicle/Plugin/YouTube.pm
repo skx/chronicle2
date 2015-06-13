@@ -66,11 +66,11 @@ sub on_insert
 {
     my ( $self, %args ) = (@_);
 
-    my $conf = $args{ 'config' };
-    my $data = $args{ 'data' };
+    my $conf = $args{config};
+    my $data = $args{data};
 
     # get the body
-    my $old_body = $data->{ 'body' };
+    my $old_body = $data->{body};
     my $new_body = "";
 
     my $updated = 0;
@@ -98,15 +98,15 @@ EOF
 
     if ($updated)
     {
-        $data->{ 'body' } = $new_body;
+        $data->{body} = $new_body;
 
-        if ( $data->{ 'tags' } )
+        if ( $data->{tags} )
         {
-            $data->{ 'tags' } .= ",youtube";
+            $data->{tags} .= ",youtube";
         }
         else
         {
-            $data->{ 'tags' } .= "youtube";
+            $data->{tags} .= "youtube";
         }
     }
 

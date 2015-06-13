@@ -343,18 +343,18 @@ use Chronicle::Config::Reader;
 # with previous releases of chronicle.
 #
 our %CONFIG;
-$CONFIG{ 'input' }        = "./data";
-$CONFIG{ 'pattern' }      = "*.txt";
-$CONFIG{ 'output' }       = "./output";
-$CONFIG{ 'database' }     = "./blog.db";
-$CONFIG{ 'comment-days' } = 10;
-$CONFIG{ 'entry-count' }  = 10;
-$CONFIG{ 'rss-count' }    = 10;
-$CONFIG{ 'theme-dir' }    = File::ShareDir::dist_dir('App-Chronicle');
-$CONFIG{ 'theme' }        = "default";
-$CONFIG{ 'verbose' }      = 0;
-$CONFIG{ 'top' }          = "/";
-$CONFIG{ 'exclude-plugins' } =
+$CONFIG{input}          = "./data";
+$CONFIG{pattern}        = "*.txt";
+$CONFIG{output}         = "./output";
+$CONFIG{database}       = "./blog.db";
+$CONFIG{'comment-days'} = 10;
+$CONFIG{'entry-count'}  = 10;
+$CONFIG{'rss-count'}    = 10;
+$CONFIG{'theme-dir'}    = File::ShareDir::dist_dir('App-Chronicle');
+$CONFIG{theme}          = "default";
+$CONFIG{verbose}        = 0;
+$CONFIG{top}            = "/";
+$CONFIG{'exclude-plugins'} =
   "Chronicle::Plugin::Archived,Chronicle::Plugin::Verbose";
 
 
@@ -369,7 +369,7 @@ our %GLOBAL_TEMPLATE_VARS = ();
 #
 my $cnf = Chronicle::Config::Reader->new();
 $cnf->parseFile( \%CONFIG, "/etc/chronicle/config" );
-$cnf->parseFile( \%CONFIG, $ENV{ 'HOME' } . "/.chronicle/config" );
+$cnf->parseFile( \%CONFIG, $ENV{HOME} . "/.chronicle/config" );
 
 
 #
@@ -381,8 +381,8 @@ parseCommandLine();
 #
 #  If we have a configuration file then read it.
 #
-$cnf->parseFile( \%CONFIG, $CONFIG{ 'config' } )
-  if ( defined $CONFIG{ 'config' } );
+$cnf->parseFile( \%CONFIG, $CONFIG{config} )
+  if ( defined $CONFIG{config} );
 
 
 
@@ -401,10 +401,10 @@ updateDatabase($dbh);
 #
 #  Ensure we have an output directory.
 #
-File::Path::make_path( $CONFIG{ 'output' },
+File::Path::make_path( $CONFIG{output},
                        {  verbose => 0,
                           mode    => oct("755"),
-                       } ) unless ( -d $CONFIG{ 'output' } );
+                       } ) unless ( -d $CONFIG{output} );
 
 
 
@@ -413,7 +413,7 @@ File::Path::make_path( $CONFIG{ 'output' },
 #
 foreach my $plugin ( get_plugins_for_method("on_initiate") )
 {
-    $CONFIG{ 'verbose' } && print "Calling $plugin on_initiate()\n";
+    $CONFIG{verbose} && print "Calling $plugin on_initiate()\n";
     $plugin->on_initiate( config => \%CONFIG, dbh => $dbh );
 }
 
@@ -426,7 +426,7 @@ foreach my $plugin ( get_plugins_for_method("on_initiate") )
 #
 foreach my $plugin ( get_plugins_for_method("on_generate") )
 {
-    $CONFIG{ 'verbose' } && print "Calling $plugin on_generate()\n";
+    $CONFIG{verbose} && print "Calling $plugin on_generate()\n";
     $plugin->on_generate( config => \%CONFIG, dbh => $dbh );
 }
 
@@ -434,7 +434,7 @@ foreach my $plugin ( get_plugins_for_method("on_generate") )
 #
 #  Copy any static content from the theme-directory.
 #
-my $ts = $CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' } . "/static";
+my $ts = $CONFIG{'theme-dir'} . "/" . $CONFIG{theme} . "/static";
 if ( -d $ts )
 {
 
@@ -442,7 +442,7 @@ if ( -d $ts )
     #  This could be improved, but it will cope with subdirectories, etc,
     # so for the moment it will remain.
     #
-    system("/bin/tar -C $ts -cpf - . | /bin/tar -C $CONFIG{'output'} -xf -");
+    system("/bin/tar -C $ts -cpf - . | /bin/tar -C $CONFIG{output} -xf -");
 }
 
 
@@ -485,7 +485,7 @@ sub updateDatabase
     #
 
     foreach
-      my $file ( get_post_files( $CONFIG{ 'input' }, $CONFIG{ 'pattern' } ) )
+      my $file ( get_post_files( $CONFIG{input}, $CONFIG{pattern} ) )
     {
 
         #
@@ -537,7 +537,7 @@ sub insertPost
 {
     my ( $dbh, $filename, $mtime ) = (@_);
 
-    $CONFIG{ 'verbose' } && print "Adding post to DB: $filename\n";
+    $CONFIG{verbose} && print "Adding post to DB: $filename\n";
 
     #
     #  Is the entry present, but with a different mtime?
@@ -552,7 +552,7 @@ sub insertPost
 
     while ( $sql->fetch() )
     {
-        $CONFIG{ 'verbose' } && print "Replacing DB post: $id\n";
+        $CONFIG{verbose} && print "Replacing DB post: $id\n";
 
         #
         #  Delete the tags referring to this old post.
@@ -628,47 +628,47 @@ sub insertPost
         }
         else
         {
-            $meta{ 'body' } .= $line;
+            $meta{body} .= $line;
         }
     }
     close($handle);
 
     # initicate the truncated body.
-    $meta{ 'truncatedbody' } = '';
+    $meta{truncatedbody} = '';
 
     # initicate the template and change if there is a template is supplied.
-    $meta{ 'template' } = "entry.tmpl" unless defined $meta{ 'template' };
+    $meta{template} = "entry.tmpl" unless defined $meta{template};
 
     #
     #  Generate the link from the title of the post.
     #
-    $meta{ 'link' } = $meta{ 'title' };
+    $meta{link} = $meta{title};
 
     #
     #  Remove the extension - regardless of what that might be.
     #
-    $meta{ 'link' } =~ s/\.[^.]+$//;
+    $meta{link} =~ s/\.[^.]+$//;
 
     #
     #  Remove non-alphanumeric characters.
     #
-    $meta{ 'link' } =~ s/[^a-z0-9]/_/gi;
+    $meta{link} =~ s/[^a-z0-9]/_/gi;
 
     #
     #  Add the suffix for the page
     #
-    my $suffix = $CONFIG{ 'entry_suffix' } || ".html";
-    $meta{ 'link' } .= $suffix;
+    my $suffix = $CONFIG{entry_suffix} || ".html";
+    $meta{link} .= $suffix;
 
     #
     #  Lower-case
     #
-    $meta{ 'link' } = lc( $meta{ 'link' } );
+    $meta{link} = lc( $meta{link} );
 
     #
     #  Let any plugins have access to the filename.
     #
-    $meta{ 'file' } = $filename;
+    $meta{file} = $filename;
 
     #
     #  Are we going to skip this post?
@@ -680,7 +680,7 @@ sub insertPost
     #
     foreach my $plugin ( get_plugins_for_method("on_insert") )
     {
-        $CONFIG{ 'verbose' } && print "Calling $plugin - on_insert\n";
+        $CONFIG{verbose} && print "Calling $plugin - on_insert\n";
         my $m = $plugin->on_insert( config => \%CONFIG,
                                     dbh    => $dbh,
                                     data   => \%meta
@@ -713,7 +713,7 @@ sub insertPost
 
     if ($skip)
     {
-        $CONFIG{ 'verbose' } && print "Skipping post: $filename\n";
+        $CONFIG{verbose} && print "Skipping post: $filename\n";
         return;
     }
 
@@ -721,13 +721,13 @@ sub insertPost
     #
     #  Convert the date to a seconds past epoch.
     #
-    if ( !$meta{ 'date' } )
+    if ( !$meta{date} )
     {
         die "Post is missing a date header - $filename\n";
     }
     else
     {
-        $meta{ 'date' } = str2time( $meta{ 'date' } );
+        $meta{date} = str2time( $meta{date} );
     }
 
     #
@@ -739,13 +739,13 @@ sub insertPost
       die "Failed to prepare";
 
     $post_add->execute( $filename,
-                        $meta{ 'date' },
-                        $meta{ 'title' },
-                        $meta{ 'link' },
+                        $meta{date},
+                        $meta{title},
+                        $meta{link},
                         $mtime,
-                        $meta{ 'body' },
-                        $meta{ 'truncatedbody' },
-                        $meta{ 'template' }
+                        $meta{body},
+                        $meta{truncatedbody},
+                        $meta{template}
       ) or
       die "Failed to insert:" . $dbh->errstr();
 
@@ -755,13 +755,13 @@ sub insertPost
     #
     #  Add any tags the post might contain.
     #
-    if ( $meta{ 'tags' } )
+    if ( $meta{tags} )
     {
         my $tag_add =
           $dbh->prepare("INSERT INTO tags (blog_id, name) VALUES( ?,?)") or
           die "Failed to prepare";
 
-        foreach my $tag ( split( /,/, $meta{ 'tags' } ) )
+        foreach my $tag ( split( /,/, $meta{tags} ) )
         {
 
             # strip leading and trailing space.
@@ -805,15 +805,15 @@ sub getDatabase
     #  Ensure we have something specified.
     #
     die "No database configured - please use --database=/path/tocreate"
-      unless ( $CONFIG{ 'database' } );
+      unless ( $CONFIG{database} );
 
     #
     #  Does it exist?
     #
-    $present = 1 if ( -e $CONFIG{ 'database' } );
+    $present = 1 if ( -e $CONFIG{database} );
 
 
-    my $dbh = DBI->connect( "dbi:SQLite:dbname=$CONFIG{'database'}", "", "" );
+    my $dbh = DBI->connect( "dbi:SQLite:dbname=$CONFIG{database}", "", "" );
 
     $dbh->{ sqlite_unicode } = 1;
 
@@ -828,7 +828,7 @@ sub getDatabase
 
         foreach my $plugin ( get_plugins_for_method("on_db_create") )
         {
-            $CONFIG{ 'verbose' } && print "Calling $plugin - on_db_create\n";
+            $CONFIG{verbose} && print "Calling $plugin - on_db_create\n";
             $plugin->on_db_create( config => \%CONFIG,
                                    dbh    => $dbh, );
         }
@@ -838,7 +838,7 @@ sub getDatabase
 
     foreach my $plugin ( get_plugins_for_method("on_db_load") )
     {
-        $CONFIG{ 'verbose' } && print "Calling $plugin - on_db_load\n";
+        $CONFIG{verbose} && print "Calling $plugin - on_db_load\n";
         $plugin->on_db_load( config => \%CONFIG,
                              dbh    => $dbh, );
     }
@@ -863,14 +863,14 @@ sub getBlog
     #
     #  These are compulsary
     #
-    my $dbh = $params{ 'dbh' } || die "Missing database handle";
-    my $id  = $params{ 'id' }  || die "Missing ID";
+    my $dbh = $params{dbh} || die "Missing database handle";
+    my $id  = $params{id}  || die "Missing ID";
 
     #
     #  This is optional, and present so that the date/time format
     # may be changed by the user in their configuration file.
     #
-    my $config = $params{ 'config' } || undef;
+    my $config = $params{config} || undef;
 
 
     #
@@ -895,9 +895,9 @@ sub getBlog
     $tags->bind_columns( undef, \$name );
     while ( $tags->fetch() )
     {
-        my $x = $data->{ 'tags' };
+        my $x = $data->{tags};
         push( @$x, { tag => $name } );
-        $data->{ 'tags' } = $x;
+        $data->{tags} = $x;
     }
     $tags->finish();
 
@@ -909,15 +909,15 @@ sub getBlog
     #  If the date is not set then we use the mtime for both date & time.
     #
     my $time;
-    my $posted = $data->{ 'date' };
-    $data->{ 'posted' } = $data->{ 'date' };
-    if ( $data->{ 'date' } )
+    my $posted = $data->{date};
+    $data->{posted} = $data->{date};
+    if ( $data->{date} )
     {
-        $time = $data->{ 'date' };
+        $time = $data->{date};
     }
     else
     {
-        $time = $data->{ 'mtime' };
+        $time = $data->{mtime};
     }
 
 
@@ -949,7 +949,7 @@ sub getBlog
     #
     if ( $date_fmt && length($date_fmt) )
     {
-        $data->{ 'date' } = time2str( $date_fmt, $time );
+        $data->{date} = time2str( $date_fmt, $time );
     }
 
     #
@@ -962,30 +962,30 @@ sub getBlog
         #
         #  The time from the import-date.
         #
-        $data->{ 'time' } = time2str( $time_fmt, $time );
+        $data->{time} = time2str( $time_fmt, $time );
 
         #
         #  If that failed then from the modification-time.
         #
-        if ( $data->{ 'time' } =~ /00:00:00/ )
+        if ( $data->{time} =~ /00:00:00/ )
         {
-            $data->{ 'time' } = time2str( $time_fmt, $data->{ 'mtime' } );
+            $data->{time} = time2str( $time_fmt, $data->{mtime} );
         }
     }
 
     #
     #  If comments are enabled then populate the blog-post with them too.
     #
-    if ( $CONFIG{ 'comments' } )
+    if ( $CONFIG{comments} )
     {
-        my $comments = getComments( $data->{ 'link' } );
+        my $comments = getComments( $data->{link} );
         if ($comments)
         {
-            $data->{ 'comments' } = $comments;
+            $data->{comments} = $comments;
 
             my $count = scalar(@$comments);
-            $data->{ 'comment_count' }  = $count;
-            $data->{ 'comment_plural' } = 1
+            $data->{comment_count}  = $count;
+            $data->{comment_plural} = 1
               if ( ( $count == 0 ) || ( $count > 1 ) );
         }
 
@@ -997,15 +997,15 @@ sub getBlog
         #
         my $now = time;
         my $ago = $now - $posted;
-        my $age = ( ( 60 * 60 * 24 ) * ( $CONFIG{ 'comment-days' } ) );
+        my $age = ( ( 60 * 60 * 24 ) * ( $CONFIG{'comment-days'} ) );
 
         if ( $ago < $age )
         {
-            $data->{ 'comments_enabled' } = 1;
+            $data->{comments_enabled} = 1;
         }
         else
         {
-            $data->{ 'comments_enabled' } = undef;
+            $data->{comments_enabled} = undef;
         }
     }
 
@@ -1030,13 +1030,13 @@ sub getComments
     #
     #  If there is no comment-directory setup then return nothing.
     #
-    return unless ( $CONFIG{ 'comments' } );
+    return unless ( $CONFIG{comments} );
 
     #
     #  If there is a comment-directory setup, but it doesn't exist
     # then again we do nothing.
     #
-    return unless ( -d $CONFIG{ 'comments' } );
+    return unless ( -d $CONFIG{comments} );
 
 
     my $results;
@@ -1051,7 +1051,7 @@ sub getComments
     #
     my @entries;
     foreach
-      my $file ( sort( glob( $CONFIG{ 'comments' } . "/" . $title . "*" ) ) )
+      my $file ( sort( glob( $CONFIG{comments} . "/" . $title . "*" ) ) )
     {
         push( @entries, $file );
     }
@@ -1139,8 +1139,8 @@ sub getComments
             #
             my $author = 0;
             $author = 1
-              if ( $CONFIG{ 'author' } &&
-                   ( lc($mail) eq lc( $CONFIG{ 'author' } ) ) );
+              if ( $CONFIG{author} &&
+                   ( lc($mail) eq lc( $CONFIG{author} ) ) );
 
             #
             # Store the comment
@@ -1158,7 +1158,7 @@ sub getComments
         }
         else
         {
-            $CONFIG{ 'verbose' } &&
+            $CONFIG{verbose} &&
               print
               "I didn't like length of \$name ($name), \$mail ($mail) or \$body ($body)\n";
         }
@@ -1191,23 +1191,23 @@ sub load_template
     #  Ensure we have a theme.
     #
     die "You must specify a theme with --theme"
-      unless ( $CONFIG{ 'theme' } );
+      unless ( $CONFIG{theme} );
 
     #
     #  Ensure things exist.
     #
     die "The theme directory specified with 'theme-dir' doesn't exist"
-      unless ( -d $CONFIG{ 'theme-dir' } );
+      unless ( -d $CONFIG{'theme-dir'} );
 
     die
-      "The theme '$CONFIG{'theme'}' doesn't exist beneath $CONFIG{'theme-dir'}!"
-      unless ( -d $CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' } );
+      "The theme '$CONFIG{theme}' doesn't exist beneath $CONFIG{'theme-dir'}!"
+      unless ( -d $CONFIG{'theme-dir'} . "/" . $CONFIG{theme} );
 
 
     #
     #  HTML::Template options
     #
-    my %options = ( path => [$CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' }],
+    my %options = ( path => [$CONFIG{'theme-dir'} . "/" . $CONFIG{theme}],
                     die_on_bad_params => 0,
                     loop_context_vars => 1,
                     global_vars       => 1,
@@ -1223,7 +1223,7 @@ sub load_template
     {
 
         my $path =
-          $CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' } . "/" . $filename;
+          $CONFIG{'theme-dir'} . "/" . $CONFIG{theme} . "/" . $filename;
 
         #
         #  If the template doesn't exist return undef.
@@ -1252,10 +1252,10 @@ sub load_template
     #
     #  Legacy options.
     #
-    $tmpl->param( blog_title => $CONFIG{ 'blog_title' } )
-      if ( $CONFIG{ 'blog_title' } );
-    $tmpl->param( blog_subtitle => $CONFIG{ 'blog_subtitle' } )
-      if ( $CONFIG{ 'blog_subtitle' } );
+    $tmpl->param( blog_title => $CONFIG{blog_title} )
+      if ( $CONFIG{blog_title} );
+    $tmpl->param( blog_subtitle => $CONFIG{blog_subtitle} )
+      if ( $CONFIG{blog_subtitle} );
 
     #
     #  Global options, such as build-time, build-date, etc.
@@ -1289,41 +1289,41 @@ sub parseCommandLine
             # Help options
             "help",    \$HELP,
             "manual",  \$MANUAL,
-            "verbose", \$CONFIG{ 'verbose' },
-            "version", \$CONFIG{ 'version' },
+            "verbose", \$CONFIG{verbose},
+            "version", \$CONFIG{version},
 
             # theme support
-            "theme=s",     \$CONFIG{ 'theme' },
-            "theme-dir=s", \$CONFIG{ 'theme-dir' },
-            "list-themes", \$CONFIG{ 'list-themes' },
+            "theme=s",     \$CONFIG{theme},
+            "theme-dir=s", \$CONFIG{'theme-dir'},
+            "list-themes", \$CONFIG{'list-themes'},
 
             # paths
-            "input=s",    \$CONFIG{ 'input' },
-            "output=s",   \$CONFIG{ 'output' },
-            "pattern=s",  \$CONFIG{ 'pattern' },
-            "comments=s", \$CONFIG{ 'comments' },
+            "input=s",    \$CONFIG{input},
+            "output=s",   \$CONFIG{output},
+            "pattern=s",  \$CONFIG{pattern},
+            "comments=s", \$CONFIG{comments},
 
             # limits
-            "entry-count=s", \$CONFIG{ 'entry-count' },
-            "rss-count=s",   \$CONFIG{ 'rss-count' },
+            "entry-count=s", \$CONFIG{'entry-count'},
+            "rss-count=s",   \$CONFIG{'rss-count'},
 
             # optional
-            "config=s",       \$CONFIG{ 'config' },
-            "database=s",     \$CONFIG{ 'database' },
-            "author=s",       \$CONFIG{ 'author' },
-            "comment-days=s", \$CONFIG{ 'comment-days' },
-            "force",          \$CONFIG{ 'force' },
+            "config=s",       \$CONFIG{config},
+            "database=s",     \$CONFIG{database},
+            "author=s",       \$CONFIG{author},
+            "comment-days=s", \$CONFIG{'comment-days'},
+            "force",          \$CONFIG{force},
 
             # plugins
-            "list-plugins",      \$CONFIG{ 'list-plugins' },
-            "exclude-plugins=s", \$CONFIG{ 'exclude-plugins' },
+            "list-plugins",      \$CONFIG{'list-plugins'},
+            "exclude-plugins=s", \$CONFIG{'exclude-plugins'},
 
             # title
-            "blog-title=s",    \$CONFIG{ 'blog_title' },
-            "blog-subtitle=s", \$CONFIG{ 'blog_subtitle' },
+            "blog-title=s",    \$CONFIG{blog_title},
+            "blog-subtitle=s", \$CONFIG{blog_subtitle},
 
             # prefix
-            "url-prefix=s", \$CONFIG{ 'top' },
+            "url-prefix=s", \$CONFIG{top},
 
         ) )
     {
@@ -1336,7 +1336,7 @@ sub parseCommandLine
     #
     #  Show our version number, and terminate.
     #
-    if ( $CONFIG{ 'version' } )
+    if ( $CONFIG{version} )
     {
         print "Chronicle $VERSION\n";
         exit(0);
@@ -1345,7 +1345,7 @@ sub parseCommandLine
     #
     #  List themes.
     #
-    if ( $CONFIG{ 'list-themes' } )
+    if ( $CONFIG{'list-themes'} )
     {
 
         #
@@ -1358,9 +1358,9 @@ sub parseCommandLine
         #
         my @dirs = ();
         push( @dirs, $global );
-        if ( $CONFIG{ 'theme-dir' } && ( $CONFIG{ 'theme-dir' } ne $global ) )
+        if ( $CONFIG{'theme-dir'} && ( $CONFIG{'theme-dir'} ne $global ) )
         {
-            push( @dirs, $CONFIG{ 'theme-dir' } );
+            push( @dirs, $CONFIG{'theme-dir'} );
         }
 
         #
@@ -1382,13 +1382,13 @@ sub parseCommandLine
     #
     #  List plugins
     #
-    if ( $CONFIG{ 'list-plugins' } )
+    if ( $CONFIG{'list-plugins'} )
     {
         for my $plugin ( Chronicle->plugins_ordered() )
         {
             print $plugin . "\n";
 
-            if ( $CONFIG{ 'verbose' } )
+            if ( $CONFIG{verbose} )
             {
                 foreach my $method (
                     sort
@@ -1432,9 +1432,9 @@ sub get_plugins_for_method
     {
         my $skip = 0;
 
-        if ( $CONFIG{ 'exclude-plugins' } )
+        if ( $CONFIG{'exclude-plugins'} )
         {
-            foreach my $exclude ( split( /,/, $CONFIG{ 'exclude-plugins' } ) )
+            foreach my $exclude ( split( /,/, $CONFIG{'exclude-plugins'} ) )
             {
 
                 # strip leading and trailing space.
@@ -1446,7 +1446,7 @@ sub get_plugins_for_method
 
                 if ( $plugin =~ /\Q$exclude\E/i )
                 {
-                    $CONFIG{ 'verbose' } && print "Skipping plugin: $plugin\n";
+                    $CONFIG{verbose} && print "Skipping plugin: $plugin\n";
                     $skip = 1;
                 }
             }

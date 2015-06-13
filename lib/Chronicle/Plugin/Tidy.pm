@@ -59,9 +59,9 @@ sub on_insert
 {
     my ( $self, %args ) = (@_);
 
-    my $conf = $args{ 'config' };
-    my $data = $args{ 'data' };
-    my $html = $data->{ 'body' };
+    my $conf = $args{config};
+    my $data = $args{data};
+    my $html = $data->{body};
 
     #
     #  Load the HTML::TreeBuilder module, if present.
@@ -110,7 +110,7 @@ sub on_insert
     #
     #  Update the body and return the updated post.
     #
-    $data->{ 'body' } = $txt;
+    $data->{body} = $txt;
     return ($data);
 }
 

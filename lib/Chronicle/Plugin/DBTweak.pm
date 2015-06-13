@@ -44,7 +44,7 @@ sub on_db_load
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh = $args{ 'dbh' };
+    my $dbh = $args{dbh};
 
     $dbh->do("PRAGMA synchronous = OFF");
     $dbh->do("PRAGMA cache_size = 400000");

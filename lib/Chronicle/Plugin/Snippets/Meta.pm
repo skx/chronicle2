@@ -69,8 +69,8 @@ sub on_initiate
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh    = $args{ 'dbh' };
-    my $config = $args{ 'config' };
+    my $dbh    = $args{dbh};
+    my $config = $args{config};
 
 
     #
@@ -84,7 +84,7 @@ sub on_initiate
     #
     #  The chronicle build date
     #
-    my $date_fmt = $config->{ 'meta_date_format' } || '%e %b %Y';
+    my $date_fmt = $config->{meta_date_format} || '%e %b %Y';
 
     $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_date" } =
       time2str( $date_fmt, $time );
@@ -92,7 +92,7 @@ sub on_initiate
     #
     #  The chronicle build time
     #
-    my $time_fmt = $config->{ 'meta_time_format' } || '%H:%M:%S';
+    my $time_fmt = $config->{meta_time_format} || '%H:%M:%S';
 
     $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_time" } =
       time2str( $time_fmt, $time );
@@ -101,13 +101,13 @@ sub on_initiate
     #
     #  The username
     #
-    if ( $ENV{ 'USER' } )
+    if ( $ENV{USER} )
     {
 
         #
         #  Set the username
         #
-        $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_username" } = $ENV{ 'USER' };
+        $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_username" } = $ENV{USER};
 
 
         #
@@ -115,7 +115,7 @@ sub on_initiate
         #
         my ( $name,    $passwd, $uid, $gid,   $quota,
              $comment, $gcos,   $dir, $shell, $expire
-           ) = getpwnam( $ENV{ 'USER' } );
+           ) = getpwnam( $ENV{USER} );
 
         #
         #  Did we get a GCOS field?  If so strip the trailing "," and
@@ -137,7 +137,7 @@ sub on_initiate
     #  Again we start from the environment, then run `hostname` if the
     # environment isn't set.
     #
-    my $hostname = $ENV{ 'HOSTNAME' };
+    my $hostname = $ENV{HOSTNAME};
     if ( !$hostname )
     {
 

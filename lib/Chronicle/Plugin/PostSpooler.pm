@@ -68,20 +68,20 @@ sub on_insert
 {
     my ( $self, %args ) = (@_);
 
-    my $config = $args{ 'config' };
-    my $data   = $args{ 'data' };
+    my $config = $args{config};
+    my $data   = $args{data};
 
     #
     #  If there is no Publish header then return immediately.
     #
-    return $data unless ( $data->{ 'publish' } );
+    return $data unless ( $data->{publish} );
 
     #
     #  Now we need to see if the post is in the future or not.
     #
     #  Parse the publish-date into seconds and get the current time.
     #
-    my $seconds = str2time( $data->{ 'publish' } );
+    my $seconds = str2time( $data->{publish} );
     my $current = time();
 
     #
@@ -89,8 +89,8 @@ sub on_insert
     #
     if ( $seconds <= $current )
     {
-        $data->{ 'date' } = $data->{ 'publish' };
-        delete( $data->{ 'publish' } );
+        $data->{date} = $data->{publish};
+        delete( $data->{publish} );
         return ($data);
     }
     else

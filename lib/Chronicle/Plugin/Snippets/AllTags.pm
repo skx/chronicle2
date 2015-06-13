@@ -60,8 +60,8 @@ sub on_initiate
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh    = $args{ 'dbh' };
-    my $config = $args{ 'config' };
+    my $dbh    = $args{dbh};
+    my $config = $args{config};
 
     #
     # Get the tags, and their count.
@@ -78,9 +78,9 @@ sub on_initiate
     my $tags;
 
     # Default sizing options
-    my $min  = $config->{ 'tag_cloud_size_min' }  || 5;
-    my $max  = $config->{ 'tag_cloud_size_max' }  || 60;
-    my $step = $config->{ 'tag_cloud_size_step' } || 5;
+    my $min  = $config->{tag_cloud_size_min}  || 5;
+    my $max  = $config->{tag_cloud_size_max}  || 60;
+    my $step = $config->{tag_cloud_size_step} || 5;
 
     #
     # Process the results.

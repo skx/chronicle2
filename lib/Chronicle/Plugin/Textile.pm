@@ -55,8 +55,8 @@ sub on_insert
     #
     #  The post data and input-format
     #
-    my $data   = $args{ 'data' };
-    my $format = $data->{ 'format' };
+    my $data   = $args{data};
+    my $format = $data->{format};
 
     if ( $format && ( $format =~ /^textile$/i ) )
     {

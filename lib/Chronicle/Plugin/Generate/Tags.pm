@@ -60,8 +60,8 @@ sub on_generate
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh    = $args{ 'dbh' };
-    my $config = $args{ 'config' };
+    my $dbh    = $args{dbh};
+    my $config = $args{config};
 
 
     _outputTags( $config, $dbh );
@@ -100,19 +100,19 @@ sub _outputTags
 
         # skip if it exists.
         next
-          if ( ( -e $config->{ 'output' } . "/tags/$tag" ) &&
-               ( !$config->{ 'force' } ) );
+          if ( ( -e $config->{output} . "/tags/$tag" ) &&
+               ( !$config->{force} ) );
 
 
         #
         #  The output file to generate
         #
-        my $index = $config->{ 'index_filename' } || "index.html";
+        my $index = $config->{index_filename} || "index.html";
 
-        $config->{ 'verbose' } &&
-          print "Creating : $config->{'output'}/tags/$tag/$index\n";
+        $config->{verbose} &&
+          print "Creating : $config->{output}/tags/$tag/$index\n";
 
-        File::Path::make_path( "$config->{'output'}/tags/$tag",
+        File::Path::make_path( "$config->{output}/tags/$tag",
                                {  verbose => 0,
                                   mode    => oct("755"),
                                } );
@@ -142,11 +142,11 @@ sub _outputTags
         my $c = Chronicle::load_template("tag.tmpl");
         return unless ($c);
 
-        $c->param( top     => $config->{ 'top' } );
+        $c->param( top     => $config->{top} );
         $c->param( entries => $entries ) if ($entries);
         $c->param( tag     => $tag );
         open( my $handle, ">:encoding(UTF-8)",
-              "$config->{'output'}/tags/$tag/$index" ) or
+              "$config->{output}/tags/$tag/$index" ) or
           die "Failed to open";
         print $handle $c->output();
         close($handle);
@@ -178,9 +178,9 @@ sub _outputTagCloud
     my $tags;
 
     # Default sizing options
-    my $min  = $config->{ 'tag_cloud_size_min' }  || 5;
-    my $max  = $config->{ 'tag_cloud_size_max' }  || 60;
-    my $step = $config->{ 'tag_cloud_size_step' } || 5;
+    my $min  = $config->{tag_cloud_size_min}  || 5;
+    my $max  = $config->{tag_cloud_size_max}  || 60;
+    my $step = $config->{tag_cloud_size_step} || 5;
 
     #
     # Now the tags.
@@ -215,15 +215,15 @@ sub _outputTagCloud
     #
     #  The output file to generate
     #
-    my $index = $config->{ 'index_filename' } || "index.html";
+    my $index = $config->{index_filename} || "index.html";
 
-    $config->{ 'verbose' } &&
-      print "Creating : $config->{'output'}/tags/$index\n";
+    $config->{verbose} &&
+      print "Creating : $config->{output}/tags/$index\n";
 
-    File::Path::make_path( "$config->{'output'}/tags",
+    File::Path::make_path( "$config->{output}/tags",
                            {  verbose => 0,
                               mode    => oct("755"),
-                           } ) unless ( -d "$config->{'output'}/tags/" );
+                           } ) unless ( -d "$config->{output}/tags/" );
 
 
 
@@ -231,9 +231,9 @@ sub _outputTagCloud
     return unless ($c);
 
     $c->param( all_tags => $tags ) if ($tags);
-    $c->param( top => $config->{ 'top' } );
+    $c->param( top => $config->{top} );
 
-    open( my $handle, ">:encoding(UTF-8)", "$config->{'output'}/tags/$index" )
+    open( my $handle, ">:encoding(UTF-8)", "$config->{output}/tags/$index" )
       or
       die "Failed to open";
     print $handle $c->output();
