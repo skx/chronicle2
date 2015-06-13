@@ -821,7 +821,11 @@ sub getDatabase
     {
 
         $dbh->do(
-            "CREATE TABLE blog (id INTEGER PRIMARY KEY, file, date,title, link,mtime, body, truncatedbody, template );"
+            "CREATE TABLE blog (id INTEGER PRIMARY KEY,file,date,title,link,mtime,body,truncatedbody,template);"
+        );
+        # Make sure the titles are unique because they are used to construct file names
+        $dbh->do(
+            "CREATE UNIQUE INDEX unique_title on blog (title);"
         );
         $dbh->do("CREATE TABLE tags (id INTEGER PRIMARY KEY, name, blog_id );");
 
