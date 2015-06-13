@@ -45,14 +45,14 @@ sub on_generate
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh    = $args{ 'dbh' };
-    my $config = $args{ 'config' };
+    my $dbh    = $args{dbh};
+    my $config = $args{config};
 
 
     #
     #  The number of posts to show on the front-page
     #
-    my $count = $config->{ 'entry-count' } || 10;
+    my $count = $config->{'entry-count'} || 10;
 
     my $recent =
       $dbh->prepare("SELECT id FROM blog ORDER BY date DESC LIMIT 0,$count") or
@@ -79,17 +79,17 @@ sub on_generate
     #
     #  The index-file to generate
     #
-    my $index = $config->{ 'index_filename' } || "index.html";
+    my $index = $config->{index_filename} || "index.html";
 
-    $config->{ 'verbose' } &&
-      print "Creating : $config->{'output'}/$index\n";
+    $config->{verbose} &&
+      print "Creating : $config->{output}/$index\n";
 
     my $c = Chronicle::load_template("index.tmpl");
     return unless ($c);
 
-    $c->param( top => $config->{ 'top' } );
+    $c->param( top => $config->{top} );
     $c->param( entries => $entries ) if ($entries);
-    open( my $handle, ">:encoding(UTF-8)", "$config->{'output'}/$index" ) or
+    open( my $handle, ">:encoding(UTF-8)", "$config->{output}/$index" ) or
       die "Failed to open";
     print $handle $c->output();
     close($handle);

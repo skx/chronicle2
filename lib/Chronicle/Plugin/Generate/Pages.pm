@@ -57,8 +57,8 @@ sub on_generate
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh    = $args{ 'dbh' };
-    my $config = $args{ 'config' };
+    my $dbh    = $args{dbh};
+    my $config = $args{config};
 
 
     my $all = $dbh->prepare("SELECT id FROM blog ORDER BY date ASC") or
@@ -112,7 +112,7 @@ sub on_generate
         #
         #  Work out where it will be written to
         #
-        my $out = $config->{ 'output' } . "/" . $entry->{ 'link' };
+        my $out = $config->{output} . "/" . $entry->{link};
 
         #
         #  We skip posts that are already present:
@@ -134,16 +134,16 @@ sub on_generate
         #
         # Unless --force overrides that.
         #
-        $skip = 0 if ( $config->{ 'force' } );
+        $skip = 0 if ( $config->{force} );
 
         #
         # Finally if comments were enabled and this is recent then
         # we'll also force it to be generated
         #
         $skip = 0
-          if ( ( $config->{ 'comments' } ) &&
-               ( ( $now - $entry->{ 'posted' } ) <
-                 ( 60 * 60 * 24 * $config->{ 'comment-days' } ) ) );
+          if ( ( $config->{comments} ) &&
+               ( ( $now - $entry->{posted} ) <
+                 ( 60 * 60 * 24 * $config->{'comment-days'} ) ) );
 
 
         #
@@ -152,12 +152,12 @@ sub on_generate
         next if ($skip);
 
 
-        $config->{ 'verbose' } &&
-          print "Creating : $config->{'output'}/$entry->{'link'}\n";
+        $config->{verbose} &&
+          print "Creating : $config->{output}/$entry->{link}\n";
 
-        my $c = Chronicle::load_template( $entry->{ 'template' } );
+        my $c = Chronicle::load_template( $entry->{template} );
         return unless ($c);
-        $c->param( top => $config->{ 'top' } );
+        $c->param( top => $config->{top} );
         $c->param($entry);
 
         #
@@ -171,8 +171,8 @@ sub on_generate
                                   config => $config
                                 );
             $c->param( prev_id    => $prev_id,
-                       prev_title => $prev->{ 'title' },
-                       prev_link  => $prev->{ 'link' } );
+                       prev_title => $prev->{title},
+                       prev_link  => $prev->{link} );
         }
         if ($next_id)
         {
@@ -182,15 +182,15 @@ sub on_generate
                                   config => $config
                                 );
             $c->param( next_id    => $next_id,
-                       next_title => $next->{ 'title' },
-                       next_link  => $next->{ 'link' } );
+                       next_title => $next->{title},
+                       next_link  => $next->{link} );
         }
 
         #
         #  Ensure we have a full output path - because a plugin might have given us a dated-path.
         #
         my $dir = File::Basename::dirname(
-                             $config->{ 'output' } . "/" . $entry->{ 'link' } );
+                             $config->{output} . "/" . $entry->{link} );
         if ( !-d $dir )
         {
             File::Path::make_path( $dir,
@@ -200,7 +200,7 @@ sub on_generate
         }
 
         open( my $handle, ">:encoding(UTF-8)",
-              $config->{ 'output' } . "/" . $entry->{ 'link' } ) or
+              $config->{output} . "/" . $entry->{link} ) or
           die "Failed to open";
         print $handle $c->output();
         close($handle);

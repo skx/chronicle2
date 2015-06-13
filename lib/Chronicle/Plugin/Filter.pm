@@ -86,8 +86,8 @@ sub on_insert
 {
     my ( $self, %args ) = (@_);
 
-    my $conf = $args{ 'config' };
-    my $data = $args{ 'data' };
+    my $conf = $args{config};
+    my $data = $args{data};
 
     #
     #  The filters we run.
@@ -114,13 +114,13 @@ sub on_insert
         #
         #  Get the post body
         #
-        my $body = $data->{ 'body' };
+        my $body = $data->{body};
 
         #
         #  Report what we're doing.
         #
-        print "Filtering $data->{'file'} via $filter\n"
-          if ( $conf->{ 'verbose' } );
+        print "Filtering $data->{file} via $filter\n"
+          if ( $conf->{verbose} );
 
 
         #
@@ -145,7 +145,7 @@ sub on_insert
         #
         #  Store the updated body.
         #
-        $data->{ 'body' } = $result;
+        $data->{body} = $result;
     }
 
     #

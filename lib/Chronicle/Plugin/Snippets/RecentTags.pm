@@ -63,13 +63,13 @@ sub on_initiate
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh    = $args{ 'dbh' };
-    my $config = $args{ 'config' };
+    my $dbh    = $args{dbh};
+    my $config = $args{config};
 
     #
     #  The number of tags to include.
     #
-    my $count = $config->{ 'recent-tag-count' } || 10;
+    my $count = $config->{'recent-tag-count'} || 10;
 
     my $recent = $dbh->prepare(
         "SELECT a.name FROM tags AS a JOIN blog AS b WHERE ( b.id = a.blog_id  ) ORDER BY b.date DESC LIMIT $count"

@@ -53,8 +53,8 @@ sub on_generate
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh    = $args{ 'dbh' };
-    my $config = $args{ 'config' };
+    my $dbh    = $args{dbh};
+    my $config = $args{config};
 
     my $recent = $dbh->prepare(
         "SELECT id FROM blog ORDER BY date DESC LIMIT 0,$config->{'rss-count'}")
@@ -79,8 +79,8 @@ sub on_generate
     $recent->finish();
 
 
-    $config->{ 'verbose' } &&
-      print "Creating : $config->{'output'}/index.rss\n";
+    $config->{verbose} &&
+      print "Creating : $config->{output}/index.rss\n";
 
 
     #
@@ -122,13 +122,13 @@ sub on_generate
     #
     #  Add the entries.
     #
-    $c->param( top => $config->{ 'top' } );
+    $c->param( top => $config->{top} );
     $c->param( entries => $entries ) if ($entries);
 
     #
     #  Output the rendered template.
     #
-    open( my $handle, ">:encoding(UTF-8)", "$config->{'output'}/index.rss" ) or
+    open( my $handle, ">:encoding(UTF-8)", "$config->{output}/index.rss" ) or
       die "Failed to open";
     print $handle $c->output();
     close($handle);
@@ -137,10 +137,10 @@ sub on_generate
     #
     #  Show the number of entries written if we're being verbose.
     #
-    if ( $config->{ 'verbose' } && $entries )
+    if ( $config->{verbose} && $entries )
     {
         print "Wrote " . scalar(@$entries) .
-          " items to $config->{'output'}/index.rss\n";
+          " items to $config->{output}/index.rss\n";
     }
 }
 

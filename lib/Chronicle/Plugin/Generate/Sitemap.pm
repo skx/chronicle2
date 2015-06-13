@@ -62,8 +62,8 @@ sub on_generate
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh    = $args{ 'dbh' };
-    my $config = $args{ 'config' };
+    my $dbh    = $args{dbh};
+    my $config = $args{config};
 
 
     #
@@ -80,7 +80,7 @@ sub on_generate
     #
     #  This is the file we're going to write.
     #
-    my $output = $config->{ 'output' } . "/sitemap.xml";
+    my $output = $config->{output} . "/sitemap.xml";
 
     my $sql = $dbh->prepare("SELECT link FROM blog") or
       die "Failed to prepare: " . $dbh->errstr();
@@ -94,7 +94,7 @@ sub on_generate
 
     while ( $sql->fetch() )
     {
-        push( @$urls, { url => $config->{ 'top' } . $link } );
+        push( @$urls, { url => $config->{top} . $link } );
     }
     $sql->finish();
 
@@ -104,14 +104,14 @@ sub on_generate
     #
     my $template = Chronicle::load_template( undef, $tmpl );
     $template->param( urls => $urls ) if ($urls);
-    $template->param( top => $config->{ 'top' } ) if ( $config->{ 'top' } );
+    $template->param( top => $config->{top} ) if ( $config->{top} );
 
     open( my $handle, ">:encoding(UTF-8)", $output ) or
       die "Failed to open output file $output - $!";
     print $handle $template->output();
     close($handle);
 
-    if ( $config->{ 'verbose' } )
+    if ( $config->{verbose} )
     {
         print "Wrote " . ( $urls ? scalar(@$urls) : 0 ) . " URLS to $output\n";
     }

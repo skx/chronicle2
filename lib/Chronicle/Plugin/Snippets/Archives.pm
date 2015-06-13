@@ -63,8 +63,8 @@ sub on_initiate
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh    = $args{ 'dbh' };
-    my $config = $args{ 'config' };
+    my $dbh    = $args{dbh};
+    my $config = $args{config};
 
     my %mons = ( "01" => 'January',
                  "02" => 'February',

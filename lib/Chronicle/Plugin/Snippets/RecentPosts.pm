@@ -77,13 +77,13 @@ sub on_initiate
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh    = $args{ 'dbh' };
-    my $config = $args{ 'config' };
+    my $dbh    = $args{dbh};
+    my $config = $args{config};
 
     #
     #  The number of posts to include.
     #
-    my $count = $config->{ 'recent-post-count' } || 10;
+    my $count = $config->{'recent-post-count'} || 10;
 
     my $recent =
       $dbh->prepare("SELECT id FROM blog ORDER BY date DESC LIMIT 0,$count") or
@@ -103,14 +103,14 @@ sub on_initiate
                                        config => $config
                                      );
 
-        my $x = $data->{ 'posted' };
+        my $x = $data->{posted};
         my $date = time2str( "%e %B %Y", $x );
 
         push( @$entries,
               {  date  => $date,
-                 title => $data->{ 'title' },
-                 link  => $data->{ 'link' },
-                 tags  => $data->{ 'tags' },
+                 title => $data->{title},
+                 link  => $data->{link},
+                 tags  => $data->{tags},
               } );
     }
     $recent->finish();

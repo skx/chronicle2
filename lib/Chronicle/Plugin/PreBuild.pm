@@ -55,14 +55,14 @@ sub on_initiate
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh    = $args{ 'dbh' };
-    my $config = $args{ 'config' };
+    my $dbh    = $args{dbh};
+    my $config = $args{config};
 
-    return unless ( $config->{ 'pre-build' } );
+    return unless ( $config->{'pre-build'} );
 
-    foreach my $cmd ( @{ $config->{ 'pre-build' } } )
+    foreach my $cmd ( @{ $config->{'pre-build'} } )
     {
-        $config->{ 'verbose' } && print "PreBuild($cmd)\n";
+        $config->{verbose} && print "PreBuild($cmd)\n";
 
         system($cmd );
     }
