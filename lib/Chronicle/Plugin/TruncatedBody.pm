@@ -72,7 +72,7 @@ sub on_insert
     #
     #  The link needs to be qualified.
     #
-    my $top = $config->{ 'top' };
+    my $top = $config->{ 'top' } || "";
     $link = $top . $link;
 
 
