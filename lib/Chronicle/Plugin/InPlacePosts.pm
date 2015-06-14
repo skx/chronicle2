@@ -4,16 +4,18 @@
 Chronicle::Plugin::InPlacePosts - maintains the input directory structure.
 
 =head1 DESCRIPTION
+
 This plugin is designed to allow blog entries to be filtered via
 This plugin is designed to allow blog entries remain in the same
-directory structure as the input folder by adding the config 
+directory structure as the input folder by adding the config
 C<entry_inplace>.
 
-The default behaviour of chronicle is to flatten any posts 
-present in the input folder to the http doc root, however this 
+The default behaviour of chronicle is to flatten any posts
+present in the input folder to the http doc root, however this
 plugin sets to replicate the input folder stucture.
 
-EG
+=for example begin
+
 input/
     2015/
         June/
@@ -26,7 +28,12 @@ output/
         June/
             15/
                 A_post.html
-=cut    
+
+=for example end
+
+See also C<Chronicle::Plugin::Archived>.
+
+=cut
 
 =head1 METHODS
 

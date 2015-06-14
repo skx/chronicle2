@@ -15,6 +15,8 @@ that will change to C<http://example.com/2015/09/my_first_post.html>.
 B<NOTE> If you enable or disable this plugin you will need to regenerate
 your SQLite database.
 
+See also C<Chronicle::Plugin::InPlacePosts>.
+
 =cut
 
 =head1 METHODS
