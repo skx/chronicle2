@@ -1,3 +1,12 @@
+5.1.0 - DD MMMM YYYY
+    * Allow per-post templates.
+	* Allow posts to be truncated.
+	* Allow user to configure the man/max/step-size of the tag-cloud.
+	* Allow static-pages to be created via new plugin.
+	* Allow input-folder layout to be preserved via new plugin.
+	* Abort if entries don't have titles.
+	* Abort if titles aren't unique within a blog.
+
 5.0.9 - 18th April 2015
     * Add App::Chronicle module to claim the namespace appropriately.
 	* Bump copyright year to 2015.
