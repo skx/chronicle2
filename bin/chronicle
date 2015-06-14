@@ -633,10 +633,14 @@ sub insertPost
     }
     close($handle);
 
-    # initicate the truncated body.
+
+    # Ensure we have a title.
+    defined $meta{ 'title' } or die "Missing `Title:' line in `$filename'";
+
+    # initiate the truncated body.
     $meta{ 'truncatedbody' } = '';
 
-    # initicate the template and change if there is a template is supplied.
+    # initiate the template and change if there is a template is supplied.
     $meta{ 'template' } = "entry.tmpl" unless defined $meta{ 'template' };
 
     #
@@ -820,9 +824,15 @@ sub getDatabase
     if ( !$present )
     {
 
+        # Create the table for the blog-posts
         $dbh->do(
             "CREATE TABLE blog (id INTEGER PRIMARY KEY, file, date,title, link,mtime, body, truncatedbody, template );"
         );
+
+        # Ensure that the titles are unique.
+        $dbh->do("CREATE UNIQUE INDEX unique_title on blog (title);");
+
+        # Create the table for tags
         $dbh->do("CREATE TABLE tags (id INTEGER PRIMARY KEY, name, blog_id );");
 
 
