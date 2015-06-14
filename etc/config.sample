@@ -27,23 +27,44 @@
 
 
 #
-#  Input directory where the blog entries are read from.
+#  Here we specify the input-directory, where blog-files are located.
 #
 input = ./blog
 
 
 #
-#  The pattern of files to include, these files will be handled
-# recursively.
+#  The pattern of files to include, these files will be handled recursively.
 #
 # pattern = *.txt
 #
+# NOTE:
+#
+# By default it is assumed you have a directory with a flat hierarchy,
+# so for example you might have these files:
+#
+#    blog/1.txt
+#    blog/2.txt
+#    blog/3.txt
+#
+# But the following set of files will also be read and processed:
+#
+#    blog/2015/May/01.txt
+#    blog/2015/May/02.txt
+#    blog/2015/May/03.txt
+#    blog/2013/Apr/01.txt
+#    ..
+#
 
 #
-#  Preserve the folder structure of the input directory in the 
-# output directory. 
-# 0 = move all post to the http doc root
-# 1 = preserve the input directory structure   
+# As the previous section demonstrated blog-posts will be processed
+# from beneath the input-directory, regardless of their depth.
+#
+# This next setting specifies whether the input-layout will be preserved
+# or squashed.
+#
+# If you use dated-files then you'll want to set the value to 1, otherwise
+# with a (default) value of 0 the posts will all end up in your top-level
+# output-directory.
 #
 # entry_inplace = 0
 #
@@ -58,6 +79,8 @@ output = ./output
 #
 #  The path to the SQLite database used internally.
 #
+#  This can be removed, and if it is it will be regenerated.
+#
 # db = `pwd`/blog.db
 #
 
@@ -65,7 +88,7 @@ output = ./output
 #
 #  Specify the directory containing themes.
 #
-#  (Each theme is a named sub-directory beneath the single parent.)
+#  (Each theme is a named sub-directory beneath the specified prefix.)
 #
 #  The default location will vary depending on your Perl installation,
 # and you can see what is in-use upon your system via:
