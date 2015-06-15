@@ -20,7 +20,7 @@ $config{ 'input' } = "./blog";
 
 $data{ 'body' }     = "<p>It is true</p>";
 $data{ 'date' }     = "10th March 1976";
-$data{ 'filename' } = "./blog/2015/June/13/cake.post";
+$data{ 'file' } = "./blog/2015/June/13/cake.post";
 $data{ 'link' }     = "I_like_cake.html";
 $data{ 'title' }    = "I like cake";
 
@@ -83,7 +83,7 @@ $out =
 
 ok( $out, "Returned something." );
 is( ref($out), "HASH", "Which was a hash" );
-foreach my $key (qw(body date filename title))
+foreach my $key (qw(body date file title))
 {
     is( $data{ $key }, $out->{ $key }, "The field is unchanged: $key" );
 }
