@@ -29,6 +29,8 @@ package Chronicle::Plugin::StaticPages;
 use strict;
 use warnings;
 
+use File::Path;
+
 =head1 doc
 
 =head2 on_db_create
@@ -161,6 +163,18 @@ sub on_generate
           print
           "Generating static-page: Title:$title -> $config->{'output'}/$filename\n";
 
+        #
+        #  Ensure we have a full output path.
+        #
+        my $dir =
+          File::Basename::dirname( $config->{ 'output' } . "/" . $filename );
+        if ( !-d $dir )
+        {
+            File::Path::make_path( $dir,
+                                   {  verbose => 0,
+                                      mode    => oct("755"),
+                                   } );
+        }
         my $c = Chronicle::load_template($template);
         $c->param( top => $config->{ 'top' } );
         $c->param( { content => $content, title => $title } );
