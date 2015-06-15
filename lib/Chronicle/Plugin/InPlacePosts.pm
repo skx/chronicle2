@@ -72,21 +72,29 @@ sub on_insert
 
     if ( $config->{ 'entry_inplace' } )
     {
-        $config->{ 'verbose' }  &&
+        $config->{ 'verbose' } &&
           print "Changing Link to stay in place: $data->{'file'} \n";
 
         my $inplacelink = $data->{ 'file' };
 
         # strip off the source dir with the first '/'
         # this will be added back later
-        my $input = $config->{'input'};
-        $inplacelink =~ s?$input/??;
+        my $input = $config->{ 'input' };
+        $inplacelink =~ s#$input/?##;
 
         # strip off the filename and add the title in its place
-        $inplacelink =~ s?/[^/]+$??;
-        $data->{ 'link' } = $inplacelink . '/' . $data->{ 'link' };
+        $inplacelink =~ s#/?[^/]+$##;
+
+        # if the $inplacelink variable is empty it means the file lives
+        # in the root of the input directory, and does not require a '/'
+        # to be added between the inplace link and the file name.
+        # Conversely if $inplacelink is not empty the file lives within
+        # we need to add a '/' between it ans the file name
+        $inplacelink .= '/' if ( $inplacelink !~ /^\s*$/ );
+
+        $data->{ 'link' } = $inplacelink . $data->{ 'link' };
     }
- 
+
     return ($data);
 }
 
