@@ -73,9 +73,9 @@ sub on_insert
     if ( $config->{ 'entry_inplace' } )
     {
         $config->{ 'verbose' }  &&
-          print "Changing Link to stay in place: $data->{'filename'} \n";
+          print "Changing Link to stay in place: $data->{'file'} \n";
 
-        my $inplacelink = $data->{ 'filename' };
+        my $inplacelink = $data->{ 'file' };
 
         # strip off the source dir with the first '/'
         # this will be added back later
