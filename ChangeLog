@@ -1,4 +1,4 @@
-5.1.0 - DD MMMM YYYY
+5.1.0 - 16th June 2015
     * Allow per-post templates.
 	* Allow posts to be truncated.
 	* Allow user to configure the man/max/step-size of the tag-cloud.
