@@ -25,7 +25,7 @@ use strict;
 use warnings;
 
 use Data::Dumper;
-our $VERSION = "5.0.9";
+our $VERSION = "5.1.0";
 
 
 =head2 on_insert

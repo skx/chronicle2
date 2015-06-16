@@ -41,7 +41,7 @@ use strict;
 use warnings;
 
 
-our $VERSION = "5.0.9";
+our $VERSION = "5.1.0";
 
 
 =head2 on_initiate
