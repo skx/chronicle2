@@ -24,7 +24,6 @@ package Chronicle::Plugin::TruncatedBody;
 use strict;
 use warnings;
 
-use Data::Dumper;
 our $VERSION = "5.0.9";
 
 
