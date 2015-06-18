@@ -29,6 +29,7 @@ my %WriteMakefileArgs = (
         'File::Basename'             => 0,
         'File::Find'                 => 0,
         'File::Path'                 => 0,
+        'File::ShareDir'             => 0,
         'Getopt::Long'               => 0,
         'HTML::Template'             => 0,
         'Module::Pluggable::Ordered' => 0,
