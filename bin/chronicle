@@ -817,7 +817,7 @@ Returns a boolean indicating success.
 
 sub check_database_structure
 {
-    my ($dbh) = @_;
+    my ($dbh) = (@_);
     while ( my ( $table_name, $table_spec ) = each %DATABASE_SCHEMA )
     {
         for my $column ( @{ $table_spec->{ columns } } )
@@ -841,7 +841,7 @@ Open a named file as an SQLite database
 
 sub get_database_handle
 {
-    my ($filename) = @_;
+    my ($filename) = (@_);
 
     my $dbh =
       DBI->connect( "dbi:SQLite:dbname=$filename", "", "",
