@@ -359,21 +359,23 @@ $CONFIG{ 'exclude-plugins' } =
 
 our %DATABASE_SCHEMA = (
     blog => {
-        columns => [qw/ id file date title link mtime body truncatedbody template /],
+        columns =>
+          [qw/ id file date title link mtime body truncatedbody template /],
         create => [
             'CREATE TABLE blog (id INTEGER PRIMARY KEY,file,date,title,link,mtime,body,truncatedbody,template )',
             'CREATE UNIQUE INDEX unique_title on blog (title)',
         ],
     },
-    tags => {
-        columns => [qw/ id name blog_id /],
-        create => [ 'CREATE TABLE tags (id INTEGER PRIMARY KEY, name, blog_id )' ],
-    },
+    tags => { columns => [qw/ id name blog_id /],
+              create =>
+                ['CREATE TABLE tags (id INTEGER PRIMARY KEY, name, blog_id )'],
+            },
     pages => {
         columns => [qw/ id filename title content template /],
-        create => [ ], # Chronicle::Plugin::StaticPages will do it
-    },
+        create => [],    # Chronicle::Plugin::StaticPages will do it
+             },
 );
+
 #
 #  Options here are passed to all templates
 #
@@ -816,13 +818,14 @@ Returns a boolean indicating success.
 sub check_database_structure
 {
     my ($dbh) = @_;
-    while(my ($table_name, $table_spec) = each %DATABASE_SCHEMA)
+    while ( my ( $table_name, $table_spec ) = each %DATABASE_SCHEMA )
     {
-        for my $column (@{$table_spec->{columns}})
+        for my $column ( @{ $table_spec->{ columns } } )
         {
-            local $dbh->{PrintError} = 0;
+            local $dbh->{ PrintError } = 0;
             $dbh->selectcol_arrayref("SELECT $column FROM $table_name LIMIT 1")
-                or return;
+              or
+              return;
         }
     }
     return 1;
@@ -836,13 +839,14 @@ Open a named file as an SQLite database
 
 =cut
 
-sub get_database_handle {
+sub get_database_handle
+{
     my ($filename) = @_;
 
-    my $dbh = DBI->connect(
-        "dbi:SQLite:dbname=$filename", "", "",
-        { AutoCommit => 1, RaiseError => 0 }
-    ) or die "Could not open SQLite database: $DBI::errstr";
+    my $dbh =
+      DBI->connect( "dbi:SQLite:dbname=$filename", "", "",
+                    { AutoCommit => 1, RaiseError => 0 } ) or
+      die "Could not open SQLite database: $DBI::errstr";
     $dbh->{ sqlite_unicode } = 1;
     return $dbh;
 }
@@ -874,22 +878,22 @@ sub getDatabase
     #
     $present = 1 if ( -e $CONFIG{ 'database' } );
 
-    my $dbh = get_database_handle($CONFIG{'database'});
+    my $dbh = get_database_handle( $CONFIG{ 'database' } );
 
     # If it exists but fails the structure check, just delete it
-    if($present and not check_database_structure($dbh))
+    if ( $present and not check_database_structure($dbh) )
     {
         $dbh->disconnect;
-        unlink $CONFIG{'database'};
-        $dbh = get_database_handle($CONFIG{'database'});
+        unlink $CONFIG{ 'database' };
+        $dbh     = get_database_handle( $CONFIG{ 'database' } );
         $present = 0;
     }
 
     if ( !$present )
     {
-        for my $table_spec (values %DATABASE_SCHEMA)
+        for my $table_spec ( values %DATABASE_SCHEMA )
         {
-            $dbh->do($_) for @{$table_spec->{create}};
+            $dbh->do($_) for @{ $table_spec->{ create } };
         }
 
         foreach my $plugin ( get_plugins_for_method("on_db_create") )
