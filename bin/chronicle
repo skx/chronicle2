@@ -919,15 +919,14 @@ sub getBlog
     #  If the date is not set then we use the mtime for both date & time.
     #
     my $time;
-    my $posted = $data->{ 'date' };
-    $data->{ 'posted' } = $data->{ 'date' };
+    my $posted = $data->{ 'posted' } = $data->{ 'date' };
     if ( $data->{ 'date' } )
     {
         $time = $data->{ 'date' };
     }
     else
     {
-        $time = $data->{ 'mtime' };
+        $time = $posted = $data->{ 'mtime' };
     }
 
 
