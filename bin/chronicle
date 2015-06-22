@@ -817,7 +817,10 @@ sub getDatabase
     $present = 1 if ( -e $CONFIG{ 'database' } );
 
 
-    my $dbh = DBI->connect( "dbi:SQLite:dbname=$CONFIG{'database'}", "", "" );
+    my $dbh = DBI->connect(
+        "dbi:SQLite:dbname=$CONFIG{'database'}", "", "",
+        { AutoCommit => 1, RaiseError => 0 }
+    ) or die "Could not open SQLite database: $DBI::errstr";
 
     $dbh->{ sqlite_unicode } = 1;
 
