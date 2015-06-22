@@ -357,7 +357,23 @@ $CONFIG{ 'top' }          = "/";
 $CONFIG{ 'exclude-plugins' } =
   "Chronicle::Plugin::Archived,Chronicle::Plugin::Verbose";
 
-
+our %DATABASE_SCHEMA = (
+    blog => {
+        columns => [qw/ id file date title link mtime body truncatedbody template /],
+        create => [
+            'CREATE TABLE blog (id INTEGER PRIMARY KEY,file,date,title,link,mtime,body,truncatedbody,template )',
+            'CREATE UNIQUE INDEX unique_title on blog (title)',
+        ],
+    },
+    tags => {
+        columns => [qw/ id name blog_id /],
+        create => [ 'CREATE TABLE tags (id INTEGER PRIMARY KEY, name, blog_id )' ],
+    },
+    pages => {
+        columns => [qw/ id filename title content template /],
+        create => [ ], # Chronicle::Plugin::StaticPages will do it
+    },
+);
 #
 #  Options here are passed to all templates
 #
@@ -788,6 +804,48 @@ sub insertPost
 }
 
 
+=begin doc
+
+Given a database handle, check that all required tables and columns exist.
+Returns a boolean indicating success.
+
+=end doc
+
+=cut
+
+sub check_database_structure
+{
+    my ($dbh) = @_;
+    while(my ($table_name, $table_spec) = each %DATABASE_SCHEMA)
+    {
+        for my $column (@{$table_spec->{columns}})
+        {
+            local $dbh->{PrintError} = 0;
+            $dbh->selectcol_arrayref("SELECT $column FROM $table_name LIMIT 1")
+                or return;
+        }
+    }
+    return 1;
+}
+
+=begin doc
+
+Open a named file as an SQLite database
+
+=end doc
+
+=cut
+
+sub get_database_handle {
+    my ($filename) = @_;
+
+    my $dbh = DBI->connect(
+        "dbi:SQLite:dbname=$filename", "", "",
+        { AutoCommit => 1, RaiseError => 0 }
+    ) or die "Could not open SQLite database: $DBI::errstr";
+    $dbh->{ sqlite_unicode } = 1;
+    return $dbh;
+}
 
 =begin doc
 
@@ -816,28 +874,23 @@ sub getDatabase
     #
     $present = 1 if ( -e $CONFIG{ 'database' } );
 
+    my $dbh = get_database_handle($CONFIG{'database'});
 
-    my $dbh = DBI->connect(
-        "dbi:SQLite:dbname=$CONFIG{'database'}", "", "",
-        { AutoCommit => 1, RaiseError => 0 }
-    ) or die "Could not open SQLite database: $DBI::errstr";
-
-    $dbh->{ sqlite_unicode } = 1;
+    # If it exists but fails the structure check, just delete it
+    if($present and not check_database_structure($dbh))
+    {
+        $dbh->disconnect;
+        unlink $CONFIG{'database'};
+        $dbh = get_database_handle($CONFIG{'database'});
+        $present = 0;
+    }
 
     if ( !$present )
     {
-
-        # Create the table for the blog-posts
-        $dbh->do(
-            "CREATE TABLE blog (id INTEGER PRIMARY KEY, file, date,title, link,mtime, body, truncatedbody, template );"
-        );
-
-        # Ensure that the titles are unique.
-        $dbh->do("CREATE UNIQUE INDEX unique_title on blog (title);");
-
-        # Create the table for tags
-        $dbh->do("CREATE TABLE tags (id INTEGER PRIMARY KEY, name, blog_id );");
-
+        for my $table_spec (values %DATABASE_SCHEMA)
+        {
+            $dbh->do($_) for @{$table_spec->{create}};
+        }
 
         foreach my $plugin ( get_plugins_for_method("on_db_create") )
         {
