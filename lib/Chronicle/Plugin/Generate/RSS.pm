@@ -196,7 +196,6 @@ __DATA__
 <link><!-- tmpl_var name='top' --><!-- tmpl_var name='link' --></link>
 <content:encoded><!-- tmpl_var name="body" escape='html' --></content:encoded>
 <dc:date><!-- tmpl_var name='iso_8601' --></dc:date>
-<dc:creator>Guido Günther</dc:creator>
 </item>
 <!-- /tmpl_loop name='entries' -->
 </rdf:RDF>
