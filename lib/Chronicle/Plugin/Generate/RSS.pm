@@ -169,21 +169,34 @@ Steve Kemp <steve@steve.org.uk>
 
 
 __DATA__
-<?xml version="1.0" encoding="utf-8"?>
-<rss version='2.0' xmlns:lj='http://www.livejournal.org/rss/lj/1.0/' xmlns:atom="http://www.w3.org/2005/Atom">
-	<channel>
-		<title><!-- tmpl_var name='blog_title' escape='html' --></title>
-		<description><!-- tmpl_var name='blog_subtitle' escape='html' --></description>
-                <link><!-- tmpl_var name='top' --></link>
-                <atom:link href="<!-- tmpl_var name='top' -->index.rss" rel="self" type="application/rss+xml" />
-	<!-- tmpl_loop name="entries" -->
-	<item>
-		<title><!-- tmpl_var name="title" escape='html' --></title>
-		<link><!-- tmpl_var name='top' --><!-- tmpl_var name='link' --></link>
-		<guid isPermaLink="true"><!-- tmpl_var name='top' --><!-- tmpl_var name='link' --></guid>
-                <pubDate><!-- tmpl_var name='date' --></pubDate>
-		<description><!-- tmpl_var name="body" escape='html' --></description>
-	</item>
-	<!-- /tmpl_loop -->
-        </channel>
-</rss>
+<?xml version="1.0"?>
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:foaf="http://xmlns.com/foaf/0.1/"
+ xmlns:content="http://purl.org/rss/1.0/modules/content/"
+ xmlns="http://purl.org/rss/1.0/"
+>
+<channel rdf:about="<!-- tmpl_var name='top' -->">
+<title><!-- tmpl_var name='blog_title' escape='html' --></title>
+<link><!-- tmpl_var name='top' --></link>
+<description><!-- tmpl_var name='blog_subtitle' escape='html' --></description>
+<items>
+ <rdf:Seq>
+<!-- tmpl_loop name="entries" -->
+  <rdf:li rdf:resource="<!-- tmpl_var name='top' --><!-- tmpl_var name='link' -->"/>
+<!-- /tmpl_loop name="entries" -->
+ </rdf:Seq>
+</items>
+</channel>
+
+<!-- tmpl_loop name="entries" -->
+<item rdf:about="<!-- tmpl_var name='top' --><!-- tmpl_var name='link' -->">
+<title><!-- tmpl_var name='title' escape='html' --></title>
+<link><!-- tmpl_var name='top' --><!-- tmpl_var name='link' --></link>
+<content:encoded><!-- tmpl_var name="body" escape='html' --></content:encoded>
+<dc:date><!-- tmpl_var name='iso_8601' --></dc:date>
+<dc:creator>Guido Günther</dc:creator>
+</item>
+<!-- /tmpl_loop name='entries' -->
+</rdf:RDF>

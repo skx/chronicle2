@@ -1021,6 +1021,7 @@ sub getBlog
         $data->{ 'date' } = time2str( $date_fmt, $time );
     }
 
+
     #
     #  The time of the entry - if we have a time-format that contains
     # at least one % character.
@@ -1041,6 +1042,13 @@ sub getBlog
             $data->{ 'time' } = time2str( $time_fmt, $data->{ 'mtime' } );
         }
     }
+
+    #
+    #  For the RSS-Feed
+    #
+    $data->{ 'iso_8601' } = time2str( '%Y-%m-%dT', $time );
+    $data->{ 'iso_8601' } .= $data->{ 'time' } . "-00:00";
+
 
     #
     #  If comments are enabled then populate the blog-post with them too.
