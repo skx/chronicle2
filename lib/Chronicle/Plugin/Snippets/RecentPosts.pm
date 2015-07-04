@@ -56,7 +56,7 @@ use Date::Parse;
 
 
 
-our $VERSION = "5.1.0";
+our $VERSION = "5.1.1";
 
 
 =head2 on_initiate
