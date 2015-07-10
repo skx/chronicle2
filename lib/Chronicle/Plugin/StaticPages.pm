@@ -109,7 +109,7 @@ sub on_insert
         #
         #  Don't allow this to be treated as normal.
         #
-        return undef;
+        return;
     }
 
     # if its not a page carry on
