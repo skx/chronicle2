@@ -1207,7 +1207,7 @@ sub getComments
             #
             my $default  = "";
             my $size     = 32;
-            my $gravitar = "http://www.gravatar.com/avatar.php?gravatar_id=" .
+            my $gravitar = "//www.gravatar.com/avatar.php?gravatar_id=" .
               md5_hex( lc $mail ) . ";size=" . $size;
 
             #
