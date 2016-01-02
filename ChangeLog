@@ -1,3 +1,6 @@
+5.1.2 - 2nd January 2016
+    * Load gravitars in a protocol-agnostic fashion.
+
 5.1.1 - 4th July 2015
     * Updated default RSS-feed to validate correctly.
 

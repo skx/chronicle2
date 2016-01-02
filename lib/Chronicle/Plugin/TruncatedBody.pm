@@ -24,7 +24,7 @@ package Chronicle::Plugin::TruncatedBody;
 use strict;
 use warnings;
 
-our $VERSION = "5.1.1";
+our $VERSION = "5.1.2";
 
 
 =head2 on_insert
