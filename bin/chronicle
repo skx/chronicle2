@@ -667,9 +667,8 @@ sub insertPost
     $meta{ 'link' } = $meta{ 'title' };
 
     #
-    #  Remove the extension - regardless of what that might be.
+    #  Remove everything that's neither space nor alphanumeric
     #
-    $meta{ 'link' } =~ s/\.[^.]+$//;
 
     #
     #  Remove non-alphanumeric characters.
