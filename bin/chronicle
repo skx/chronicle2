@@ -669,11 +669,7 @@ sub insertPost
     #
     #  Remove everything that's neither space nor alphanumeric
     #
-
-    #
-    #  Remove non-alphanumeric characters.
-    #
-    $meta{ 'link' } =~ s/[^a-z0-9]/_/gi;
+    $meta{ 'link' } =~ s/[^[:alnum:] ]/_/gi;
 
     #
     #  Add the suffix for the page
