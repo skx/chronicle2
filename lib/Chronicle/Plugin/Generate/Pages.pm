@@ -113,7 +113,6 @@ sub on_generate
         #  Work out where it will be written to
         #
         my $out = $config->{ 'output' } . "/" . $entry->{ 'link' }->unescaped;
-        print STDERR "Writing `$out'\n";
         #
         #  We skip posts that are already present:
         #
