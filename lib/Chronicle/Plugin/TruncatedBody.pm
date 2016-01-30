@@ -66,7 +66,7 @@ sub on_insert
     #  Get the body of the post, and the link
     #
     my $body = $data->{ 'body' };
-    my $link = $data->{ 'link' } || '';
+    my $link = defined $data->{ 'link' } ? $data->{ 'link' }->as_string : '';
 
     #
     #  The link needs to be qualified.

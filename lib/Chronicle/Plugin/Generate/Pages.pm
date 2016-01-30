@@ -112,8 +112,8 @@ sub on_generate
         #
         #  Work out where it will be written to
         #
-        my $out = $config->{ 'output' } . "/" . $entry->{ 'link' };
-
+        my $out = $config->{ 'output' } . "/" . $entry->{ 'link' }->unescaped;
+        print STDERR "Writing `$out'\n";
         #
         #  We skip posts that are already present:
         #
@@ -153,7 +153,7 @@ sub on_generate
 
 
         $config->{ 'verbose' } &&
-          print "Creating : $config->{'output'}/$entry->{'link'}\n";
+          print "Creating : $out\n";
 
         my $c = Chronicle::load_template( $entry->{ 'template' } );
         return unless ($c);
@@ -199,9 +199,8 @@ sub on_generate
                                    } );
         }
 
-        open( my $handle, ">:encoding(UTF-8)",
-              $config->{ 'output' } . "/" . $entry->{ 'link' } ) or
-          die "Failed to open";
+        open( my $handle, ">:encoding(UTF-8)", $out)
+            or die "Failed to open `$out' for writing: $!";
         print $handle $c->output();
         close($handle);
 

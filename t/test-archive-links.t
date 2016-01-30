@@ -8,8 +8,10 @@ use Test::More tests => 9;
 #
 #  Load the module.
 #
-BEGIN {use_ok('Chronicle::Plugin::Archived');}
-require_ok('Chronicle::Plugin::Archived');
+BEGIN {
+    use_ok('Chronicle::Plugin::Archived');
+    use_ok('Chronicle::URI');
+}
 
 
 #
@@ -19,7 +21,7 @@ my %data;
 my $link = "/some_blog_post.html";
 
 $data{ 'body' } = "This is **bold**";
-$data{ 'link' } = $link;
+$data{ 'link' } = Chronicle::URI->new($link);
 $data{ 'date' } = scalar( localtime() );
 
 
@@ -42,14 +44,14 @@ foreach my $key (qw! body date title !)
 #
 #  But the link should have done
 #
-isnt( $out->{ 'link' }, $link, "The link is updated" );
+isnt( $out->{ 'link' }->as_string, $link, "The link is updated" );
 
 
 #
 #  We should expect NNNN/MM/$title
 #
-my $YEAR = substr( $data{ 'link' }, 0, 4 );
-my $MON  = substr( $data{ 'link' }, 5, 2 );
+my $YEAR = substr( $data{ 'link' }->as_string, 0, 4 );
+my $MON  = substr( $data{ 'link' }->as_string, 5, 2 );
 
 #
 #  Test they're numeric.
@@ -72,5 +74,5 @@ $mon  += 1;
 #
 $mon = sprintf( "%02d", $mon );
 
-is( $out->{ 'link' },
-    "$year/$mon/$link", "We got the link we expected: $out->{'link'}" );
+is( $out->{ 'link' }->as_string,
+    "$year/$mon/$link", "We got the link we expected: " . $out->{'link'}->as_string );

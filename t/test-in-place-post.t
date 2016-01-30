@@ -2,13 +2,15 @@
 
 use strict;
 use warnings;
-use Test::More tests => 23;
-
+use utf8;
+use Test::More tests => 25;
 #
 #  Load the module.
 #
-BEGIN {use_ok('Chronicle::Plugin::InPlacePosts');}
-require_ok('Chronicle::Plugin::InPlacePosts');
+BEGIN {
+    use_ok('Chronicle::Plugin::InPlacePosts');
+    use_ok('Chronicle::URI');
+}
 
 
 #
@@ -21,7 +23,7 @@ $config{ 'input' } = "./blog";
 $data{ 'body' }     = "<p>It is true</p>";
 $data{ 'date' }     = "10th March 1976";
 $data{ 'file' } = "./blog/2015/June/13/cake.post";
-$data{ 'link' }     = "I_like_cake.html";
+$data{ 'link' }     = Chronicle::URI->new("I_lïke_caກ.html");
 $data{ 'title' }    = "I like cake";
 
 
@@ -93,6 +95,19 @@ foreach my $key (qw(body date file title))
 #  and should be changed
 #  from: 'I_like_cake.html'
 #  to:   '2015/June/13/I_like_cake.html'
-is( '2015/June/13/I_like_cake.html',
-    $out->{ link },
+is( $out->{ link }->as_string,
+    '2015/June/13/I_l%C3%AFke_ca%E0%BA%81.html',
     "The link field should be changed" );
+
+# Restore the link and do the same thing again, this time for HFS
+Chronicle::URI::i_use_hfs;
+$data{ 'link' }     = Chronicle::URI->new("I_lïke_caກ.html");
+$out =
+  Chronicle::Plugin::InPlacePosts::on_insert( undef,
+                                             config => \%config,
+                                             data   => \%data
+                                           );
+is( ref($out), "HASH", "Got a hash" );
+is( $out->{ link }->as_string,
+    '2015/June/13/I_li%CC%88ke_ca%E0%BA%81.html',
+    "Link changed correctly to NFD form" );

@@ -5,7 +5,6 @@ Chronicle::Plugin::InPlacePosts - maintains the input directory structure.
 
 =head1 DESCRIPTION
 
-This plugin is designed to allow blog entries to be filtered via
 This plugin is designed to allow blog entries remain in the same
 directory structure as the input folder by adding the config
 C<entry_inplace>.
@@ -73,7 +72,7 @@ sub on_insert
     if ( $config->{ 'entry_inplace' } )
     {
         $config->{ 'verbose' } &&
-          print "Changing Link to stay in place: $data->{'file'} \n";
+          print "Changing Link to stay in place: $data->{'file'}\n";
 
         my $inplacelink = $data->{ 'file' };
 
@@ -92,7 +91,7 @@ sub on_insert
         # we need to add a '/' between it ans the file name
         $inplacelink .= '/' if ( $inplacelink !~ /^\s*$/ );
 
-        $data->{ 'link' } = $inplacelink . $data->{ 'link' };
+        $data->{ 'link' }->path_prepend($inplacelink);
     }
 
     return ($data);
