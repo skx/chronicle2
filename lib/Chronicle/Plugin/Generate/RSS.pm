@@ -94,11 +94,7 @@ sub on_generate
     #
     if ( !$c )
     {
-        my $tmpl = "";
-        while ( my $line = <DATA> )
-        {
-            $tmpl .= $line;
-        }
+        my $tmpl = do { local $/; <DATA> };
 
         #
         #  If there is no template read then something weird has happened
