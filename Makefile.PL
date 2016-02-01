@@ -39,6 +39,8 @@ my %WriteMakefileArgs = (
         'Text::Markdown'      => 0,
         'Text::MultiMarkdown' => 0,
         'Text::Textile'       => 0,
+        'Unicode::Normalize'  => 0,
+        'URI'                 => 0,
     },
 
     TEST_REQUIRES => {

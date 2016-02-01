@@ -35,6 +35,9 @@ chronicle - A static blog-compiler.
    --blog-subtitle Set the title of the blog.
    --blog-title    Set the title of the blog.
    --force         Always regenerate pages.
+   --unicode=<yes|no|mac>
+                   Allow non-ASCII characters in file names. Default is
+                   `no'. Use `mac' if serving files off an HFS+ volume.
 
   Help Options:
 
@@ -309,7 +312,8 @@ Steve Kemp <steve@steve.org.uk>
 
 use strict;
 use warnings;
-
+use open ':std' => ':locale';
+use open IO => ':encoding(UTF-8)';
 
 package Chronicle;
 use Module::Pluggable::Ordered require => 1, inner => 0;
@@ -328,9 +332,8 @@ use Getopt::Long;
 use HTML::Template;
 use Pod::Usage;
 
-
+use Chronicle::URI;
 use Chronicle::Config::Reader;
-
 
 #
 #  Default options - These may be overridden by the command-line
@@ -352,6 +355,7 @@ $CONFIG{ 'entry-count' }  = 10;
 $CONFIG{ 'rss-count' }    = 10;
 $CONFIG{ 'theme-dir' }    = File::ShareDir::dist_dir('App-Chronicle');
 $CONFIG{ 'theme' }        = "default";
+$CONFIG{ 'unicode' }      = "no";
 $CONFIG{ 'verbose' }      = 0;
 $CONFIG{ 'top' }          = "/";
 $CONFIG{ 'exclude-plugins' } =
@@ -402,7 +406,10 @@ parseCommandLine();
 $cnf->parseFile( \%CONFIG, $CONFIG{ 'config' } )
   if ( defined $CONFIG{ 'config' } );
 
-
+#
+# Switch on Mac quirks for Unicode file names if required
+#
+Chronicle::URI::i_use_hfs if $CONFIG{ 'unicode' } eq 'mac';
 
 #
 # Get the database handle, creating the database on-disk if necessary.
@@ -664,28 +671,16 @@ sub insertPost
     #
     #  Generate the link from the title of the post.
     #
-    $meta{ 'link' } = $meta{ 'title' };
-
-    #
-    #  Remove the extension - regardless of what that might be.
-    #
-    $meta{ 'link' } =~ s/\.[^.]+$//;
-
-    #
-    #  Remove non-alphanumeric characters.
-    #
-    $meta{ 'link' } =~ s/[^a-z0-9]/_/gi;
-
-    #
-    #  Add the suffix for the page
-    #
-    my $suffix = $CONFIG{ 'entry_suffix' } || ".html";
-    $meta{ 'link' } .= $suffix;
-
-    #
-    #  Lower-case
-    #
-    $meta{ 'link' } = lc( $meta{ 'link' } );
+    my $suffix = $CONFIG{ 'entry_suffix' } // ".html";
+    my $link = $meta{ 'title' };
+    if($CONFIG{'unicode' } eq 'no') {
+        # Unicode off, only use 7-bit alphanumerics from titles
+        $link =~ s/[^a-zA-Z0-9]/_/gi;
+    } else {
+        # Allow everything alphanumeric in any Unicode block
+        $link =~ s/[^[:alnum:]]/_/gi;
+    }
+    $meta{ 'link' } = Chronicle::URI->new( $link . $suffix );
 
     #
     #  Let any plugins have access to the filename.
@@ -956,20 +951,13 @@ sub getBlog
     #
     #  Get the tags, if any
     #
-    my $tags =
-      $dbh->prepare("SELECT name FROM tags WHERE blog_id=? ORDER by name ASC")
-      or
-      die "Failed to prepare";
-    my $name;
-    $tags->execute($id) or die "Failed to execute: " . $dbh->errstr();
-    $tags->bind_columns( undef, \$name );
-    while ( $tags->fetch() )
-    {
-        my $x = $data->{ 'tags' };
-        push( @$x, { tag => $name } );
-        $data->{ 'tags' } = $x;
-    }
-    $tags->finish();
+    my $tags = $dbh->selectall_arrayref(
+        "SELECT name FROM tags WHERE blog_id=? ORDER by name ASC"
+    ) or die "Failed in selectall_arrayref(): ". $dbh->errstr();
+    $data->{ 'tags' } = [ map { { tag => $_->[0] } } @$tags ];
+
+    # Create an URI object for the link
+    $data->{ 'link' } = Chronicle::URI->new($data->{ 'link' });
 
     #
     #  Generate the date/time from mtime;
@@ -1390,6 +1378,7 @@ sub parseCommandLine
             "author=s",       \$CONFIG{ 'author' },
             "comment-days=s", \$CONFIG{ 'comment-days' },
             "force",          \$CONFIG{ 'force' },
+            "unicode=s",      \$CONFIG{ 'unicode' },
 
             # plugins
             "list-plugins",      \$CONFIG{ 'list-plugins' },
@@ -1480,6 +1469,13 @@ sub parseCommandLine
             }
         }
         exit 0;
+    }
+
+    # Show an error if 'unicode' is not an allowed value
+    $CONFIG{ 'unicode' } = lc $CONFIG{ 'unicode' };
+    unless(grep { $_ eq $CONFIG{ 'unicode' } } qw/ no yes mac /) {
+        print STDERR "--unicode must be one of `yes', `no' or `mac'";
+        exit 1;
     }
 }
 

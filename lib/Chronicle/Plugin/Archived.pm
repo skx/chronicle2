@@ -37,7 +37,6 @@ our $VERSION = "5.1.2";
 use Date::Format;
 use Date::Parse;
 
-
 =head2 on_insert
 
 The C<on_insert> method is automatically invoked when a new blog post
@@ -75,7 +74,7 @@ sub on_insert
     #
     #  And prepend that to the link.
     #
-    $data->{ 'link' } = $date . $data->{ 'link' };
+    $data->{ 'link' }->path_prepend($date);
 
     return ($data);
 }
