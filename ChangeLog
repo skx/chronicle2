@@ -1,3 +1,6 @@
+5.1.3 - 12th February 2016
+    * Accepted contribution from Matthias Bethke to allow UTF-8 filenames.
+
 5.1.2 - 2nd January 2016
     * Load gravitars in a protocol-agnostic fashion.
 

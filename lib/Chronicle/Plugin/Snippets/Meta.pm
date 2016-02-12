@@ -51,7 +51,7 @@ use Date::Format;
 use Sys::Hostname;
 
 
-our $VERSION = "5.1.2";
+our $VERSION = "5.1.3";
 
 
 =head2 on_initiate
