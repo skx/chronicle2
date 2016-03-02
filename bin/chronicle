@@ -313,7 +313,7 @@ Steve Kemp <steve@steve.org.uk>
 use strict;
 use warnings;
 use open ':std' => ':locale';
-use open IO => ':encoding(UTF-8)';
+use open IO     => ':encoding(UTF-8)';
 
 package Chronicle;
 use Module::Pluggable::Ordered require => 1, inner => 0;
@@ -429,7 +429,8 @@ updateDatabase($dbh);
 File::Path::make_path( $CONFIG{ 'output' },
                        {  verbose => 0,
                           mode    => oct("755"),
-                       } ) unless ( -d $CONFIG{ 'output' } );
+                       } )
+  unless ( -d $CONFIG{ 'output' } );
 
 
 
@@ -519,7 +520,8 @@ sub updateDatabase
         my ( $dev,   $ino,     $mode, $nlink, $uid,
              $gid,   $rdev,    $size, $atime, $mtime,
              $ctime, $blksize, $blocks
-           ) = stat($file);
+           )
+          = stat($file);
 
 
         #
@@ -673,10 +675,13 @@ sub insertPost
     #
     my $suffix = $CONFIG{ 'entry_suffix' } // ".html";
     my $link = $meta{ 'title' };
-    if($CONFIG{'unicode' } eq 'no') {
+    if ( $CONFIG{ 'unicode' } eq 'no' )
+    {
         # Unicode off, only use 7-bit alphanumerics from titles
         $link =~ s/[^a-zA-Z0-9]/_/gi;
-    } else {
+    }
+    else
+    {
         # Allow everything alphanumeric in any Unicode block
         $link =~ s/[^[:alnum:]]/_/gi;
     }
@@ -942,7 +947,7 @@ sub getBlog
     #  Get the blog-post
     #
     my $sql = $dbh->prepare("SELECT * FROM blog WHERE id=?") or
-      die "Failed to prepare";
+      die "Failed to prepare: " . $dbh->errstr();
     $sql->execute($id) or
       die "Failed to execute:" . $dbh->errstr();
     my $data = $sql->fetchrow_hashref();
@@ -951,13 +956,26 @@ sub getBlog
     #
     #  Get the tags, if any
     #
-    my $tags = $dbh->selectall_arrayref(
-        "SELECT name FROM tags WHERE blog_id=? ORDER by name ASC"
-    ) or die "Failed in selectall_arrayref(): ". $dbh->errstr();
-    $data->{ 'tags' } = [ map { { tag => $_->[0] } } @$tags ];
+    $sql =
+      $dbh->prepare("SELECT name FROM tags WHERE blog_id=? ORDER by name ASC")
+      or
+      die "Failed to prepare: " . $dbh->errstr();
+    $sql->execute($id);
+
+    my ( $tag, $tags );
+    $sql->bind_columns( undef, \$tag );
+
+    while ( $sql->fetch() )
+    {
+        push( @$tags, { tag => $tag } );
+    }
+    $sql->finish();
+
+    # Save the tags, if we found some
+    $data->{ 'tags' } = $tags if ( $tags && @$tags );
 
     # Create an URI object for the link
-    $data->{ 'link' } = Chronicle::URI->new($data->{ 'link' });
+    $data->{ 'link' } = Chronicle::URI->new( $data->{ 'link' } );
 
     #
     #  Generate the date/time from mtime;
@@ -1473,7 +1491,8 @@ sub parseCommandLine
 
     # Show an error if 'unicode' is not an allowed value
     $CONFIG{ 'unicode' } = lc $CONFIG{ 'unicode' };
-    unless(grep { $_ eq $CONFIG{ 'unicode' } } qw/ no yes mac /) {
+    unless ( grep {$_ eq $CONFIG{ 'unicode' }} qw/ no yes mac / )
+    {
         print STDERR "--unicode must be one of `yes', `no' or `mac'";
         exit 1;
     }
