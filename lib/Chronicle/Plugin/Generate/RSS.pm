@@ -90,7 +90,7 @@ sub on_generate
 
     #
     #  If not then we're going to use our default, which is
-    # contained in the __DATA__ section of this very-module.
+    # contained in the __DATA__ section of this very module.
     #
     if ( !$c )
     {
