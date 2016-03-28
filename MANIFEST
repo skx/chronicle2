@@ -31,6 +31,9 @@ lib/Chronicle/Plugin/Textile.pm
 lib/Chronicle/Plugin/Tidy.pm
 lib/Chronicle/Plugin/TruncatedBody.pm
 lib/Chronicle/Plugin/YouTube.pm
+lib/Chronicle/Template.pm
+lib/Chronicle/Template/HTMLTemplate.pm
+lib/Chronicle/Template/Xslate.pm
 lib/Chronicle/URI.pm
 LICENSE
 Makefile.PL
