@@ -32,7 +32,9 @@ my %WriteMakefileArgs = (
         'File::ShareDir'             => 0,
         'Getopt::Long'               => 0,
         'HTML::Template'             => 0,
+        'HTML::Element'              => 5,
         'Module::Pluggable::Ordered' => 0,
+        'Path::Class'                => 0,
         'Pod::Usage'                 => 0,
 
         # optional formatters.
