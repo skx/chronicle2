@@ -1,11 +1,11 @@
-package Chronicle::Template::Xslate;
+package Chronicle::Template::XslateTT;
 use strict;
 use warnings;
 use parent 'Chronicle::Template::GenericXslate';
 
 =head1 NAME
 
-Chronicle::Template::Xslate - L<Text::Xslate> templates with Kolon syntax.
+Chronicle::Template::XslateTT - L<Text::Xslate> templates with TTerse syntax.
 
 =head1 DESCRIPTION
 
@@ -20,7 +20,7 @@ Return the syntax to use
 
 =cut
 
-sub _syntax { 'Kolon' }
+sub _syntax { 'TTerse' }
 
 =head2 _extension
 
@@ -28,7 +28,6 @@ Return the template file extension
 
 =cut
 
-sub _extension { 'tx' }
+sub _extension { 'ttx' }
 
 1;
-

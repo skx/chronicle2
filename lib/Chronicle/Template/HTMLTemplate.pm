@@ -14,6 +14,23 @@ my %DEFAULT_OPTIONS = (
     global_vars       => 1,
 );
 
+=head1 NAME
+
+Chronicle::Template::HTMLTemplate - L<HTML::Template> based templates
+
+=head1 DESCRIPTION
+
+This class contains all the functionality required for templates based on
+L<HTML::Template>.
+
+=head1 METHODS
+
+=head2 new
+
+See L<Chronicle::Template> and C<%DEFAULT_OPTIONS> defined above.
+
+=cut
+
 sub new {
     my $class = shift;
     my %options = @_;
@@ -36,6 +53,12 @@ sub new {
 
     return $self;
 }
+
+=head2 output
+
+See L<Chronicle::Template>
+
+=cut
 
 sub output {
     my $self = shift;

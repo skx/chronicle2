@@ -104,6 +104,15 @@ sub param {
     }
 }
 
+=head2 output
+
+This method takes no parameters and returns the final rendering result from
+applying all arguments set by L<param> to the template.
+
+=cut
+
+sub output { croak "Virtual method called. Template classes must override this"; }
+
 =head2 _theme_file_path
 
 Construct a path to a theme file from a filename passed in and the C<theme_dir>
