@@ -45,7 +45,7 @@ package Chronicle::Plugin::InPlacePosts;
 use strict;
 use warnings;
 
-our $VERSION = "5.1.3";
+our $VERSION = "5.1.4";
 
 
 =head2 on_insert

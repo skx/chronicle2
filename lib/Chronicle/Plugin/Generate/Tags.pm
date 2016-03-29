@@ -25,7 +25,7 @@ use strict;
 use warnings;
 
 
-our $VERSION = "5.1.3";
+our $VERSION = "5.1.4";
 
 
 =head2 on_generate
@@ -97,13 +97,6 @@ sub _outputTags
 
     while ( $all->fetch() )
     {
-
-        # skip if it exists.
-        next
-          if ( ( -e $config->{ 'output' } . "/tags/$tag" ) &&
-               ( !$config->{ 'force' } ) );
-
-
         #
         #  The output file to generate
         #
@@ -114,7 +107,7 @@ sub _outputTags
 
         File::Path::make_path( "$config->{'output'}/tags/$tag",
                                {  verbose => 0,
-                                  mode    => oct("755"),
+                                  mode    => 0755,
                                } );
 
         #
@@ -145,11 +138,10 @@ sub _outputTags
         $c->param( top     => $config->{ 'top' } );
         $c->param( entries => $entries ) if ($entries);
         $c->param( tag     => $tag );
-        open( my $handle, ">:encoding(UTF-8)",
-              "$config->{'output'}/tags/$tag/$index" ) or
-          die "Failed to open";
+        open my $handle, ">:encoding(UTF-8)", "$config->{'output'}/tags/$tag/$index"
+                  or die "Failed to open";
         print $handle $c->output();
-        close($handle);
+        close $handle;
 
     }
 
@@ -216,16 +208,13 @@ sub _outputTagCloud
     #  The output file to generate
     #
     my $index = $config->{ 'index_filename' } || "index.html";
+    my $index_dir = "$config->{'output'}/tags/";
+    my $index_path = "${index_dir}${index}";
 
-    $config->{ 'verbose' } &&
-      print "Creating : $config->{'output'}/tags/$index\n";
+    print "Creating : $index_path\n" if $config->{ 'verbose' };
 
-    File::Path::make_path( "$config->{'output'}/tags",
-                           {  verbose => 0,
-                              mode    => oct("755"),
-                           } ) unless ( -d "$config->{'output'}/tags/" );
-
-
+    File::Path::make_path( $index_dir, { verbose => 0, mode => 0755 } )
+    unless -d $index_dir;
 
     my $c = Chronicle::load_template("tag_index.tmpl");
     return unless ($c);
@@ -233,11 +222,10 @@ sub _outputTagCloud
     $c->param( all_tags => $tags ) if ($tags);
     $c->param( top => $config->{ 'top' } );
 
-    open( my $handle, ">:encoding(UTF-8)", "$config->{'output'}/tags/$index" )
-      or
-      die "Failed to open";
+    open my $handle, ">:encoding(UTF-8)", $index_path
+      or die "Failed to open `$index_path': $!";
     print $handle $c->output();
-    close($handle);
+    close $handle;
 }
 
 
