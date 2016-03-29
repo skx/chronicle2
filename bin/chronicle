@@ -23,7 +23,7 @@ chronicle - A static blog-compiler.
    --theme-dir      Specify the path to the theme templates.
    --url-prefix     Specify the prefix to the generated blog.
    --template-engine Specify the template system to use
-                    ('HTMLTemplate' (default) or `Xslate')
+                    (HTMLTemplate (default), Xslate or XslateTT)
 
   Counting Options:
 
@@ -184,7 +184,7 @@ flags such as C<--exclude-plugin=RSS,Verbose>.
 
 =head1 THEMES
 
-There are a small collection of themese bundled with the release, and it
+There is a small collection of themes bundled with the release, and it
 is assumed you might write your own.
 
 Themes are located beneath a particular directory, such that the files contained
@@ -198,8 +198,9 @@ in one are located at:
 
 These two names can be set via C<--theme-dir> and C<--theme> respectively.
 
-Each theme will consist of a small number of L<HTML::Template> files.
-In brief a theme is complete if it contains:
+Each theme will consist of a small number of template files that use
+L<HTML::Template> by default but can use other templating systems depending on
+the C<--template-engine> parameter. In brief, a theme is complete if it contains:
 
 =over 8
 
@@ -236,6 +237,31 @@ This is the file used to generate the top-level C</tag/> page.
 Each theme page will receive different data, as set by the appropriate
 generation plugin, and any global C<Chronicle::Plugin::Snippets> plugins
 which have been loaded.
+
+=head2 TEMPLATE ENGINES
+
+There are currently three possible values for the C<--template-engine>
+parameter. Each uses templates with differnt file extensions so you can have
+different sets of templates in the same directory without causing conflicts.
+
+=over 8
+
+=item HTMLTemplate
+
+This is the traditional template engine and the default. Templates are named
+C<*.tmpl>.
+
+=item Xslate
+
+Uses L<Text::Xslate>, an extremely fast and versatile templating system, with
+its default "Kolon" syntax. Templates are named C<*.tx>.
+
+=item HTMLTemplate
+
+Uses L<Text::Xslate> with the Template Toolkit compatible "TTerse" syntax.
+Templates are named C<*.ttx>.
+
+=back
 
 =cut
 
