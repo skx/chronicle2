@@ -241,7 +241,7 @@ which have been loaded.
 =head2 TEMPLATE ENGINES
 
 There are currently three possible values for the C<--template-engine>
-parameter. Each uses templates with differnt file extensions so you can have
+parameter. Each uses templates with different file extensions so you can have
 different sets of templates in the same directory without causing conflicts.
 
 =over 8
