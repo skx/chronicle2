@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use Chronicle::Template;
 use parent 'Chronicle::Template';
-use Text::Xslate;
 use Path::Class;
 
 =head1 NAME
@@ -28,6 +27,17 @@ See L<Chronicle::Template>
 
 sub new {
     my $class = shift;
+
+    my $test = "use Text::Xslate;";
+
+    ## no critic (Eval)
+    eval($test);
+    ## use critic
+
+    if ($@){
+        die "Failed to load Text::Xslate module - $!";
+    }
+
     my %options = @_;
     my $self = $class->SUPER::new(@_);
     bless $self, $class;
@@ -66,4 +76,3 @@ sub output {
 }
 
 1;
-
