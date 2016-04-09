@@ -12,7 +12,7 @@ Chronicle::Template - Base class for Chronicle's template abstractions
 =head1 DESCRIPTION
 
 This class should be used as a base class for Template plugins and provides a
-few utility methods for writing those. For users uf the template plugins, it
+few utility methods for writing those. For users of the template plugins, it
 also provides the factory method L<create> that takes care of loading and
 instantiating the required subclass.
 
@@ -29,7 +29,7 @@ The following options are currently defined:
 
 =item C<theme> Name of the theme to use
 
-=back 
+=back
 
 =cut
 
@@ -68,7 +68,7 @@ The following values are currently valid for C<type>:
 
 sub create {
     my ($class, %options) = @_;
-    
+
     #  Ensure we have a theme.
     $options{ 'theme' } or die "You must specify a theme with --theme";
 
@@ -78,7 +78,7 @@ sub create {
 
     # If a template file was specified, remove the extension if present
     exists $options{tmpl_file}
-        and defined $options{tmpl_file} 
+        and defined $options{tmpl_file}
         and $options{tmpl_file} =~ s/\..+$//;
 
     # Unless the caller has specified a template type, assume "HTMLTemplate"
@@ -146,4 +146,3 @@ sub _theme_dir {
 }
 
 1;
-
