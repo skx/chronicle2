@@ -9,9 +9,9 @@ This module will be invoked automatically when your site is built
 via the C<on_generate> hook which Chronicle provides.
 
 It is responsible for creating the top-level RSS-feed for your blog,
-which will be located at C</index.rss>.
+which will be located at C</rss.tmpl>.
 
-If there is a file named C<index.rss> in the currently-selected
+If there is a file named C<rss.tmpl> in the currently-selected
 theme it will be used as the template for the generation of the
 feed, otherwise a default RSS-template will be used, which will
 come from this module.
@@ -42,9 +42,9 @@ pages.  This particular plugin method is invoked I<after> any
 C<on_initiate> methods which might be present.
 
 This method is responsible for generating the RSS-feed of your
-blog site, via the theme-provided template C<index.rss>.
+blog site, via the theme-provided template C<rss.tmpl>.
 
-If there is no C<index.rss> template present in the theme then a default
+If there is no C<rss.tmpl> template present in the theme then a default
 will be used.
 
 =cut
@@ -86,19 +86,15 @@ sub on_generate
     #
     #  If there is a theme-provided file then use it.
     #
-    my $c = Chronicle::load_template("index.rss");
+    my $c = Chronicle::load_template("rss.tmpl");
 
     #
     #  If not then we're going to use our default, which is
-    # contained in the __DATA__ section of this very-module.
+    # contained in the __DATA__ section of this very module.
     #
     if ( !$c )
     {
-        my $tmpl = "";
-        while ( my $line = <DATA> )
-        {
-            $tmpl .= $line;
-        }
+        my $tmpl = do { local $/; <DATA> };
 
         #
         #  If there is no template read then something weird has happened
@@ -128,10 +124,11 @@ sub on_generate
     #
     #  Output the rendered template.
     #
-    open( my $handle, ">:encoding(UTF-8)", "$config->{'output'}/index.rss" ) or
-      die "Failed to open";
+    my $rss_output = "$config->{'output'}/index.rss";
+    open my $handle, ">:encoding(UTF-8)", $rss_output
+        or die "Failed to open `$rss_output': $!";
     print $handle $c->output();
-    close($handle);
+    close $handle;
 
 
     #
@@ -140,7 +137,7 @@ sub on_generate
     if ( $config->{ 'verbose' } && $entries )
     {
         print "Wrote " . scalar(@$entries) .
-          " items to $config->{'output'}/index.rss\n";
+          " items to $rss_output\n";
     }
 }
 

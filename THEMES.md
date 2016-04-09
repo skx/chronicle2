@@ -2,7 +2,9 @@ Themes
 ------
 
 Themes in Chronicle are simple collections of files which are populated
-and rendered via the Perl [HTML::Template](http://search.cpan.org/perldoc?HTML%3A%3ATemplate) module.
+and rendered via the
+[HTML::Template](http://search.cpan.org/perldoc?HTML%3A%3ATemplate) or
+[Text::Xslate](https://metacpan.org/pod/Text::Xslate) module.
 
 To create a new theme the simplest approach is to take an existing theme and modify it.  Once you have a local theme you can cause it to be used like so:
 
@@ -10,6 +12,9 @@ To create a new theme the simplest approach is to take an existing theme and mod
 
 This will ensure that your theme-templates are read from `./themes/local/`.
 
+If you would like to use a theme based on `Text::Xslate`, you have to specify
+`Xslate` or `XslateTT` as an argument to `--theme-engine` for the Kolon and
+TTerse syntax respectively.
 
 Theme Files
 -----------
@@ -38,6 +43,8 @@ Beyond that you can move common code to "include files", which can be inserted v
 The supplied themes already make use of this facility to avoid repeating
 common look and feel items.
 
+Non-`HTML::Template` themes use the file extension `.tx` for Xslate/Kolon and
+`.ttx` for Xslate/TTerse.
 
 Static Resources
 ----------------

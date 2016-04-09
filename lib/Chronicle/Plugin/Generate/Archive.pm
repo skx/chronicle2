@@ -25,12 +25,10 @@ package Chronicle::Plugin::Generate::Archive;
 
 use strict;
 use warnings;
-
+use Date::Language;
+use Encode qw/ decode /;
 
 our $VERSION = "5.1.4";
-
-
-use Date::Language;
 
 =head2 on_generate
 
@@ -68,36 +66,13 @@ sub on_generate
     my $config = $args{ 'config' };
 
     #
-    #  Get our language
-    #
-    my $language = $ENV{ 'MONTHS' } || "English";
-
-    #
-    #  Now populate @MONTHS with the month names of that language.
-    #
-    my $fmt    = Date::Language->new($language);
-    my $fmtref = ref($fmt);
-
-    my $names_var = sprintf( '%s::MoY', $fmtref );
-    my @MONTHS;
-
-    {
-        ## no critic (ProhibitNoStrict)
-        no strict 'refs';
-        @MONTHS = @{ $names_var };
-        use strict 'refs';
-        ## use critic
-    }
-
-
-    #
     #  Date-record
     #
     my %hash;
     my %index;
 
     my $all = $dbh->prepare(
-        "SELECT strftime( '%m %Y', date, 'unixepoch') FROM blog ORDER BY strftime( '%s', date, 'unixepoch' ) ASC"
+        "SELECT strftime( '%m %Y', date, 'unixepoch') FROM blog ORDER BY date"
       ) or
       die "Failed to prepare";
 
@@ -127,11 +102,11 @@ sub on_generate
 
         foreach my $mon ( reverse sort keys %$mons )
         {
-            push( @$data,
-                  {  year       => $year,
-                     month      => $mon,
-                     month_name => $MONTHS[$mon - 1],
-                     count      => $index{ $year }{ $mon } } );
+            push @$data, {
+                year       => $year,
+                month      => $mon,
+                count      => $index{ $year }{ $mon }
+            };
         }
     }
 
@@ -152,15 +127,14 @@ sub on_generate
     my $c = Chronicle::load_template("archive_index.tmpl");
     if ($c)
     {
-        $config->{ 'verbose' } &&
-          print "Creating : $config->{'output'}/archive/$index\n";
+        my $index_path = "$config->{'output'}/archive/$index";
+        print "Creating : $index_path\n" if $config->{ 'verbose' };
         $c->param( top => $config->{ 'top' } );
         $c->param( archive => $data ) if ($data);
-        open( my $handle, ">:encoding(UTF-8)",
-              "$config->{'output'}/archive/$index" ) or
-          die "Failed to open";
+        open my $handle, ">:encoding(UTF-8)", $index_path
+            or die "Failed to open `$index_path': $!";
         print $handle $c->output();
-        close($handle);
+        close $handle;
     }
 
 
@@ -170,6 +144,7 @@ sub on_generate
     #
     foreach my $ym ( keys %hash )
     {
+        my $datelang = Date::Language->new($ENV{ 'MONTHS' } // "English");
         my $mon  = "";
         my $year = "";
         if ( $ym =~ /^([0-9]+) ([0-9]+)$/ )
@@ -187,16 +162,14 @@ sub on_generate
         my $id;
         $ids->bind_columns( undef, \$id );
 
-        # skip if it exists.
-        next
-          if ( ( -e "$config->{'output'}/archive/$year/$mon" ) &&
-               ( !$config->{ 'force' } ) );
+        my $ym_archive_path = "$config->{'output'}/archive/$year/$mon";
 
-        File::Path::make_path( "$config->{'output'}/archive/$year/$mon",
-                               {  verbose => 0,
-                                  mode    => oct("755"),
-                               } );
-
+        # Make path unless it exists
+        File::Path::make_path( $ym_archive_path,
+            {  verbose => 0,
+                mode   => 0755,
+            }
+        ) unless -e $ym_archive_path;
 
         my $entries;
 
@@ -210,27 +183,22 @@ sub on_generate
         }
         $ids->finish();
 
-
-        $config->{ 'verbose' } &&
-          print "Creating : $config->{'output'}/archive/$year/$mon/$index\n";
-
+        my $ym_index_path = "$ym_archive_path/$index";
+        print "Creating : $ym_index_path\n" if $config->{ 'verbose' };
 
         $c = Chronicle::load_template("/archive.tmpl");
         return if ( !$c );
 
         $c->param( top        => $config->{ 'top' } );
         $c->param( entries    => $entries );
-        $c->param( month      => $mon, year => $year );
-        $c->param( month_name => $MONTHS[$mon - 1] );
-        open( my $handle, ">:encoding(UTF-8)",
-              "$config->{'output'}/archive/$year/$mon/$index" ) or
-          die "Failed to open";
+        $c->param( month      => $mon );
+        $c->param( month_name => decode( 'ISO-8859-1', $datelang->time2str('%B', 28*86400 * $mon)));
+        $c->param( year       => $year );
+        open my $handle, ">:encoding(UTF-8)", $ym_index_path
+            or die "Failed to open `$ym_index_path': $!";
         print $handle $c->output();
-        close($handle);
-
-
+        close $handle;
     }
-
 }
 
 

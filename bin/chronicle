@@ -22,6 +22,8 @@ chronicle - A static blog-compiler.
    --theme          Specify the theme to use.
    --theme-dir      Specify the path to the theme templates.
    --url-prefix     Specify the prefix to the generated blog.
+   --template-engine Specify the template system to use
+                    (HTMLTemplate (default), Xslate or XslateTT)
 
   Counting Options:
 
@@ -182,7 +184,7 @@ flags such as C<--exclude-plugin=RSS,Verbose>.
 
 =head1 THEMES
 
-There are a small collection of themese bundled with the release, and it
+There is a small collection of themes bundled with the release, and it
 is assumed you might write your own.
 
 Themes are located beneath a particular directory, such that the files contained
@@ -196,8 +198,9 @@ in one are located at:
 
 These two names can be set via C<--theme-dir> and C<--theme> respectively.
 
-Each theme will consist of a small number of L<HTML::Template> files.
-In brief a theme is complete if it contains:
+Each theme will consist of a small number of template files that use
+L<HTML::Template> by default but can use other templating systems depending on
+the C<--template-engine> parameter. In brief, a theme is complete if it contains:
 
 =over 8
 
@@ -234,6 +237,31 @@ This is the file used to generate the top-level C</tag/> page.
 Each theme page will receive different data, as set by the appropriate
 generation plugin, and any global C<Chronicle::Plugin::Snippets> plugins
 which have been loaded.
+
+=head2 TEMPLATE ENGINES
+
+There are currently three possible values for the C<--template-engine>
+parameter. Each uses templates with different file extensions so you can have
+different sets of templates in the same directory without causing conflicts.
+
+=over 8
+
+=item HTMLTemplate
+
+This is the traditional template engine and the default. Templates are named
+C<*.tmpl>.
+
+=item Xslate
+
+Uses L<Text::Xslate>, an extremely fast and versatile templating system, with
+its default "Kolon" syntax. Templates are named C<*.tx>.
+
+=item HTMLTemplate
+
+Uses L<Text::Xslate> with the Template Toolkit compatible "TTerse" syntax.
+Templates are named C<*.ttx>.
+
+=back
 
 =cut
 
@@ -329,11 +357,12 @@ use File::Find;
 use File::Path;
 use File::ShareDir;
 use Getopt::Long;
-use HTML::Template;
+use HTML::Element;
 use Pod::Usage;
 
 use Chronicle::URI;
 use Chronicle::Config::Reader;
+use Chronicle::Template;
 
 #
 #  Default options - These may be overridden by the command-line
@@ -360,6 +389,7 @@ $CONFIG{ 'verbose' }      = 0;
 $CONFIG{ 'top' }          = "/";
 $CONFIG{ 'exclude-plugins' } =
   "Chronicle::Plugin::Archived,Chronicle::Plugin::Verbose";
+$CONFIG{ 'template-engine' } = "HTMLTemplate";
 
 our %DATABASE_SCHEMA = (
     blog => {
@@ -412,6 +442,13 @@ $cnf->parseFile( \%CONFIG, $CONFIG{ 'config' } )
 Chronicle::URI::i_use_hfs if $CONFIG{ 'unicode' } eq 'mac';
 
 #
+# If Unicode is on, also keep HTML::Element from encoding non-ASCII as entities
+#
+if($CONFIG{ 'unicode' } ne 'no') {
+    $HTML::Element::encoded_content = 1;
+}
+
+#
 # Get the database handle, creating the database on-disk if necessary.
 #
 my $dbh = getDatabase();
@@ -448,7 +485,7 @@ foreach my $plugin ( get_plugins_for_method("on_initiate") )
 #  Call on_generate for all plugins which have not been excluded.
 #
 #  `on_generate` is logically identical to `on_initiate`, except
-# the former plugins are guranteed to have been invoked first.
+# the former plugins are guaranteed to have been invoked first.
 #
 foreach my $plugin ( get_plugins_for_method("on_generate") )
 {
@@ -708,6 +745,7 @@ sub insertPost
                                     data   => \%meta
                                   );
 
+                                  #print "after $plugin: $meta{ 'body' }\n";
         if ( !$m )
         {
 
@@ -1254,9 +1292,9 @@ sub getComments
 
 =begin doc
 
-Load a L<HTML::Template> object, either by reference to the filename
+Load a L<Chronicle::Template> object, either by reference to the filename
 (which is unqualified and assumed to be located beneath the given
-theme-directory), or via a scalar reference.
+theme-directory), or via a scalar reference containig a template as a string.
 
 Some of the plugins distributed with Chronicle will contain embedded
 C<HTML::Template> snippets in their C<DATA> sections.  These include
@@ -1270,85 +1308,24 @@ sub load_template
 {
     my ( $filename, $scalar ) = (@_);
 
-    #
-    #  Ensure we have a theme.
-    #
-    die "You must specify a theme with --theme"
-      unless ( $CONFIG{ 'theme' } );
+    my %options = (
+        type => $CONFIG{ 'template-engine' },
+        theme_dir => $CONFIG{ 'theme-dir' },
+        theme => $CONFIG{ 'theme' },
+    );
 
-    #
-    #  Ensure things exist.
-    #
-    die "The theme directory specified with 'theme-dir' doesn't exist"
-      unless ( -d $CONFIG{ 'theme-dir' } );
+    my $tmpl = Chronicle::Template->create(
+        $filename ? (tmpl_file => $filename) : (tmpl_string => $scalar),
+        %options
+    ) or return;    # simply return undef to let the caller retry
 
-    die
-      "The theme '$CONFIG{'theme'}' doesn't exist beneath $CONFIG{'theme-dir'}!"
-      unless ( -d $CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' } );
-
-
-    #
-    #  HTML::Template options
-    #
-    my %options = ( path => [$CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' }],
-                    die_on_bad_params => 0,
-                    loop_context_vars => 1,
-                    global_vars       => 1,
-                  );
-
-
-    #
-    #  The HTML::Template Instance.
-    #
-    my $tmpl;
-
-    if ($filename)
-    {
-
-        my $path =
-          $CONFIG{ 'theme-dir' } . "/" . $CONFIG{ 'theme' } . "/" . $filename;
-
-        #
-        #  If the template doesn't exist return undef.
-        #
-        return unless ( -e $path );
-
-        #
-        #  Load the template from the given path.
-        #
-        $tmpl = HTML::Template->new( open_mode => '<:encoding(UTF-8)',
-                                     filename  => $path,
-                                     %options,
-                                   );
-    }
-    else
-    {
-
-        #
-        #  Loading via a string-reference
-        #
-        $tmpl = HTML::Template->new( scalarref => \$scalar,
-                                     %options, );
-
+    for my $opt (qw/ blog_title blog_subtitle /) {
+        $tmpl->param($opt => $CONFIG{$opt}) if defined $CONFIG{$opt};
     }
 
-    #
-    #  Legacy options.
-    #
-    $tmpl->param( blog_title => $CONFIG{ 'blog_title' } )
-      if ( $CONFIG{ 'blog_title' } );
-    $tmpl->param( blog_subtitle => $CONFIG{ 'blog_subtitle' } )
-      if ( $CONFIG{ 'blog_subtitle' } );
-
-    #
-    #  Global options, such as build-time, build-date, etc.
-    #
-    $tmpl->param( \%GLOBAL_TEMPLATE_VARS );
-
-    return ($tmpl);
+    $tmpl->param(\%GLOBAL_TEMPLATE_VARS);
+    return $tmpl;
 }
-
-
 
 =begin doc
 
@@ -1379,6 +1356,7 @@ sub parseCommandLine
             "theme=s",     \$CONFIG{ 'theme' },
             "theme-dir=s", \$CONFIG{ 'theme-dir' },
             "list-themes", \$CONFIG{ 'list-themes' },
+            "template-engine=s", \$CONFIG{ 'template-engine' },
 
             # paths
             "input=s",    \$CONFIG{ 'input' },

@@ -38,7 +38,8 @@ package Chronicle::Plugin::Snippets::Archives;
 
 use strict;
 use warnings;
-
+use Date::Language;
+use Encode qw/ decode /;
 
 our $VERSION = "5.1.4";
 
@@ -65,27 +66,12 @@ sub on_initiate
 
     my $dbh    = $args{ 'dbh' };
     my $config = $args{ 'config' };
-
-    my %mons = ( "01" => 'January',
-                 "02" => 'February',
-                 "03" => 'March',
-                 "04" => 'April',
-                 "05" => 'May',
-                 "06" => 'June',
-                 "07" => 'July',
-                 "08" => 'August',
-                 "09" => 'September',
-                 "10" => 'October',
-                 "11" => 'November',
-                 "12" => 'December'
-               );
-
+    my $datelang = Date::Language->new($ENV{ 'MONTHS' } // "English");
 
     #
     #  The results we'll populate
     #
     my $data;
-
 
     #
     #  For each year
@@ -102,34 +88,27 @@ sub on_initiate
             #
             my $sql = $dbh->prepare(
                 "SELECT count(id) FROM blog WHERE ( strftime('%Y', date, 'unixepoch')=? AND strftime('%m', date, 'unixepoch') =? )"
-              ) or
-              die "Failed to prepare query";
+              ) or die "Failed to prepare query";
 
             $sql->execute( $year, $mon );
             my $count = $sql->fetchrow_array();
 
-            push( @$tmp,
-                  {  month      => $mon,
-                     month_name => $mons{ $mon },
-                     count      => $count
-                  } );
-
+            push @$tmp, {
+                count      => $count,
+                month      => $mon,
+                month_name => decode( 'ISO-8859-1', $datelang->time2str('%B', 28*86400 * $mon) ),
+            };
 
             $sql->finish();
         }
 
-        push( @$data,
-              {  year   => $year,
-                 months => $tmp
-              } );
-
+        push @$data, { year => $year, months => $tmp };
     }
 
     #
     #  Now we have the structure.
     #
     $Chronicle::GLOBAL_TEMPLATE_VARS{ "archived_posts" } = $data if ($data);
-
 }
 
 

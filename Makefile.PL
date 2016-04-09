@@ -26,13 +26,16 @@ my %WriteMakefileArgs = (
         'Date::Language'             => 0,
         'Date::Parse'                => 0,
         'Digest::MD5'                => 0,
+        'Encode'                     => 0,
         'File::Basename'             => 0,
         'File::Find'                 => 0,
         'File::Path'                 => 0,
         'File::ShareDir'             => 0,
         'Getopt::Long'               => 0,
         'HTML::Template'             => 0,
+        'HTML::Element'              => 5,
         'Module::Pluggable::Ordered' => 0,
+        'Path::Class'                => 0,
         'Pod::Usage'                 => 0,
 
         # optional formatters.

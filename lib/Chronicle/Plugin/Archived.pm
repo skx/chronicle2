@@ -47,7 +47,7 @@ The method is designed to return an updated blog-post structure,
 after performing any massaging required.  If the method returns undef
 then the post is not inserted.
 
-In this method we rewrite the link of the pending-post such that it
+In this method we rewrite the link of the pending post such that it
 is prefixed with the year and month - turning the link into a dated
 one.
 
