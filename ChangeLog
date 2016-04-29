@@ -1,3 +1,9 @@
+5.1.5 - 29th April 2016
+    * Abstracted the template handling such that different modules
+	  may be used to create the output.  The default is still HTML::Template,
+	  but now Text::Xslate is also supported.
+	  Contributed by Matthias Bethke.
+
 5.1.4 - 2nd March 2016
     * Reworked how tags are fetched from entries.
 

@@ -346,7 +346,7 @@ use open IO     => ':encoding(UTF-8)';
 package Chronicle;
 use Module::Pluggable::Ordered require => 1, inner => 0;
 
-our $VERSION = "5.1.4";
+our $VERSION = "5.1.5";
 
 use DBI;
 use Date::Format;
