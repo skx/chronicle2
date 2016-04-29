@@ -33,16 +33,18 @@ The following options are currently defined:
 
 =cut
 
-sub new {
-    my ($class, %options) = @_;
-    exists $options{tmpl_string}
-        or exists $options{tmpl_file}
-        or confess("BUG: neither tmpl_string nor tmpl_file set in template instantiation");
+sub new
+{
+    my ( $class, %options ) = @_;
+    exists $options{ tmpl_string } or
+      exists $options{ tmpl_file } or
+      confess(
+        "BUG: neither tmpl_string nor tmpl_file set in template instantiation");
 
-    return bless {
-        theme_dir => $options{theme_dir} // '',
-        theme => $options{theme} // '',
-    }, $class;
+    return
+      bless { theme_dir => $options{ theme_dir } // '',
+              theme     => $options{ theme }     // '',
+            }, $class;
 }
 
 =head2 create
@@ -66,23 +68,24 @@ The following values are currently valid for C<type>:
 
 =cut
 
-sub create {
-    my ($class, %options) = @_;
+sub create
+{
+    my ( $class, %options ) = @_;
 
     #  Ensure we have a theme.
     $options{ 'theme' } or die "You must specify a theme with --theme";
 
     #  Ensure the theme directory exists.
-    -d $options{theme_dir}
-        or die "The theme directory specified with 'theme-dir' doesn't exist";
+    -d $options{ theme_dir } or
+      die "The theme directory specified with 'theme-dir' doesn't exist";
 
     # If a template file was specified, remove the extension if present
-    exists $options{tmpl_file}
-        and defined $options{tmpl_file}
-        and $options{tmpl_file} =~ s/\..+$//;
+    exists $options{ tmpl_file } and
+      defined $options{ tmpl_file } and
+      $options{ tmpl_file } =~ s/\..+$//;
 
     # Unless the caller has specified a template type, assume "HTMLTemplate"
-    my $type = delete $options{type} // "HTMLTemplate";
+    my $type = delete $options{ type } // "HTMLTemplate";
     require "Chronicle/Template/$type.pm";
     return "Chronicle::Template::$type"->new(%options);
 }
@@ -95,12 +98,16 @@ value to add.
 
 =cut
 
-sub param {
-    my ($self, $key, $val) = @_;
-    if(ref $key eq 'HASH') {
-        $self->{params}{$_} = $key->{$_} for keys %$key;
-    } else {
-        $self->{params}{$key} = $val;
+sub param
+{
+    my ( $self, $key, $val ) = @_;
+    if ( ref $key eq 'HASH' )
+    {
+        $self->{ params }{ $_ } = $key->{ $_ } for keys %$key;
+    }
+    else
+    {
+        $self->{ params }{ $key } = $val;
     }
 }
 
@@ -111,7 +118,10 @@ applying all arguments set by L<param> to the template.
 
 =cut
 
-sub output { croak "Virtual method called. Template classes must override this"; }
+sub output
+{
+    croak "Virtual method called. Template classes must override this";
+}
 
 =head2 _theme_file_path
 
@@ -121,12 +131,16 @@ exist or is not readable.
 
 =cut
 
-sub _theme_file_path {
-    my ($self, $filename) = @_;
+sub _theme_file_path
+{
+    my ( $self, $filename ) = @_;
+
     # Construct path to template
-    my $file = file($self->{theme_dir}, $self->{theme}, $filename)->stringify;
+    my $file =
+      file( $self->{ theme_dir }, $self->{ theme }, $filename )->stringify;
+
     # Make sure the file exists
-    (-f $file and -r $file) or return;
+    ( -f $file and -r $file ) or return;
     return $file;
 }
 
@@ -137,11 +151,14 @@ diretory on success, C<undef> otherwise.
 
 =cut
 
-sub _theme_dir {
+sub _theme_dir
+{
     my ($self) = @_;
 
-    my $dir = dir($self->{theme_dir}, $self->{theme})->stringify;
-    -d $dir or die "The theme '$self->{theme}' doesn't exist beneath '$self->{theme_dir}'!";
+    my $dir = dir( $self->{ theme_dir }, $self->{ theme } )->stringify;
+    -d $dir or
+      die
+      "The theme '$self->{theme}' doesn't exist beneath '$self->{theme_dir}'!";
     return $dir;
 }
 

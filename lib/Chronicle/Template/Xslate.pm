@@ -20,7 +20,7 @@ Return the syntax to use
 
 =cut
 
-sub _syntax { 'Kolon' }
+sub _syntax {'Kolon'}
 
 =head2 _extension
 
@@ -28,7 +28,7 @@ Return the template file extension
 
 =cut
 
-sub _extension { 'tx' }
+sub _extension {'tx'}
 
 1;
 

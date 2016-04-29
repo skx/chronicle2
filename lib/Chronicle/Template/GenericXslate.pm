@@ -25,7 +25,8 @@ See L<Chronicle::Template>
 
 =cut
 
-sub new {
+sub new
+{
     my $class = shift;
 
     my $test = "use Text::Xslate;";
@@ -34,33 +35,36 @@ sub new {
     eval($test);
     ## use critic
 
-    if ($@){
+    if ($@)
+    {
         die "Failed to load Text::Xslate module - $!";
     }
 
     my %options = @_;
-    my $self = $class->SUPER::new(@_);
+    my $self    = $class->SUPER::new(@_);
     bless $self, $class;
 
-    if($options{tmpl_string}) {
-        $self->{render} = sub {
-            return $self->{xslate}->render_string($options{tmpl_string}, $self->{params});
+    if ( $options{ tmpl_string } )
+    {
+        $self->{ render } = sub {
+            return $self->{ xslate }
+              ->render_string( $options{ tmpl_string }, $self->{ params } );
         };
-    } else {
-        my $filename = sprintf "%s.%s", $options{tmpl_file}, $self->_extension;
+    }
+    else
+    {
+        my $filename = sprintf "%s.%s", $options{ tmpl_file },
+          $self->_extension;
         $self->_theme_file_path($filename) or return;
-        $self->{render} = sub {
-            return $self->{xslate}->render($filename, $self->{params});
+        $self->{ render } = sub {
+            return $self->{ xslate }->render( $filename, $self->{ params } );
         };
     }
 
-    $self->{xslate} = Text::Xslate->new(
-        path => [
-            $self->_theme_dir,
-            dir($self->_theme_dir, 'inc')->stringify
-        ],
-        syntax => $self->_syntax,
-    );
+    $self->{ xslate } =
+      Text::Xslate->new(
+        path => [$self->_theme_dir, dir( $self->_theme_dir, 'inc' )->stringify],
+        syntax => $self->_syntax, );
     return $self;
 }
 
@@ -70,9 +74,10 @@ See L<Chronicle::Template>
 
 =cut
 
-sub output {
+sub output
+{
     my $self = shift;
-    return $self->{render}->($self->{params});
+    return $self->{ render }->( $self->{ params } );
 }
 
 1;

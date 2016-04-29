@@ -94,7 +94,7 @@ sub on_generate
     #
     if ( !$c )
     {
-        my $tmpl = do { local $/; <DATA> };
+        my $tmpl = do {local $/; <DATA>};
 
         #
         #  If there is no template read then something weird has happened
@@ -125,8 +125,8 @@ sub on_generate
     #  Output the rendered template.
     #
     my $rss_output = "$config->{'output'}/index.rss";
-    open my $handle, ">:encoding(UTF-8)", $rss_output
-        or die "Failed to open `$rss_output': $!";
+    open my $handle, ">:encoding(UTF-8)", $rss_output or
+      die "Failed to open `$rss_output': $!";
     print $handle $c->output();
     close $handle;
 
@@ -136,8 +136,7 @@ sub on_generate
     #
     if ( $config->{ 'verbose' } && $entries )
     {
-        print "Wrote " . scalar(@$entries) .
-          " items to $rss_output\n";
+        print "Wrote " . scalar(@$entries) . " items to $rss_output\n";
     }
 }
 

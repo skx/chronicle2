@@ -138,8 +138,9 @@ sub _outputTags
         $c->param( top     => $config->{ 'top' } );
         $c->param( entries => $entries ) if ($entries);
         $c->param( tag     => $tag );
-        open my $handle, ">:encoding(UTF-8)", "$config->{'output'}/tags/$tag/$index"
-                  or die "Failed to open";
+        open my $handle, ">:encoding(UTF-8)",
+          "$config->{'output'}/tags/$tag/$index" or
+          die "Failed to open";
         print $handle $c->output();
         close $handle;
 
@@ -207,14 +208,14 @@ sub _outputTagCloud
     #
     #  The output file to generate
     #
-    my $index = $config->{ 'index_filename' } || "index.html";
-    my $index_dir = "$config->{'output'}/tags/";
+    my $index      = $config->{ 'index_filename' } || "index.html";
+    my $index_dir  = "$config->{'output'}/tags/";
     my $index_path = "${index_dir}${index}";
 
     print "Creating : $index_path\n" if $config->{ 'verbose' };
 
     File::Path::make_path( $index_dir, { verbose => 0, mode => 0755 } )
-    unless -d $index_dir;
+      unless -d $index_dir;
 
     my $c = Chronicle::load_template("tag_index.tmpl");
     return unless ($c);
@@ -222,8 +223,8 @@ sub _outputTagCloud
     $c->param( all_tags => $tags ) if ($tags);
     $c->param( top => $config->{ 'top' } );
 
-    open my $handle, ">:encoding(UTF-8)", $index_path
-      or die "Failed to open `$index_path': $!";
+    open my $handle, ">:encoding(UTF-8)", $index_path or
+      die "Failed to open `$index_path': $!";
     print $handle $c->output();
     close $handle;
 }

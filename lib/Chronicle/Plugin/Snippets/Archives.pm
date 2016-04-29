@@ -64,9 +64,9 @@ sub on_initiate
 {
     my ( $self, %args ) = (@_);
 
-    my $dbh    = $args{ 'dbh' };
-    my $config = $args{ 'config' };
-    my $datelang = Date::Language->new($ENV{ 'MONTHS' } // "English");
+    my $dbh      = $args{ 'dbh' };
+    my $config   = $args{ 'config' };
+    my $datelang = Date::Language->new( $ENV{ 'MONTHS' } // "English" );
 
     #
     #  The results we'll populate
@@ -88,16 +88,21 @@ sub on_initiate
             #
             my $sql = $dbh->prepare(
                 "SELECT count(id) FROM blog WHERE ( strftime('%Y', date, 'unixepoch')=? AND strftime('%m', date, 'unixepoch') =? )"
-              ) or die "Failed to prepare query";
+              ) or
+              die "Failed to prepare query";
 
             $sql->execute( $year, $mon );
             my $count = $sql->fetchrow_array();
 
-            push @$tmp, {
-                count      => $count,
+            push @$tmp,
+              { count      => $count,
                 month      => $mon,
-                month_name => decode( 'ISO-8859-1', $datelang->time2str('%B', 28*86400 * $mon) ),
-            };
+                month_name => decode( 'ISO-8859-1',
+                                      $datelang->time2str(
+                                                         '%B', 28 * 86400 * $mon
+                                      )
+                                    ),
+              };
 
             $sql->finish();
         }

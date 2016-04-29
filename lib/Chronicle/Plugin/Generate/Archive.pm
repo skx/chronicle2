@@ -72,8 +72,8 @@ sub on_generate
     my %index;
 
     my $all = $dbh->prepare(
-        "SELECT strftime( '%m %Y', date, 'unixepoch') FROM blog ORDER BY date"
-      ) or
+        "SELECT strftime( '%m %Y', date, 'unixepoch') FROM blog ORDER BY date" )
+      or
       die "Failed to prepare";
 
 
@@ -102,11 +102,10 @@ sub on_generate
 
         foreach my $mon ( reverse sort keys %$mons )
         {
-            push @$data, {
-                year       => $year,
-                month      => $mon,
-                count      => $index{ $year }{ $mon }
-            };
+            push @$data,
+              { year  => $year,
+                month => $mon,
+                count => $index{ $year }{ $mon } };
         }
     }
 
@@ -131,8 +130,8 @@ sub on_generate
         print "Creating : $index_path\n" if $config->{ 'verbose' };
         $c->param( top => $config->{ 'top' } );
         $c->param( archive => $data ) if ($data);
-        open my $handle, ">:encoding(UTF-8)", $index_path
-            or die "Failed to open `$index_path': $!";
+        open my $handle, ">:encoding(UTF-8)", $index_path or
+          die "Failed to open `$index_path': $!";
         print $handle $c->output();
         close $handle;
     }
@@ -144,9 +143,9 @@ sub on_generate
     #
     foreach my $ym ( keys %hash )
     {
-        my $datelang = Date::Language->new($ENV{ 'MONTHS' } // "English");
-        my $mon  = "";
-        my $year = "";
+        my $datelang = Date::Language->new( $ENV{ 'MONTHS' } // "English" );
+        my $mon      = "";
+        my $year     = "";
         if ( $ym =~ /^([0-9]+) ([0-9]+)$/ )
         {
             $mon  = $1;
@@ -166,10 +165,10 @@ sub on_generate
 
         # Make path unless it exists
         File::Path::make_path( $ym_archive_path,
-            {  verbose => 0,
-                mode   => 0755,
-            }
-        ) unless -e $ym_archive_path;
+                               {  verbose => 0,
+                                  mode    => 0755,
+                               } )
+          unless -e $ym_archive_path;
 
         my $entries;
 
@@ -189,13 +188,16 @@ sub on_generate
         $c = Chronicle::load_template("/archive.tmpl");
         return if ( !$c );
 
-        $c->param( top        => $config->{ 'top' } );
-        $c->param( entries    => $entries );
-        $c->param( month      => $mon );
-        $c->param( month_name => decode( 'ISO-8859-1', $datelang->time2str('%B', 28*86400 * $mon)));
-        $c->param( year       => $year );
-        open my $handle, ">:encoding(UTF-8)", $ym_index_path
-            or die "Failed to open `$ym_index_path': $!";
+        $c->param( top     => $config->{ 'top' } );
+        $c->param( entries => $entries );
+        $c->param( month   => $mon );
+        $c->param(
+                month_name => decode(
+                    'ISO-8859-1', $datelang->time2str( '%B', 28 * 86400 * $mon )
+                                    ) );
+        $c->param( year => $year );
+        open my $handle, ">:encoding(UTF-8)", $ym_index_path or
+          die "Failed to open `$ym_index_path': $!";
         print $handle $c->output();
         close $handle;
     }

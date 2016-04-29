@@ -69,7 +69,7 @@ sub on_generate
     #
     #  Load our HTML::Template file
     #
-    my $tmpl = do { local $/; <DATA> };
+    my $tmpl = do {local $/; <DATA>};
     return unless ( length($tmpl) );
 
 

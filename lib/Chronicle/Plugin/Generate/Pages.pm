@@ -198,8 +198,8 @@ sub on_generate
                                    } );
         }
 
-        open( my $handle, ">:encoding(UTF-8)", $out)
-            or die "Failed to open `$out' for writing: $!";
+        open( my $handle, ">:encoding(UTF-8)", $out ) or
+          die "Failed to open `$out' for writing: $!";
         print $handle $c->output();
         close($handle);
 

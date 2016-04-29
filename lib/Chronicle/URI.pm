@@ -32,9 +32,10 @@ URI, or in our case usually a path fragment thereof.
 
 =cut
 
-sub new {
-    my ($class, $path) = @_;
-    my $self = $class->SUPER::new( normalize($NORMALFORM, $path), 'http' );
+sub new
+{
+    my ( $class, $path ) = @_;
+    my $self = $class->SUPER::new( normalize( $NORMALFORM, $path ), 'http' );
     return bless $self, $class;
 }
 
@@ -46,9 +47,11 @@ is supposed to generate a filename from an URI.
 
 =cut
 
-sub unescaped {
+sub unescaped
+{
     my ($self) = @_;
     my $iri = $self->as_iri;
+
     # Unescape all the ASCII left escaped by as_iri();
     $iri =~ s/%([[:xdigit:]]{2})/chr(hex $1)/eg;
     return $iri;
@@ -61,9 +64,10 @@ Append its string argument to the path part of the URI.
 
 =cut
 
-sub path_append {
-    my ($self, $s) = @_;
-    return $self->path( $self->path . normalize($NORMALFORM, $s) ); 
+sub path_append
+{
+    my ( $self, $s ) = @_;
+    return $self->path( $self->path . normalize( $NORMALFORM, $s ) );
 }
 
 =head2 path_prepend
@@ -72,9 +76,10 @@ Prepend its string argument to the path part of the URI.
 
 =cut
 
-sub path_prepend {
-    my ($self, $s) = @_;
-    return $self->path( normalize($NORMALFORM, $s) . $self->path ); 
+sub path_prepend
+{
+    my ( $self, $s ) = @_;
+    return $self->path( normalize( $NORMALFORM, $s ) . $self->path );
 }
 
 =head2 i_use_hfs
@@ -87,7 +92,8 @@ won't be found later.
 
 =cut
 
-sub i_use_hfs {
+sub i_use_hfs
+{
     our $NORMALFORM = 'D';
 }
 

@@ -114,8 +114,8 @@ sub on_initiate
         #  If we can expand that into a full-name then do so
         #
         my ( $name,    $passwd, $uid, $gid,   $quota,
-             $comment, $gcos,   $dir, $shell, $expire
-           ) = getpwnam( $ENV{ 'USER' } );
+             $comment, $gcos,   $dir, $shell, $expire )
+          = getpwnam( $ENV{ 'USER' } );
 
         #
         #  Did we get a GCOS field?  If so strip the trailing "," and

@@ -20,7 +20,7 @@ Return the syntax to use
 
 =cut
 
-sub _syntax { 'TTerse' }
+sub _syntax {'TTerse'}
 
 =head2 _extension
 
@@ -28,6 +28,6 @@ Return the template file extension
 
 =cut
 
-sub _extension { 'ttx' }
+sub _extension {'ttx'}
 
 1;
