@@ -3,19 +3,19 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Test::More tests => 9;
 
 #
 #  Load the module.
 #
 BEGIN {use_ok('Chronicle::Plugin::Snippets::Meta');}
-require_ok('Chronicle::Plugin::Snippets::Meta');
-
 
 package Chronicle;
 
 our $VERSION              = "cake.free";
 our %GLOBAL_TEMPLATE_VARS = ();
+# This is a hack that works because the function isn't being tested anyway
+sub format_datetime {}
 
 package main;
 
