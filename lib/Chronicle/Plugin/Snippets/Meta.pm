@@ -50,6 +50,7 @@ use warnings;
 use Date::Format;
 use Sys::Hostname;
 
+use Chronicle::Utils qw/ format_datetime /;
 
 our $VERSION = "5.1.5";
 
@@ -87,7 +88,7 @@ sub on_initiate
     (
         $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_date" },
         $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_date_loc" }
-    ) = Chronicle::format_datetime($config, 'meta_date_format', '%e %b %Y', $time);
+    ) = format_datetime($config, 'meta_date_format', '%e %b %Y', $time);
 
     #
     #  The chronicle build time
@@ -95,7 +96,7 @@ sub on_initiate
     (
         $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_time" },
         $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_time_loc" }
-    ) = Chronicle::format_datetime($config, 'meta_time_format', '%X', $time);
+    ) = format_datetime($config, 'meta_time_format', '%X', $time);
 
     #
     #  The username

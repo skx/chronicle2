@@ -37,6 +37,7 @@ lib/Chronicle/Template/HTMLTemplate.pm
 lib/Chronicle/Template/Xslate.pm
 lib/Chronicle/Template/XslateTT.pm
 lib/Chronicle/URI.pm
+lib/Chronicle/Utils.pm
 LICENSE
 Makefile.PL
 MANIFEST

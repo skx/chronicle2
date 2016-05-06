@@ -353,7 +353,6 @@ use DBI;
 use Date::Format;
 use Date::Parse;
 use Digest::MD5 qw(md5_hex);
-use Encode qw/ decode /;
 use File::Basename;
 use File::Find;
 use File::Path;
@@ -362,6 +361,7 @@ use Getopt::Long;
 use HTML::Element;
 use Pod::Usage;
 
+use Chronicle::Utils qw/ format_datetime /;
 use Chronicle::URI;
 use Chronicle::Config::Reader;
 use Chronicle::Template;
@@ -1080,31 +1080,6 @@ sub getBlog
     return ($data);
 }
 
-
-=begin doc
-
-Format a date or time value to a string. Uses a config setting passed in $config_var
-or a default format in $date_fmt to generate both an English and a localized version.
-An empty list is returned if the format string doesn't contain a % character.
-
-=end doc
-
-=cut
-
-sub format_datetime {
-    my ($config, $config_var, $format, $time) = @_;
-
-    # If the config overrides the default $date_fmt, use it
-    $format = $config->{$config_var} if $config and $config->{$config_var};
-
-    return unless $format =~ /%/;
-
-    return
-    time2str( $format, $time ),
-    decode('ISO-8859-1',
-        Date::Language->new( $ENV{ 'MONTHS' } // "English" )->time2str( $format, $time )
-    );
-}
 
 
 =begin doc
