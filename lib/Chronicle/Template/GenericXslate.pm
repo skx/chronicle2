@@ -29,7 +29,7 @@ See L<Chronicle::Template>
 
 sub new
 {
-    my $class = shift;
+    my $class   = shift;
     my %options = @_;
     my $self    = $class->SUPER::new(@_);
     bless $self, $class;
@@ -47,39 +47,42 @@ sub new
 
     my $xslate_functions;
     my $textdomain = 'chronicle2-theme';
-    my $locale_dir = dir($self->{theme_dir}, $self->{theme}, 'locale');
+    my $locale_dir = dir( $self->{ theme_dir }, $self->{ theme }, 'locale' );
     ## no critic (Eval)
     eval("use Locale::TextDomain '$textdomain', '$locale_dir';");
     ## use critic
-    if($@) {
+    if ($@)
+    {
         $xslate_functions = {
-            N__ => sub { return @_ },
-            __ => sub { return @_ },
-            __n => sub { $_[2] > 1 ? $_[1] : $_[0] }, 
+            N__ => sub {return @_},
+            __  => sub {return @_},
+            __n => sub {$_[2] > 1 ? $_[1] : $_[0]},
             __nx => sub {
-                $_[2] > 1 ?
-                _substargs($_[1], splice(@_, 3)) :
-                _substargs($_[0], splice(@_, 3))
+                $_[2] > 1 ? _substargs( $_[1], splice( @_, 3 ) ) :
+                  _substargs( $_[0], splice( @_, 3 )
+                            );
             },
-            __p => sub { return $_[1] },
-            __px => sub { _substargs($_[1], splice(@_, 3)) },
-            __x => sub { _substargs($_[0], splice(@_, 2)) },
-        };
-        $xslate_functions->{__px} = $xslate_functions->{__nx};
-        $xslate_functions->{__} = $xslate_functions->{__N};
-    } else {
-        $xslate_functions = {
-            N__ => \&N__,
-            __ => \&__,
-            __n => \&__n,
-            __nx => \&__nx,
-            __npx => \&__npx,
-            __x => \&__x,
-            __p => \&__p,
-            __px => \&__px,
-        };
-        POSIX::setlocale(LC_MESSAGES, '');
-        Locale::Messages::bind_textdomain_filter($textdomain, \&Encode::decode_utf8);
+            __p  => sub {return $_[1]},
+            __px => sub {_substargs( $_[1], splice( @_, 3 ) )},
+            __x  => sub {_substargs( $_[0], splice( @_, 2 ) )},
+                            };
+        $xslate_functions->{ __px } = $xslate_functions->{ __nx };
+        $xslate_functions->{ __ }   = $xslate_functions->{ __N };
+    }
+    else
+    {
+        $xslate_functions = { N__   => \&N__,
+                              __    => \&__,
+                              __n   => \&__n,
+                              __nx  => \&__nx,
+                              __npx => \&__npx,
+                              __x   => \&__x,
+                              __p   => \&__p,
+                              __px  => \&__px,
+                            };
+        POSIX::setlocale( LC_MESSAGES, '' );
+        Locale::Messages::bind_textdomain_filter( $textdomain,
+                                                  \&Encode::decode_utf8 );
     }
 
     if ( $options{ tmpl_string } )
@@ -102,9 +105,9 @@ sub new
     $self->{ xslate } =
       Text::Xslate->new(
         path => [$self->_theme_dir, dir( $self->_theme_dir, 'inc' )->stringify],
-        syntax => $self->_syntax,
+        syntax   => $self->_syntax,
         function => $xslate_functions,
-    );
+                       );
     return $self;
 }
 
@@ -120,16 +123,12 @@ sub output
     return $self->{ render }->( $self->{ params } );
 }
 
-sub _localize {
-    return ngettext(@_);
-}
-
-sub _localize_dummy { return $_[0] }
-
-sub _substargs {
-    my $s = shift;
+sub _substargs
+{
+    my $s    = shift;
     my %args = @_;
-    while(my ($key, $value) = each %args) {
+    while ( my ( $key, $value ) = each %args )
+    {
         $s =~ s/$key/$value/;
     }
     return $s;
