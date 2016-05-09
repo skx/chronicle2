@@ -5,6 +5,7 @@ use warnings;
 use Chronicle::Template;
 use parent 'Chronicle::Template';
 use Path::Class;
+use POSIX qw/ :locale_h /;
 
 =head1 NAME
 
@@ -28,6 +29,9 @@ See L<Chronicle::Template>
 sub new
 {
     my $class = shift;
+    my %options = @_;
+    my $self    = $class->SUPER::new(@_);
+    bless $self, $class;
 
     my $test = "use Text::Xslate;";
 
@@ -40,9 +44,39 @@ sub new
         die "Failed to load Text::Xslate module - $!";
     }
 
-    my %options = @_;
-    my $self    = $class->SUPER::new(@_);
-    bless $self, $class;
+    my $localize;
+    eval('use Locale::TextDomain qw( chronicle2-theme '.
+        dir($self->{theme_dir}, $self->{theme}, 'locale')  . ');'
+    );
+    if($@) {
+        $localize = {
+            N__ => sub { return @_; },
+            __n => sub { $_[2] > 1 ? $_[1] : $_[0] }, 
+            __nx => sub {
+                $_[2] > 1 ?
+                _substargs($_[1], splice(@_, 3)) :
+                _substargs($_[0], splice(@_, 3))
+            },
+            __p => sub { return $_[1] },
+            __px => sub { _substargs($_[1], splice(@_, 3)) },
+            __x => sub { _substargs($_[0], splice(@_, 2)) },
+        };
+        $localize->{__px} = $localize->{__nx};
+        $localize->{__} = $localize->{__N};
+        die "Not localized\n"; # FIXME
+    } else {
+        $localize = {
+            __ => sub { __(@_) },
+            N__ => sub { N__(@_) },
+            __n => sub { __n(@_) }, 
+            __nx => sub { __nx(@_) },
+            __npx => sub { __npx(@_) },
+            __x => sub { __x(@_) },
+            __p => sub { __p(@_) },
+            __px => sub { __px(@_) },
+        };
+        POSIX::setlocale(LC_ALL, '');
+    }
 
     if ( $options{ tmpl_string } )
     {
@@ -64,7 +98,9 @@ sub new
     $self->{ xslate } =
       Text::Xslate->new(
         path => [$self->_theme_dir, dir( $self->_theme_dir, 'inc' )->stringify],
-        syntax => $self->_syntax, );
+        syntax => $self->_syntax,
+        function => $localize,
+    );
     return $self;
 }
 
@@ -78,6 +114,21 @@ sub output
 {
     my $self = shift;
     return $self->{ render }->( $self->{ params } );
+}
+
+sub _localize {
+    return ngettext(@_);
+}
+
+sub _localize_dummy { return $_[0] }
+
+sub _substargs {
+    my $s = shift;
+    my %args = @_;
+    while(my ($key, $value) = each %args) {
+        $s =~ s/$key/$value/;
+    }
+    return $s;
 }
 
 1;
