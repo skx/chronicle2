@@ -3,9 +3,10 @@ package Chronicle::Template::GenericXslate;
 use strict;
 use warnings;
 use Chronicle::Template;
-use parent 'Chronicle::Template';
+use Encode;
 use Path::Class;
 use POSIX qw/ :locale_h /;
+use parent 'Chronicle::Template';
 
 =head1 NAME
 
@@ -44,13 +45,16 @@ sub new
         die "Failed to load Text::Xslate module - $!";
     }
 
-    my $localize;
-    eval('use Locale::TextDomain qw( chronicle2-theme '.
-        dir($self->{theme_dir}, $self->{theme}, 'locale')  . ');'
-    );
+    my $xslate_functions;
+    my $textdomain = 'chronicle2-theme';
+    my $locale_dir = dir($self->{theme_dir}, $self->{theme}, 'locale');
+    ## no critic (Eval)
+    eval("use Locale::TextDomain '$textdomain', '$locale_dir';");
+    ## use critic
     if($@) {
-        $localize = {
-            N__ => sub { return @_; },
+        $xslate_functions = {
+            N__ => sub { return @_ },
+            __ => sub { return @_ },
             __n => sub { $_[2] > 1 ? $_[1] : $_[0] }, 
             __nx => sub {
                 $_[2] > 1 ?
@@ -61,21 +65,21 @@ sub new
             __px => sub { _substargs($_[1], splice(@_, 3)) },
             __x => sub { _substargs($_[0], splice(@_, 2)) },
         };
-        $localize->{__px} = $localize->{__nx};
-        $localize->{__} = $localize->{__N};
-        die "Not localized\n"; # FIXME
+        $xslate_functions->{__px} = $xslate_functions->{__nx};
+        $xslate_functions->{__} = $xslate_functions->{__N};
     } else {
-        $localize = {
-            __ => sub { __(@_) },
-            N__ => sub { N__(@_) },
-            __n => sub { __n(@_) }, 
-            __nx => sub { __nx(@_) },
-            __npx => sub { __npx(@_) },
-            __x => sub { __x(@_) },
-            __p => sub { __p(@_) },
-            __px => sub { __px(@_) },
+        $xslate_functions = {
+            N__ => \&N__,
+            __ => \&__,
+            __n => \&__n,
+            __nx => \&__nx,
+            __npx => \&__npx,
+            __x => \&__x,
+            __p => \&__p,
+            __px => \&__px,
         };
-        POSIX::setlocale(LC_ALL, '');
+        POSIX::setlocale(LC_MESSAGES, '');
+        Locale::Messages::bind_textdomain_filter($textdomain, \&Encode::decode_utf8);
     }
 
     if ( $options{ tmpl_string } )
@@ -99,7 +103,7 @@ sub new
       Text::Xslate->new(
         path => [$self->_theme_dir, dir( $self->_theme_dir, 'inc' )->stringify],
         syntax => $self->_syntax,
-        function => $localize,
+        function => $xslate_functions,
     );
     return $self;
 }
