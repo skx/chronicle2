@@ -18,6 +18,26 @@ An empty list is returned if the format string doesn't contain a % character.
 
 =cut
 
+=head1 LICENSE
+
+This module is free software; you can redistribute it and/or modify it
+under the terms of either:
+
+a) the GNU General Public License as published by the Free Software
+Foundation; either version 2, or (at your option) any later version,
+or
+
+b) the Perl "Artistic License".
+
+=cut
+
+=head1 AUTHOR
+
+Matthias Bethke
+
+=cut
+
+
 package Chronicle::Utils;
 
 use strict;
