@@ -102,16 +102,8 @@ sub on_initiate
                                        id     => $id,
                                        config => $config
                                      );
-
-        my $x = $data->{ 'posted' };
-        my $date = time2str( "%e %B %Y", $x );
-
-        push( @$entries,
-              {  date  => $date,
-                 title => $data->{ 'title' },
-                 link  => $data->{ 'link' },
-                 tags  => $data->{ 'tags' },
-              } );
+        delete @$data{qw/ body truncatedbody /};    # get rid of heavy fields
+        push @$entries, $data;
     }
     $recent->finish();
 
@@ -119,7 +111,7 @@ sub on_initiate
     #
     #  Now we have the structure.
     #
-    $Chronicle::GLOBAL_TEMPLATE_VARS{ "recent_posts" } = $entries if ($entries);
+    $Chronicle::GLOBAL_TEMPLATE_VARS{ "recent_posts" } = $entries if $entries;
 }
 
 

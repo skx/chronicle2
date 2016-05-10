@@ -10,7 +10,7 @@ which includes:
 
 =over 8
 
-=item The ate the blog was (re)built.
+=item The date the blog was (re)built.
 
 =item The time the blog was (re)built.
 
@@ -50,6 +50,7 @@ use warnings;
 use Date::Format;
 use Sys::Hostname;
 
+use Chronicle::Utils qw/ format_datetime /;
 
 our $VERSION = "5.1.5";
 
@@ -84,19 +85,18 @@ sub on_initiate
     #
     #  The chronicle build date
     #
-    my $date_fmt = $config->{ 'meta_date_format' } || '%e %b %Y';
-
-    $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_date" } =
-      time2str( $date_fmt, $time );
+    (
+        $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_date" },
+        $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_date_loc" }
+    ) = format_datetime($config, 'meta_date_format', '%e %b %Y', $time);
 
     #
     #  The chronicle build time
     #
-    my $time_fmt = $config->{ 'meta_time_format' } || '%H:%M:%S';
-
-    $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_time" } =
-      time2str( $time_fmt, $time );
-
+    (
+        $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_time" },
+        $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_time_loc" }
+    ) = format_datetime($config, 'meta_time_format', '%X', $time);
 
     #
     #  The username
