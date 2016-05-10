@@ -54,17 +54,17 @@ sub new
     if ($@ or version->parse($Locale::TextDomain::VERSION) < version->parse('1.16'))
     {
         %xslate_functions = (
-            N__ => sub {return @_},
-            __  => sub {return @_},
+            N__ => sub {return $_[0]},
+            __  => sub {return $_[0]},
             __n => sub {$_[2] > 1 ? $_[1] : $_[0]},
             __nx => sub {
-                $_[2] > 1 ? _substargs( $_[1], splice( @_, 3 ) ) :
+                return $_[2] > 1 ? _substargs( $_[1], splice( @_, 3 ) ) :
                   _substargs( $_[0], splice( @_, 3 )
                             );
             },
             __p  => sub {return $_[1]},
-            __px => sub {_substargs( $_[1], splice( @_, 2 ) )},
-            __x  => sub {_substargs( $_[0], splice( @_, 1 ) )},
+            __px => sub {return _substargs( $_[1], splice( @_, 2 ) )},
+            __x  => sub {return _substargs( $_[0], splice( @_, 1 ) )},
         );
         $xslate_functions{ __px } = $xslate_functions{ __nx };
         $xslate_functions{ __ }   = $xslate_functions{ N__ };
@@ -135,7 +135,7 @@ sub _substargs
     my %args = @_;
     while ( my ( $key, $value ) = each %args )
     {
-        $s =~ s/$key/$value/;
+        $s =~ s/\{$key\}/$value/;
     }
     return $s;
 }
