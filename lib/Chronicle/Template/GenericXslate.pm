@@ -63,11 +63,11 @@ sub new
                             );
             },
             __p  => sub {return $_[1]},
-            __px => sub {_substargs( $_[1], splice( @_, 3 ) )},
-            __x  => sub {_substargs( $_[0], splice( @_, 2 ) )},
+            __px => sub {_substargs( $_[1], splice( @_, 2 ) )},
+            __x  => sub {_substargs( $_[0], splice( @_, 1 ) )},
         );
         $xslate_functions{ __px } = $xslate_functions{ __nx };
-        $xslate_functions{ __ }   = $xslate_functions{ __N };
+        $xslate_functions{ __ }   = $xslate_functions{ N__ };
     }
     else
     {
