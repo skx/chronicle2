@@ -103,6 +103,13 @@ for detailed documentation on what they do:
 * `__px()`
 * `N__()`
 
+Custom Functions
+----------------
+
+On top of the above functions to support l10n, Xslate templates also have an
+`strftime` function that works as documented in the `POSIX` module and can be
+used to construct custom (non-localized) dates on the fly in templates.
+
 Static Resources
 ----------------
 

@@ -292,7 +292,8 @@ to be included in the sidebar in the default template.
 Chronicle uses the L<Date::Language> module for generating localized dates.
 For each of the variables "date", "time" and "date_short" there exists a
 corresponding variable with the suffix "_loc" ("date_loc" etc.) that
-contains the localized version.
+contains the localized version. Additionally, a "date_epoch" variable is
+available for use with the C<time2str(FORMAT, TIME)> template function.
 
 For historical reasons, the language is configured via the environment variable
 C<$MONTHS>. For example, to get Finnish dates, you could use:
@@ -1034,6 +1035,7 @@ sub getBlog
     @$data{qw/ time time_loc /} = format_datetime($config, 'time_format', '%X', $time);
     @$data{qw/ date date_loc /} = format_datetime($config, 'date_format', '%a, %e %b %Y', $time);
     @$data{qw/ date_short date_short_loc /} = format_datetime($config, 'short_date_format', '%e %B %Y', $time);
+    $data->{date_epoch} = $time;
 
     #
     #  For the RSS-Feed

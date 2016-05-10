@@ -5,7 +5,7 @@ use warnings;
 use Chronicle::Template;
 use Encode;
 use Path::Class;
-use POSIX qw/ :locale_h /;
+use POSIX qw/ :locale_h strftime /;
 use parent 'Chronicle::Template';
 
 =head1 NAME
@@ -45,7 +45,7 @@ sub new
         die "Failed to load Text::Xslate module - $!";
     }
 
-    my $xslate_functions;
+    my %xslate_functions;
     my $textdomain = 'chronicle2-theme';
     my $locale_dir = dir( $self->{ theme_dir }, $self->{ theme }, 'locale' );
     ## no critic (Eval)
@@ -53,7 +53,7 @@ sub new
     ## use critic
     if ($@)
     {
-        $xslate_functions = {
+        %xslate_functions = (
             N__ => sub {return @_},
             __  => sub {return @_},
             __n => sub {$_[2] > 1 ? $_[1] : $_[0]},
@@ -65,13 +65,13 @@ sub new
             __p  => sub {return $_[1]},
             __px => sub {_substargs( $_[1], splice( @_, 3 ) )},
             __x  => sub {_substargs( $_[0], splice( @_, 2 ) )},
-                            };
-        $xslate_functions->{ __px } = $xslate_functions->{ __nx };
-        $xslate_functions->{ __ }   = $xslate_functions->{ __N };
+        );
+        $xslate_functions{ __px } = $xslate_functions{ __nx };
+        $xslate_functions{ __ }   = $xslate_functions{ __N };
     }
     else
     {
-        $xslate_functions = { N__   => \&N__,
+        %xslate_functions = ( N__   => \&N__,
                               __    => \&__,
                               __n   => \&__n,
                               __nx  => \&__nx,
@@ -79,7 +79,7 @@ sub new
                               __x   => \&__x,
                               __p   => \&__p,
                               __px  => \&__px,
-                            };
+                            );
         POSIX::setlocale( LC_MESSAGES, '' );
         Locale::Messages::bind_textdomain_filter( $textdomain,
                                                   \&Encode::decode_utf8 );
@@ -106,7 +106,13 @@ sub new
       Text::Xslate->new(
         path => [$self->_theme_dir, dir( $self->_theme_dir, 'inc' )->stringify],
         syntax   => $self->_syntax,
-        function => $xslate_functions,
+        function => {
+            %xslate_functions,
+            strftime => sub {
+                my ($format, $epoch) = @_;
+                return strftime($format, localtime $epoch);
+            },
+        },
                        );
     return $self;
 }
