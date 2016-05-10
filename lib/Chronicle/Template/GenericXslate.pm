@@ -51,7 +51,7 @@ sub new
     ## no critic (Eval)
     eval("use Locale::TextDomain '$textdomain', '$locale_dir';");
     ## use critic
-    if ($@)
+    if ($@ or version->parse($Locale::TextDomain::VERSION) < version->parse('1.16'))
     {
         %xslate_functions = (
             N__ => sub {return @_},
