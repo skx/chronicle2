@@ -1,9 +1,3 @@
-package Chronicle::Template;
-
-use strict;
-use warnings;
-use Path::Class;
-use Carp;
 
 =head1 NAME
 
@@ -30,6 +24,22 @@ The following options are currently defined:
 =item C<theme> Name of the theme to use
 
 =back
+
+=cut
+
+
+package Chronicle::Template;
+
+use strict;
+use warnings;
+
+use Path::Class;
+use Carp;
+
+
+=head2 new
+
+Constructor.
 
 =cut
 

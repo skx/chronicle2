@@ -1,12 +1,3 @@
-package Chronicle::Utils;
-use strict;
-use warnings;
-use Encode qw/ decode /;
-use Date::Format;
-use Date::Language;
-use parent 'Exporter';
-
-our @EXPORT_OK = qw/ format_datetime /;
 
 =head1 NAME
 
@@ -27,6 +18,19 @@ An empty list is returned if the format string doesn't contain a % character.
 
 =cut
 
+package Chronicle::Utils;
+
+use strict;
+use warnings;
+
+use Encode qw/ decode /;
+use Date::Format;
+use Date::Language;
+use parent 'Exporter';
+
+our @EXPORT_OK = qw/ format_datetime /;
+
+
 my $date_loc = Date::Language->new( $ENV{ 'MONTHS' } // "English" );
 
 sub format_datetime
@@ -44,4 +48,3 @@ sub format_datetime
 }
 
 1;
-
