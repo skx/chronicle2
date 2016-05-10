@@ -102,7 +102,7 @@ sub on_initiate
                                        id     => $id,
                                        config => $config
                                      );
-        delete @$data{qw/ body truncatedbody /};    # get rid of heavy fields
+        delete @$data{ qw/ body truncatedbody / };    # get rid of heavy fields
         push @$entries, $data;
     }
     $recent->finish();

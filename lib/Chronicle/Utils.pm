@@ -29,17 +29,18 @@ An empty list is returned if the format string doesn't contain a % character.
 
 my $date_loc = Date::Language->new( $ENV{ 'MONTHS' } // "English" );
 
-sub format_datetime {
-    my ($config, $config_var, $format, $time) = @_;
+sub format_datetime
+{
+    my ( $config, $config_var, $format, $time ) = @_;
 
     # If the config overrides the default $date_fmt, use it
-    $format = $config->{$config_var} if $config and $config->{$config_var};
+    $format = $config->{ $config_var } if $config and $config->{ $config_var };
 
     return unless $format =~ /%/;
 
     return
-    time2str( $format, $time ),
-    decode('ISO-8859-1', $date_loc->time2str( $format, $time ));
+      time2str( $format, $time ),
+      decode( 'ISO-8859-1', $date_loc->time2str( $format, $time ) );
 }
 
 1;

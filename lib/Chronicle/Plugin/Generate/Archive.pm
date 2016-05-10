@@ -72,7 +72,7 @@ sub on_generate
     my %index;
 
     my $all = $dbh->prepare(
-        "SELECT strftime( '%m %Y', date, 'unixepoch') FROM blog ORDER BY date" )
+         "SELECT strftime( '%m %Y', date, 'unixepoch') FROM blog ORDER BY date")
       or
       die "Failed to prepare";
 

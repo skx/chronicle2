@@ -85,18 +85,16 @@ sub on_initiate
     #
     #  The chronicle build date
     #
-    (
-        $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_date" },
-        $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_date_loc" }
-    ) = format_datetime($config, 'meta_date_format', '%e %b %Y', $time);
+    (  $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_date" },
+       $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_date_loc" } )
+      = format_datetime( $config, 'meta_date_format', '%e %b %Y', $time );
 
     #
     #  The chronicle build time
     #
-    (
-        $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_time" },
-        $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_time_loc" }
-    ) = format_datetime($config, 'meta_time_format', '%X', $time);
+    (  $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_time" },
+       $Chronicle::GLOBAL_TEMPLATE_VARS{ "build_time_loc" } )
+      = format_datetime( $config, 'meta_time_format', '%X', $time );
 
     #
     #  The username
