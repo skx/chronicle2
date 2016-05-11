@@ -62,14 +62,14 @@ the following code
 
 with this
 
-    <h1>[% __(title) %]</h1>
+    <h1>[% __("News") %]</h1>
     [% body %]
     <p>[% __x('Published on {date}', date => date) %],
     [% __nx('1 comment', '{cmts} comments', ncmts, cmts => ncmts) %]</p>
 
 This will
 
-1. Allow to simply translate "Title" without changing the template
+1. Allow to simply translate "News" without changing the template
 2. Let you translate "Published on {date}" even to languages that may want the
 date at some other position in the sentence
 3. Select the correct singular/plural version for the comments even for
