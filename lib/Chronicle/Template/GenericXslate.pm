@@ -51,21 +51,22 @@ sub new
     ## no critic (Eval)
     eval("use Locale::TextDomain '$textdomain', '$locale_dir';");
     ## use critic
-    if ($@ or version->parse($Locale::TextDomain::VERSION) < version->parse('1.16'))
+    if ( $@ or
+         version->parse($Locale::TextDomain::VERSION) < version->parse('1.16') )
     {
         %xslate_functions = (
             N__ => sub {return $_[0]},
             __  => sub {return $_[0]},
             __n => sub {$_[2] > 1 ? $_[1] : $_[0]},
             __nx => sub {
-                return $_[2] > 1 ? _substargs( $_[1], splice( @_, 3 ) ) :
-                  _substargs( $_[0], splice( @_, 3 )
-                            );
+                return
+                  $_[2] > 1 ? _substargs( $_[1], splice( @_, 3 ) ) :
+                  _substargs( $_[0], splice( @_, 3 ) );
             },
             __p  => sub {return $_[1]},
             __px => sub {return _substargs( $_[1], splice( @_, 2 ) )},
             __x  => sub {return _substargs( $_[0], splice( @_, 1 ) )},
-        );
+                            );
         $xslate_functions{ __px } = $xslate_functions{ __nx };
         $xslate_functions{ __ }   = $xslate_functions{ N__ };
     }
@@ -102,18 +103,17 @@ sub new
         };
     }
 
-    $self->{ xslate } =
-      Text::Xslate->new(
+    $self->{ xslate } = Text::Xslate->new(
         path => [$self->_theme_dir, dir( $self->_theme_dir, 'inc' )->stringify],
         syntax   => $self->_syntax,
         function => {
             %xslate_functions,
             strftime => sub {
-                my ($format, $epoch) = @_;
-                return strftime($format, localtime $epoch);
+                my ( $format, $epoch ) = @_;
+                return strftime( $format, localtime $epoch );
             },
         },
-                       );
+    );
     return $self;
 }
 
