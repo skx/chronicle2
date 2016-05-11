@@ -65,7 +65,7 @@ with this
     <h1>[% __(title) %]</h1>
     [% body %]
     <p>[% __x('Published on {date}', date => date) %],
-    __nx('1 comment', '{cmts} comments', ncmts, cmts => ncmts) %]</p>
+    [% __nx('1 comment', '{cmts} comments', ncmts, cmts => ncmts) %]</p>
 
 This will
 
