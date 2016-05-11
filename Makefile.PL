@@ -31,6 +31,7 @@ my %WriteMakefileArgs = (
         'File::Find'                 => 0,
         'File::Path'                 => 0,
         'File::ShareDir'             => 0,
+        'FindBin'                    => 0,
         'Getopt::Long'               => 0,
         'HTML::Template'             => 0,
         'HTML::Element'              => 5,

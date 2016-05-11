@@ -77,7 +77,7 @@ sub create
 
     #  Ensure the theme directory exists.
     -d $options{ theme_dir } or
-      die "The theme directory specified with 'theme-dir' doesn't exist";
+      die "The theme directory specified with 'theme-dir' ($options{ theme_dir }) doesn't exist";
 
     # If a template file was specified, remove the extension if present
     exists $options{ tmpl_file } and
