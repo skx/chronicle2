@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More;
 use FindBin;
 
 # If you need to change the .po file, recompile with:
@@ -10,12 +10,14 @@ use FindBin;
 #   msgfmt chronicle2-theme.po -o chronicle2-theme.mo
 
 #
-#  Load the module.
+#  Load the modules.
 #
-BEGIN
-{
-    use_ok('Chronicle::Template');
+eval 'use Text::Xslate';
+if($@) {
+    plan skip_all => 'Text::Xslate not available';
+    exit 0;
 }
+use_ok('Chronicle::Template');
 
 my $TMPL = '[% __nx("One foo", "{n} foos", foo, n => foo) %]';
 
@@ -44,4 +46,4 @@ $tmpl->param( foo => 1 );
 is( $tmpl->output, "Ein foo", "Correct singular for de_DE" );
 $tmpl->param( foo => 5 );
 is( $tmpl->output, "Der foosen 5", "Correct *cough* plural for de_DE" );
-
+done_testing;
