@@ -3,9 +3,7 @@ package Chronicle::Template::GenericXslate;
 use strict;
 use warnings;
 use Chronicle::Template;
-use Encode;
 use Path::Class;
-use POSIX qw/ :locale_h strftime /;
 use parent 'Chronicle::Template';
 
 =head1 NAME
@@ -45,47 +43,6 @@ sub new
         die "Failed to load Text::Xslate module - $!";
     }
 
-    my %xslate_functions;
-    my $textdomain = 'chronicle2-theme';
-    my $locale_dir = dir( $self->{ theme_dir }, $self->{ theme }, 'locale' );
-    ## no critic (Eval)
-    eval("use Locale::TextDomain '$textdomain', '$locale_dir';");
-    ## use critic
-    if ( $@ or
-         version->parse($Locale::TextDomain::VERSION) < version->parse('1.16') )
-    {
-        %xslate_functions = (
-            N__ => sub {return $_[0]},
-            __  => sub {return $_[0]},
-            __n => sub {$_[2] > 1 ? $_[1] : $_[0]},
-            __nx => sub {
-                return
-                  $_[2] > 1 ? _substargs( $_[1], splice( @_, 3 ) ) :
-                  _substargs( $_[0], splice( @_, 3 ) );
-            },
-            __p  => sub {return $_[1]},
-            __px => sub {return _substargs( $_[1], splice( @_, 2 ) )},
-            __x  => sub {return _substargs( $_[0], splice( @_, 1 ) )},
-                            );
-        $xslate_functions{ __px } = $xslate_functions{ __nx };
-        $xslate_functions{ __ }   = $xslate_functions{ N__ };
-    }
-    else
-    {
-        %xslate_functions = ( N__   => \&N__,
-                              __    => \&__,
-                              __n   => \&__n,
-                              __nx  => \&__nx,
-                              __npx => \&__npx,
-                              __x   => \&__x,
-                              __p   => \&__p,
-                              __px  => \&__px,
-                            );
-        POSIX::setlocale( LC_MESSAGES, '' );
-        Locale::Messages::bind_textdomain_filter( $textdomain,
-                                                  \&Encode::decode_utf8 );
-    }
-
     if ( $options{ tmpl_string } )
     {
         $self->{ render } = sub {
@@ -103,17 +60,12 @@ sub new
         };
     }
 
-    $self->{ xslate } = Text::Xslate->new(
+    $self->{ xslate } =
+      Text::Xslate->new(
         path => [$self->_theme_dir, dir( $self->_theme_dir, 'inc' )->stringify],
         syntax   => $self->_syntax,
-        function => {
-            %xslate_functions,
-            strftime => sub {
-                my ( $format, $epoch ) = @_;
-                return strftime( $format, localtime $epoch );
-            },
-        },
-    );
+        function => $self->_custom_funcs,
+                       );
     return $self;
 }
 
@@ -127,17 +79,6 @@ sub output
 {
     my $self = shift;
     return $self->{ render }->( $self->{ params } );
-}
-
-sub _substargs
-{
-    my $s    = shift;
-    my %args = @_;
-    while ( my ( $key, $value ) = each %args )
-    {
-        $s =~ s/\{$key\}/$value/;
-    }
-    return $s;
 }
 
 1;
