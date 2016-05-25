@@ -23,7 +23,7 @@ chronicle - A static blog-compiler.
    --theme-dir      Specify the path to the theme templates.
    --url-prefix     Specify the prefix to the generated blog.
    --template-engine Specify the template system to use
-                    (HTMLTemplate (default), Xslate or XslateTT)
+                    (HTMLTemplate (default), Xslate, XslateTT or TT)
 
   Counting Options:
 
@@ -256,10 +256,15 @@ C<*.tmpl>.
 Uses L<Text::Xslate>, an extremely fast and versatile templating system, with
 its default "Kolon" syntax. Templates are named C<*.tx>.
 
-=item HTMLTemplate
+=item XslateTT
 
 Uses L<Text::Xslate> with the Template Toolkit compatible "TTerse" syntax.
 Templates are named C<*.ttx>.
+
+=item TT
+
+Uses the well-known L<Template> Toolkit. Slower than Xslate but universally
+available.
 
 =back
 
