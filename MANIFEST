@@ -34,6 +34,7 @@ lib/Chronicle/Plugin/YouTube.pm
 lib/Chronicle/Template.pm
 lib/Chronicle/Template/GenericXslate.pm
 lib/Chronicle/Template/HTMLTemplate.pm
+lib/Chronicle/Template/TT.pm
 lib/Chronicle/Template/Xslate.pm
 lib/Chronicle/Template/XslateTT.pm
 lib/Chronicle/URI.pm
@@ -44,6 +45,8 @@ MANIFEST
 MANIFEST.SKIP
 README.md
 t/load-modules.t
+t/localized_templates_tt.t
+t/localized_templates_xslate.t
 t/manifest.t
 t/pod-coverage.t
 t/pod.t
