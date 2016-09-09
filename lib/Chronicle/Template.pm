@@ -1,3 +1,11 @@
+package Chronicle::Template;
+
+use strict;
+use warnings;
+use Path::Class;
+use POSIX qw/ :locale_h strftime /;
+use Encode;
+use Carp;
 
 =head1 NAME
 
@@ -107,7 +115,8 @@ sub create
 
     #  Ensure the theme directory exists.
     -d $options{ theme_dir } or
-      die "The theme directory specified with 'theme-dir' doesn't exist";
+      die
+      "The theme directory specified with 'theme-dir' ($options{ theme_dir }) doesn't exist";
 
     # If a template file was specified, remove the extension if present
     exists $options{ tmpl_file } and
@@ -190,6 +199,69 @@ sub _theme_dir
       die
       "The theme '$self->{theme}' doesn't exist beneath '$self->{theme_dir}'!";
     return $dir;
+}
+
+sub _custom_funcs
+{
+    my ($self) = @_;
+
+    my %custom_funcs;
+    my $textdomain = 'chronicle2-theme';
+    my $locale_dir = dir( $self->_theme_dir, 'locale' );
+    ## no critic (Eval)
+    eval("use Locale::TextDomain '$textdomain', '$locale_dir';");
+    ## use critic
+    if ( $@ or
+         version->parse($Locale::TextDomain::VERSION) < version->parse('1.16') )
+    {
+        %custom_funcs = (
+            N__ => sub {return $_[0]},
+            __  => sub {return $_[0]},
+            __n => sub {$_[2] > 1 ? $_[1] : $_[0]},
+            __nx => sub {
+                return
+                  $_[2] > 1 ? _substargs( $_[1], splice( @_, 3 ) ) :
+                  _substargs( $_[0], splice( @_, 3 ) );
+            },
+            __p  => sub {return $_[1]},
+            __px => sub {return _substargs( $_[1], splice( @_, 2 ) )},
+            __x  => sub {return _substargs( $_[0], splice( @_, 1 ) )},
+                        );
+        $custom_funcs{ __px } = $custom_funcs{ __nx };
+        $custom_funcs{ __ }   = $custom_funcs{ N__ };
+    }
+    else
+    {
+        %custom_funcs = ( N__   => sub {N__(@_)},
+                          __    => sub {__(@_)},
+                          __n   => sub {__n(@_)},
+                          __nx  => sub {__nx(@_)},
+                          __npx => sub {__npx(@_)},
+                          __x   => sub {__x(@_)},
+                          __p   => sub {__p(@_)},
+                          __px  => sub {__px(@_)},
+                        );
+        POSIX::setlocale( LC_MESSAGES, '' );
+        Locale::Messages::bind_textdomain_filter( $textdomain,
+                                                  \&Encode::decode_utf8 );
+    }
+    $custom_funcs{ strftime } = sub {
+        my ( $format, $epoch ) = @_;
+        return strftime( $format, localtime $epoch );
+    };
+
+    return \%custom_funcs;
+}
+
+sub _substargs
+{
+    my $s    = shift;
+    my %args = @_;
+    while ( my ( $key, $value ) = each %args )
+    {
+        $s =~ s/\{$key\}/$value/;
+    }
+    return $s;
 }
 
 1;

@@ -23,7 +23,7 @@ chronicle - A static blog-compiler.
    --theme-dir      Specify the path to the theme templates.
    --url-prefix     Specify the prefix to the generated blog.
    --template-engine Specify the template system to use
-                    (HTMLTemplate (default), Xslate or XslateTT)
+                    (HTMLTemplate (default), Xslate, XslateTT or TT)
 
   Counting Options:
 
@@ -256,10 +256,15 @@ C<*.tmpl>.
 Uses L<Text::Xslate>, an extremely fast and versatile templating system, with
 its default "Kolon" syntax. Templates are named C<*.tx>.
 
-=item HTMLTemplate
+=item XslateTT
 
 Uses L<Text::Xslate> with the Template Toolkit compatible "TTerse" syntax.
 Templates are named C<*.ttx>.
+
+=item TT
+
+Uses the well-known L<Template> Toolkit. Slower than Xslate but universally
+available.
 
 =back
 
@@ -292,7 +297,8 @@ to be included in the sidebar in the default template.
 Chronicle uses the L<Date::Language> module for generating localized dates.
 For each of the variables "date", "time" and "date_short" there exists a
 corresponding variable with the suffix "_loc" ("date_loc" etc.) that
-contains the localized version.
+contains the localized version. Additionally, a "date_epoch" variable is
+available for use with the C<time2str(FORMAT, TIME)> template function.
 
 For historical reasons, the language is configured via the environment variable
 C<$MONTHS>. For example, to get Finnish dates, you could use:
@@ -1034,12 +1040,14 @@ sub getBlog
     @$data{qw/ time time_loc /} = format_datetime($config, 'time_format', '%X', $time);
     @$data{qw/ date date_loc /} = format_datetime($config, 'date_format', '%a, %e %b %Y', $time);
     @$data{qw/ date_short date_short_loc /} = format_datetime($config, 'short_date_format', '%e %B %Y', $time);
+    $data->{date_epoch} = $time;
 
     #
-    #  For the RSS-Feed
+    #  For the RSS-Feed. Actually, this is a W3C Datetime (https://www.w3.org/TR/NOTE-datetime)
+    #  which is more specific than ISO-8601 in allowing only colon-separated hours/minutes in a time zone
     #
     $data->{ 'iso_8601' } = time2str( '%Y-%m-%dT%T%z', $time );
-
+    $data->{ 'iso_8601' } =~ s/(..)$/:$1/;
 
     #
     #  If comments are enabled then populate the blog-post with them too.

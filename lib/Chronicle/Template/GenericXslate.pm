@@ -3,8 +3,8 @@ package Chronicle::Template::GenericXslate;
 use strict;
 use warnings;
 use Chronicle::Template;
-use parent 'Chronicle::Template';
 use Path::Class;
+use parent 'Chronicle::Template';
 
 =head1 NAME
 
@@ -27,7 +27,10 @@ See L<Chronicle::Template>
 
 sub new
 {
-    my $class = shift;
+    my $class   = shift;
+    my %options = @_;
+    my $self    = $class->SUPER::new(@_);
+    bless $self, $class;
 
     my $test = "use Text::Xslate;";
 
@@ -39,10 +42,6 @@ sub new
     {
         die "Failed to load Text::Xslate module - $!";
     }
-
-    my %options = @_;
-    my $self    = $class->SUPER::new(@_);
-    bless $self, $class;
 
     if ( $options{ tmpl_string } )
     {
@@ -64,7 +63,9 @@ sub new
     $self->{ xslate } =
       Text::Xslate->new(
         path => [$self->_theme_dir, dir( $self->_theme_dir, 'inc' )->stringify],
-        syntax => $self->_syntax, );
+        syntax   => $self->_syntax,
+        function => $self->_custom_funcs,
+                       );
     return $self;
 }
 
