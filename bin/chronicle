@@ -1043,10 +1043,11 @@ sub getBlog
     $data->{date_epoch} = $time;
 
     #
-    #  For the RSS-Feed
+    #  For the RSS-Feed. Actually, this is a W3C Datetime (https://www.w3.org/TR/NOTE-datetime)
+    #  which is more specific than ISO-8601 in allowing only colon-separated hours/minutes in a time zone
     #
     $data->{ 'iso_8601' } = time2str( '%Y-%m-%dT%T%z', $time );
-
+    $data->{ 'iso_8601' } =~ s/(..)$/:$1/;
 
     #
     #  If comments are enabled then populate the blog-post with them too.
