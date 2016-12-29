@@ -52,7 +52,7 @@ use Sys::Hostname;
 
 use Chronicle::Utils qw/ format_datetime /;
 
-our $VERSION = "5.1.5";
+our $VERSION = "5.1.6";
 
 
 =head2 on_initiate

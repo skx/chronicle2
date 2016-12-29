@@ -1,3 +1,6 @@
+5.1.6 - 29th December 2016
+    * New release to add libclass-path to build-deps, debian-specific.
+
 5.1.5 - 29th April 2016
     * Abstracted the template handling such that different modules
 	  may be used to create the output.  The default is still HTML::Template,

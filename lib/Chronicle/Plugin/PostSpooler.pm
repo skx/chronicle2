@@ -39,7 +39,7 @@ use strict;
 use warnings;
 
 
-our $VERSION = "5.1.5";
+our $VERSION = "5.1.6";
 
 
 use Date::Format;
