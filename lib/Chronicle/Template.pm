@@ -192,4 +192,23 @@ sub _theme_dir
     return $dir;
 }
 
+
+=head2 clear
+
+This method is called after loading each template, in the process of
+generating pages via the output plugins.
+
+This is necessary because the plugins are loaded only once each and the
+result of not cleaning the templates is that stale data will cause
+problems.
+
+By default it does nothing.
+
+=cut
+
+sub clear
+{
+    # print "Chronicle::Template::clear()\n";
+}
+
 1;

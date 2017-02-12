@@ -70,5 +70,23 @@ sub output
     return $htmpl->output;
 }
 
-1;
+=head2 clear
 
+Clear our previous state, necessary if the <HTML::Template> object
+is reused.
+
+=cut
+
+sub clear
+{
+    my ($self) = shift;
+
+    # Reset the template state.
+    my $htmpl = $self->{ htmpl };
+    $htmpl->clear_params();
+
+    # Reset our parameters.
+    $self->{ 'params' } = undef;
+}
+
+1;
