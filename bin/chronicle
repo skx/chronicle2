@@ -373,7 +373,7 @@ use Chronicle::Template;
 #   /etc/chronicle/config
 #   ~/.chronicle/config
 #
-#  NOTE: These filenames we deliberately chosen to avoid clashing
+#  NOTE: These filenames were deliberately chosen to avoid clashing
 # with previous releases of chronicle.
 #
 our %CONFIG;
