@@ -105,6 +105,7 @@ sub on_generate
         #  Load the template
         #
         $c = Chronicle::load_template( undef, $tmpl );
+
     }
 
 
@@ -114,6 +115,8 @@ sub on_generate
     #
     return unless ($c);
 
+    # Clear any previous state.
+    $c->clear();
 
     #
     #  Add the entries.

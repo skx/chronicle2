@@ -156,6 +156,10 @@ sub on_generate
 
         my $c = Chronicle::load_template( $entry->{ 'template' } );
         return unless ($c);
+
+        # Clear any previous state.
+        $c->clear();
+
         $c->param( top => $config->{ 'top' } );
         $c->param($entry);
 
