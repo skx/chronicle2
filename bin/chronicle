@@ -1125,6 +1125,9 @@ sub getComments
         $title = $1;
     }
 
+    $title = lc($title);
+
+
     #
     #  Find each comment file.
     #

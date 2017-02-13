@@ -126,9 +126,6 @@ sub on_generate
     my $c = Chronicle::load_template("archive_index.tmpl");
     if ($c)
     {
-        # Clear any previous state.
-        $c->clear();
-
         my $index_path = "$config->{'output'}/archive/$index";
         print "Creating : $index_path\n" if $config->{ 'verbose' };
         $c->param( top => $config->{ 'top' } );

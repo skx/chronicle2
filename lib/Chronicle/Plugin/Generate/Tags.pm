@@ -141,9 +141,6 @@ sub _outputTags
         my $c = Chronicle::load_template("tag.tmpl");
         return unless ($c);
 
-        # Clear any previous state.
-        $c->clear();
-
         $c->param( top     => $config->{ 'top' } );
         $c->param( entries => $entries ) if ($entries);
         $c->param( tag     => $tag );

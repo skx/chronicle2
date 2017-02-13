@@ -186,7 +186,6 @@ sub on_generate
             #
             #  Clear the template, and populate it
             #
-            $c->clear();
             $c->param( top    => $config->{ 'top' } );
             $c->param( target => lc( $entry->{ 'link' } ) );
 

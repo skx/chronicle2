@@ -52,6 +52,10 @@ sub new
       HTML::Template->new( %DEFAULT_OPTIONS, %options,
                            path => [$self->_theme_dir], );
 
+
+
+    $self->param(\$Chronicle::GLOBAL_TEMPLATE_VARS);
+
     return $self;
 }
 
@@ -69,31 +73,4 @@ sub output
       for keys %{ $self->{ params } };
     return $htmpl->output;
 }
-
-=head2 clear
-
-Clear our previous state, necessary if the <HTML::Template> object
-is reused.
-
-=cut
-
-sub clear
-{
-    my ($self) = shift;
-
-    # Get the template.
-    my $htmpl = $self->{ htmpl };
-
-    # Clear all of our parameters.
-    $self->{ 'params' } = undef;
-    $htmpl->clear_params();
-
-    #
-    # Now reload the defaults.  Sigh.
-    #
-    # Without this the `recent posts`, etc, will be missing.
-    #
-    $htmpl->param($Chronicle::GLOBAL_TEMPLATE_VARS);
-}
-
 1;
