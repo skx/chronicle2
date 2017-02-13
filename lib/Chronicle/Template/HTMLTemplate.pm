@@ -54,8 +54,6 @@ sub new
 
 
 
-    $self->param(\$Chronicle::GLOBAL_TEMPLATE_VARS);
-
     return $self;
 }
 

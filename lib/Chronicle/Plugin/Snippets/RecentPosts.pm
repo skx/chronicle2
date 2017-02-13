@@ -106,7 +106,7 @@ sub on_initiate
         $data->{ 'link' } = lc( $data->{ 'link' } )
           if ( $config->{ 'lower-case' } );
 
-        delete @$data{ qw/ body truncatedbody / };    # get rid of heavy fields
+        delete @$data{ qw/ comments body truncatedbody / };    # get rid of heavy fields
         push @$entries, $data;
     }
     $recent->finish();
