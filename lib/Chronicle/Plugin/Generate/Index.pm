@@ -67,11 +67,17 @@ sub on_generate
 
     while ( $recent->fetch() )
     {
-        push( @$entries,
-              Chronicle::getBlog( dbh    => $dbh,
-                                  id     => $id,
-                                  config => $config
-                                ) );
+        my $post =
+          Chronicle::getBlog( dbh    => $dbh,
+                              id     => $id,
+                              config => $config
+                            );
+        if ( $config->{ 'lower-case' } )
+        {
+            $post->{ 'link' } = lc( $post->{ 'link' } );
+        }
+
+        push( @$entries, $post );
     }
     $recent->finish();
 
@@ -86,9 +92,6 @@ sub on_generate
 
     my $c = Chronicle::load_template("index.tmpl");
     return unless ($c);
-
-    # Clear any previous state.
-    $c->clear();
 
     $c->param( top => $config->{ 'top' } );
     $c->param( entries => $entries ) if ($entries);

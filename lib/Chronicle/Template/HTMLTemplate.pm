@@ -52,6 +52,10 @@ sub new
       HTML::Template->new( %DEFAULT_OPTIONS, %options,
                            path => [$self->_theme_dir], );
 
+
+
+    $self->param(\$Chronicle::GLOBAL_TEMPLATE_VARS);
+
     return $self;
 }
 
@@ -69,24 +73,4 @@ sub output
       for keys %{ $self->{ params } };
     return $htmpl->output;
 }
-
-=head2 clear
-
-Clear our previous state, necessary if the <HTML::Template> object
-is reused.
-
-=cut
-
-sub clear
-{
-    my ($self) = shift;
-
-    # Reset the template state.
-    my $htmpl = $self->{ htmpl };
-    $htmpl->clear_params();
-
-    # Reset our parameters.
-    $self->{ 'params' } = undef;
-}
-
 1;

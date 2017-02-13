@@ -37,6 +37,7 @@ chronicle - A static blog-compiler.
    --blog-subtitle Set the title of the blog.
    --blog-title    Set the title of the blog.
    --force         Always regenerate pages.
+   --lower-case    Write only lower-case post-files.
    --unicode=<yes|no|mac>
                    Allow non-ASCII characters in file names. Default is
                    `no'. Use `mac' if serving files off an HFS+ volume.
@@ -384,11 +385,12 @@ $CONFIG{ 'database' }     = "./blog.db";
 $CONFIG{ 'comment-days' } = 10;
 $CONFIG{ 'entry-count' }  = 10;
 $CONFIG{ 'rss-count' }    = 10;
+
 $CONFIG{ 'theme-dir' }    = File::ShareDir::dist_dir('App-Chronicle');
-$CONFIG{ 'theme' }        = "default";
-$CONFIG{ 'unicode' }      = "no";
-$CONFIG{ 'verbose' }      = 0;
-$CONFIG{ 'top' }          = "/";
+$CONFIG{ 'theme' }   = "default";
+$CONFIG{ 'unicode' } = "no";
+$CONFIG{ 'verbose' } = 0;
+$CONFIG{ 'top' }     = "/";
 $CONFIG{ 'exclude-plugins' } =
   "Chronicle::Plugin::Archived,Chronicle::Plugin::Verbose";
 $CONFIG{ 'template-engine' } = "HTMLTemplate";
@@ -446,7 +448,8 @@ Chronicle::URI::i_use_hfs if $CONFIG{ 'unicode' } eq 'mac';
 #
 # If Unicode is on, also keep HTML::Element from encoding non-ASCII as entities
 #
-if($CONFIG{ 'unicode' } ne 'no') {
+if ( $CONFIG{ 'unicode' } ne 'no' )
+{
     $HTML::Element::encoded_content = 1;
 }
 
@@ -747,7 +750,7 @@ sub insertPost
                                     data   => \%meta
                                   );
 
-                                  #print "after $plugin: $meta{ 'body' }\n";
+        #print "after $plugin: $meta{ 'body' }\n";
         if ( !$m )
         {
 
@@ -1024,16 +1027,20 @@ sub getBlog
     #
     #  If the date is not set then we use the mtime for both date & time.
     #
-    my $posted = ($data->{ 'posted' } = $data->{ 'date' }) || $data->{ 'mtime' } ;
+    my $posted =
+      ( $data->{ 'posted' } = $data->{ 'date' } ) || $data->{ 'mtime' };
     my $time = $posted;
 
 
     ##
     ##  Format dates and times
     ##
-    @$data{qw/ time time_loc /} = format_datetime($config, 'time_format', '%X', $time);
-    @$data{qw/ date date_loc /} = format_datetime($config, 'date_format', '%a, %e %b %Y', $time);
-    @$data{qw/ date_short date_short_loc /} = format_datetime($config, 'short_date_format', '%e %B %Y', $time);
+    @$data{ qw/ time time_loc / } =
+      format_datetime( $config, 'time_format', '%X', $time );
+    @$data{ qw/ date date_loc / } =
+      format_datetime( $config, 'date_format', '%a, %e %b %Y', $time );
+    @$data{ qw/ date_short date_short_loc / } =
+      format_datetime( $config, 'short_date_format', '%e %B %Y', $time );
 
     #
     # For the RSS-Feed.
@@ -1117,6 +1124,9 @@ sub getComments
     {
         $title = $1;
     }
+
+    $title = lc($title);
+
 
     #
     #  Find each comment file.
@@ -1259,22 +1269,23 @@ sub load_template
 {
     my ( $filename, $scalar ) = (@_);
 
-    my %options = (
-        type => $CONFIG{ 'template-engine' },
-        theme_dir => $CONFIG{ 'theme-dir' },
-        theme => $CONFIG{ 'theme' },
-    );
+    my %options = ( type      => $CONFIG{ 'template-engine' },
+                    theme_dir => $CONFIG{ 'theme-dir' },
+                    theme     => $CONFIG{ 'theme' },
+                  );
 
-    my $tmpl = Chronicle::Template->create(
-        $filename ? (tmpl_file => $filename) : (tmpl_string => $scalar),
-        %options
-    ) or return;    # simply return undef to let the caller retry
+    my $tmpl =
+      Chronicle::Template->create(
+            $filename ? ( tmpl_file => $filename ) : ( tmpl_string => $scalar ),
+            %options ) or
+      return;    # simply return undef to let the caller retry
 
-    for my $opt (qw/ blog_title blog_subtitle /) {
-        $tmpl->param($opt => $CONFIG{$opt}) if defined $CONFIG{$opt};
+    for my $opt (qw/ blog_title blog_subtitle /)
+    {
+        $tmpl->param( $opt => $CONFIG{ $opt } ) if defined $CONFIG{ $opt };
     }
 
-    $tmpl->param(\%GLOBAL_TEMPLATE_VARS);
+    $tmpl->param( \%GLOBAL_TEMPLATE_VARS );
     return $tmpl;
 }
 
@@ -1304,9 +1315,9 @@ sub parseCommandLine
             "version", \$CONFIG{ 'version' },
 
             # theme support
-            "theme=s",     \$CONFIG{ 'theme' },
-            "theme-dir=s", \$CONFIG{ 'theme-dir' },
-            "list-themes", \$CONFIG{ 'list-themes' },
+            "theme=s",           \$CONFIG{ 'theme' },
+            "theme-dir=s",       \$CONFIG{ 'theme-dir' },
+            "list-themes",       \$CONFIG{ 'list-themes' },
             "template-engine=s", \$CONFIG{ 'template-engine' },
 
             # paths
@@ -1326,6 +1337,7 @@ sub parseCommandLine
             "comment-days=s", \$CONFIG{ 'comment-days' },
             "force",          \$CONFIG{ 'force' },
             "unicode=s",      \$CONFIG{ 'unicode' },
+            "lower-case",     \$CONFIG{ 'lower-case' },
 
             # plugins
             "list-plugins",      \$CONFIG{ 'list-plugins' },

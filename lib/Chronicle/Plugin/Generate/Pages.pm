@@ -110,9 +110,20 @@ sub on_generate
                                       );
 
         #
-        #  Work out where it will be written to
+        #  The page we'll output might be down-cased.
         #
-        my $out = $config->{ 'output' } . "/" . $entry->{ 'link' }->unescaped;
+        my $page = $entry->{ 'link' }->unescaped;
+        if ( $config->{ 'lower-case' } )
+        {
+            $page = lc($page);
+            $entry->{ 'link' } = lc( $entry->{ 'link' } );
+        }
+
+        #
+        #  The complete path.
+        #
+        my $out = $config->{ 'output' } . "/" . $page;
+
         #
         #  We skip posts that are already present:
         #
@@ -156,9 +167,6 @@ sub on_generate
 
         my $c = Chronicle::load_template( $entry->{ 'template' } );
         return unless ($c);
-
-        # Clear any previous state.
-        $c->clear();
 
         $c->param( top => $config->{ 'top' } );
         $c->param($entry);

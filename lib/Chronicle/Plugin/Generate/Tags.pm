@@ -124,19 +124,22 @@ sub _outputTags
 
         while ( $ids->fetch() )
         {
-            push( @$entries,
-                  Chronicle::getBlog( dbh    => $dbh,
-                                      id     => $id,
-                                      config => $config
-                                    ) );
+            my $post =
+              Chronicle::getBlog( dbh    => $dbh,
+                                  id     => $id,
+                                  config => $config
+                                );
+            if ( $config->{ 'lower-case' } )
+            {
+                $post->{ 'link' } = lc( $post->{ 'link' } );
+            }
+
+            push( @$entries, $post );
         }
 
 
         my $c = Chronicle::load_template("tag.tmpl");
         return unless ($c);
-
-        # Clear any previous state.
-        $c->clear();
 
         $c->param( top     => $config->{ 'top' } );
         $c->param( entries => $entries ) if ($entries);

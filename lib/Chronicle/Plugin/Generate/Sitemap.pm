@@ -90,6 +90,9 @@ sub on_generate
 
     while ( $sql->fetch() )
     {
+        # Handle down-cased sites.
+        $link = lc($link) if ( $config->{ 'lower-case' } );
+
         push( @$urls, { url => $config->{ 'top' } . $link } );
     }
     $sql->finish();
@@ -99,9 +102,6 @@ sub on_generate
     #  Load the template
     #
     my $template = Chronicle::load_template( undef, $tmpl );
-
-    # Clear any previous state.
-    $template->clear();
 
     $template->param( urls => $urls ) if ($urls);
     $template->param( top => $config->{ 'top' } ) if ( $config->{ 'top' } );

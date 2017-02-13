@@ -115,9 +115,6 @@ sub on_generate
     #
     return unless ($c);
 
-    # Clear any previous state.
-    $c->clear();
-
     #
     #  Add the entries.
     #
