@@ -102,6 +102,10 @@ sub on_initiate
                                        id     => $id,
                                        config => $config
                                      );
+
+        $data->{ 'link' } = lc( $data->{ 'link' } )
+          if ( $config->{ 'lower-case' } );
+
         delete @$data{ qw/ body truncatedbody / };    # get rid of heavy fields
         push @$entries, $data;
     }
