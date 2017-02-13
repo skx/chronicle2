@@ -81,12 +81,19 @@ sub clear
 {
     my ($self) = shift;
 
-    # Reset the template state.
+    # Get the template.
     my $htmpl = $self->{ htmpl };
+
+    # Clear all of our parameters.
+    $self->{ 'params' } = undef;
     $htmpl->clear_params();
 
-    # Reset our parameters.
-    $self->{ 'params' } = undef;
+    #
+    # Now reload the defaults.  Sigh.
+    #
+    # Without this the `recent posts`, etc, will be missing.
+    #
+    $htmpl->param($Chronicle::GLOBAL_TEMPLATE_VARS);
 }
 
 1;
