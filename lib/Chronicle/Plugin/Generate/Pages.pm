@@ -113,7 +113,11 @@ sub on_generate
         #  The page we'll output might be down-cased.
         #
         my $page = $entry->{ 'link' }->unescaped;
-        $page = lc($page) if ( $config->{ 'lower-case' } );
+        if ( $config->{ 'lower-case' } )
+        {
+            $page = lc($page);
+            $entry->{ 'link' } = lc( $entry->{ 'link' } );
+        }
 
         #
         #  The complete path.

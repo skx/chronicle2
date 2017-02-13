@@ -90,6 +90,9 @@ sub on_generate
 
     while ( $sql->fetch() )
     {
+        # Handle down-cased sites.
+        $link = lc($link) if ( $config->{ 'lower-case' } );
+
         push( @$urls, { url => $config->{ 'top' } . $link } );
     }
     $sql->finish();

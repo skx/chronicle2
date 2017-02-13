@@ -177,11 +177,18 @@ sub on_generate
 
         while ( $ids->fetch() )
         {
-            push( @$entries,
-                  Chronicle::getBlog( dbh    => $dbh,
-                                      id     => $id,
-                                      config => $config
-                                    ) );
+            my $post =
+              Chronicle::getBlog( dbh    => $dbh,
+                                  id     => $id,
+                                  config => $config
+                                );
+            if ( $config->{ 'lower-case' } )
+            {
+                $post->{ 'link' } = lc( $post->{ 'link' } );
+            }
+
+            push( @$entries, $post );
+
         }
         $ids->finish();
 
