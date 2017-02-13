@@ -104,6 +104,40 @@ sub on_generate
     }
 
 
+
+    #
+    #  If there is a theme-provided file then use it.
+    #
+    my $c = Chronicle::load_template("redirect.tmpl");
+
+    #
+    #  If not then we're going to use our default, which is
+    # contained in the __DATA__ section of this very module.
+    #
+    if ( !$c )
+    {
+        my $tmpl = do {local $/; <DATA>};
+
+        #
+        #  If there is no template read then something weird has happened
+        #
+        return unless ( $tmpl && length($tmpl) );
+
+        #
+        #  Load the template
+        #
+        $c = Chronicle::load_template( undef, $tmpl );
+    }
+
+
+    #
+    #  At this point we should have one of the two templates loaded,
+    # but if not .. we'll just return.
+    #
+    return unless ($c);
+
+
+
     #
     #  Now we have all the posts we iterate over them in-order.
     #
@@ -127,10 +161,6 @@ sub on_generate
         #
         if ( $entry->{ 'link' } =~ /[A-Z]/ )
         {
-            #
-            #  OK it does.  So we need to write out a redirection.
-            #
-            print "Blog post contains mixed-case " . $entry->{ 'link' } . "\n";
 
             #
             #  Ensure we have a full output path - because a plugin might have given us a dated-path.
@@ -147,10 +177,25 @@ sub on_generate
 
             my $out =
               $config->{ 'output' } . "/" . $entry->{ 'link' }->unescaped;
+
+            $config->{ 'verbose' } &&
+              print "Writing redirection to $out for mixed-case post " .
+              lc( $entry->{ 'link' } ) . "\n";
+
+
+            #
+            #  Clear the template, and populate it
+            #
+            $c->clear();
+            $c->param( top    => $config->{ 'top' } );
+            $c->param( target => lc( $entry->{ 'link' } ) );
+
+            #
+            # Write it out
+            #
             open( my $handle, ">:encoding(UTF-8)", $out ) or
               die "Failed to open `$out' for writing: $!";
-            print $handle "Please see " . $config->{ 'top' } .
-              lc( $entry->{ 'link' } ) . "\n";
+            print $handle $c->output();
             close($handle);
 
 
@@ -181,3 +226,22 @@ b) the Perl "Artistic License".
 Steve Kemp <steve@steve.org.uk>
 
 =cut
+
+__DATA__
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+  <title>Blog Post Moved</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="0; url=<!-- tmpl_var name='top' --><!-- tmpl_var name='target' -->">
+  <link rel="canonical" href="<!-- tmpl_var name='top' --><!-- tmpl_var name='target' -->">
+ </head>
+ <body>
+  <h1>Post Moved</h1>
+  <p>Please find the post here:</p>
+  <ul>
+   <li><a href="<!-- tmpl_var name='top' --><!-- tmpl_var name='target' -->"><!-- tmpl_var name='top' --><!-- tmpl_var name='target' --></a></li>
+  </ul>
+ </body>
+</html>
