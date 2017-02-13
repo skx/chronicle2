@@ -110,9 +110,16 @@ sub on_generate
                                       );
 
         #
-        #  Work out where it will be written to
+        #  The page we'll output might be down-cased.
         #
-        my $out = $config->{ 'output' } . "/" . $entry->{ 'link' }->unescaped;
+        my $page = $entry->{ 'link' }->unescaped;
+        $page = lc($page) if ( $config->{ 'lower-case' } );
+
+        #
+        #  The complete path.
+        #
+        my $out = $config->{ 'output' } . "/" . $page;
+
         #
         #  We skip posts that are already present:
         #
