@@ -9,6 +9,9 @@ Chronicle::Plugin::StaticPages - Generate non-blog pages.
 If your blog-post contains a "C<page: 1>" header then it will
 treat the post as a non-blog static page.
 
+You can manually specify the output path, via a header such as
+C<output: about/index.html>.
+
 This contains all the methods to handle the storing and generating of
 non-blog pages.
 
@@ -99,10 +102,9 @@ sub on_insert
           die "Failed to prepare";
 
         $sql->execute( $data->{ 'title' },
-                       $data->{ 'link' },
+                       $data->{ 'output' } || $data->{ 'link' },
                        $data->{ 'body' },
-                       $data->{ 'template' }
-          ) or
+                       $data->{ 'template' } ) or
           die "Failed to insert";
         $sql->finish();
 
@@ -216,4 +218,3 @@ b) the Perl "Artistic License".
 Stuart Skelton
 
 =cut
-
