@@ -1,3 +1,13 @@
+5.1.7 - XX Feb XX
+    * The __CUT__ feature works 100% in all supplied themes.
+    * Each supplied theme supports "static pages".
+    * Static-pages can now explicitly specify their output path.
+    * Re-added support for lower-casing of output page names.
+    * Simple redirection pages will be created for the original mixed-case page.
+    * The "Recent Posts" template-snippet will correctly work when posts
+      included in that subset contain comments.
+    * Default theme now reports version number properly.
+
 5.1.6 - 29th December 2016
     * New release to add libclass-path to build-deps, debian-specific.
 
