@@ -80,6 +80,12 @@ sub on_initiate
     $Chronicle::GLOBAL_TEMPLATE_VARS{ "chronicle_version" } =
       $Chronicle::VERSION;
 
+    #
+    #  The homepage for Chronicle
+    #
+    $Chronicle::GLOBAL_TEMPLATE_VARS{ "chronicle_link" } =
+      "https://steve.fi/Software/chronicle";
+
     my $time = time;
 
     #
