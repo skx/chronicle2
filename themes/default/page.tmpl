@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <title><!-- tmpl_var name='blog_title' -->: <!-- tmpl_var name='title' --></title>
+    <link rel="stylesheet" type="text/css" media="screen" href="<!-- tmpl_var name='top' -->style.css" />
+
+<!-- tmpl_unless name='no_comments' -->
+    <link rel="alternate" title="Comment Feed" href="<!-- tmpl_var name='basename' -->.rss" type="application/rss+xml" />
+<!-- /tmpl_unless -->
+<!-- tmpl_if name='title' -->
+    <meta name="description" content="<!-- tmpl_var name='title' escape='html' -->" />
+<!-- /tmpl_if -->
+<!-- tmpl_if name='tags' -->
+    <meta name="keywords" content="<!-- tmpl_loop name='tags' --><!-- tmpl_var name='tag' escape='html' --><!-- tmpl_unless name="__last__" -->, <!-- /tmpl_unless --><!-- /tmpl_loop -->" />
+<!-- /tmpl_if -->
+
+  </head>
+  <body>
+    <!-- tmpl_include name='header.inc' -->
+    <h1><!-- tmpl_var name='title' --></h1>
+    <div>
+      <!-- tmpl_var name='content' -->
+    </div>
+    <div id="sidebar">
+      <!-- tmpl_include name='sidebar.inc' -->
+    </div>
+    <!-- tmpl_include name='footer.inc' -->
+  </body>
+</html>
