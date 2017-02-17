@@ -1,14 +1,14 @@
 
 * Homepage:
-    * http://www.steve.org.uk/Software/chronicle/
+    * https://steve.fi/Software/chronicle/
 * CPAN:
     * http://search.cpan.org/dist/App-Chronicle/
 * Git Repository:
     * http://github.com/skx/chronicle2
 * Git mirror:
-    * http://git.steve.org.uk/cpan/chronicle2
+    * https://git.steve.org.uk/cpan/chronicle2
 * Real World Use:
-    * http://blog.steve.org.uk/
+    * https://blog.steve.fi/
 
 
 chronicle
@@ -111,7 +111,7 @@ As we've previously noted the blog-generation largely occurs via a series of plu
 
     chronicle --exclude-plugins=AllTags,RecentPosts --force ..
 
-> **NOTE**: The plugins which generate output pages are located beneath `Chronicle::Plugin::Generate`.  The plugins which generate snippets available to all pages are located beneath `Chronicle::Plugin::Snippets`.
+> **NOTE**: The plugins which generate output pages are located beneath the `Chronicle::Plugin::Generate` name-space.  The plugins which generate snippets available to all pages are located beneath the `Chronicle::Plugin::Snippets` name-space.
 
 > **NOTE**: Because the snippets are included in every page, in the default themes, we've added `--force` to ensure that the output pages are updated.
 
@@ -122,13 +122,13 @@ User-Visible Changes
 In an ideal would you should be able to migrate from previous Chronicle releases directly to this codebase, as the purpose and main operation is identical:
 
 * Blog entries are are still read from `data/`, unless you specify a different path via "`--input`".
-* We still assume `*.txt` are the blog entries, unless you specify `--pattern=*.blog`".
+* We still assume `*.txt` are the blog entries, unless you specify "`--pattern=*.blog`".
 * Blog entries are still built up of a header and the entry.
 * Entries are still parsed in HTML, Markdown, and Textile formats.
 
 However there are changes, and these largely relate to the templates, along with the implementation differences.
 
-As of Chronicle 5 the main script parse arguments, reads the blog posts, but the actual generation of your site is entirely plugin-based.  The plugins are standard Perl modules located beneath the `Chronicle::Plugin` namespace, and although you don't need to know any of the details they can be ordered thanks to the use of [Module::Pluggable::Ordered](http://search.cpan.org/perldoc?Module%3A%3APluggable%3A%3AOrdered) class.
+As of Chronicle 5 the main script parses any command-line arguments, and reads the blog posts, but the actual generation of your site is entirely plugin-based.  The plugins are standard Perl modules located beneath the `Chronicle::Plugin` name-space, and although you don't need to know any of the details they can be ordered thanks to the use of [Module::Pluggable::Ordered](http://search.cpan.org/perldoc?Module%3A%3APluggable%3A%3AOrdered) class.
 
 The template changes are a little more significant than I'd like, but
 happily these changes largely consist of new locations for things,
