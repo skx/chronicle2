@@ -12,7 +12,7 @@
 <!-- tmpl_if name='all_tags' -->
 <ul style="list-style:none;">
 <!-- tmpl_loop name='all_tags' -->
-<li><a href="/tags/<!-- tmpl_var name='tag' escape='html' -->" title="Used <!-- tmpl_var name='count' --> times"><!-- tmpl_var name='tag' --></a></li>
+<li><a href="<!-- tmpl_var name='top' -->/tags/<!-- tmpl_var name='tag' escape='html' -->" title="Used <!-- tmpl_var name='count' --> times"><!-- tmpl_var name='tag' --></a></li>
 <!-- /tmpl_loop -->
 </ul>
 <!-- tmpl_else -->

@@ -1,4 +1,4 @@
-<p style="text-align: center;"><img src="/spiral.gif" width="68" height="68" alt="Spiral Logo"/></p>
+<p style="text-align: center;"><img src="<!-- tmpl_var name='top' -->/spiral.gif" width="68" height="68" alt="Spiral Logo"/></p>
 
 <!-- tmpl_if name='recent_posts' -->
 <h3>Recent Posts</h3>
@@ -16,16 +16,15 @@
 <h3>Recent Tags</h3>
 <ul style="list-style:none;">
 <!-- tmpl_loop name='recent_tags' -->
-<li><a href="/tags/<!-- tmpl_var name='tag' -->"><!-- tmpl_var name='tag' --></a></li>
+<li><a href="<!-- tmpl_var name='top' -->/tags/<!-- tmpl_var name='tag' -->"><!-- tmpl_var name='tag' --></a></li>
 <!-- /tmpl_loop -->
 </ul>
 <!-- /tmpl_if name='recent_tags' -->
 
 <h3>Links</h3>
 <ul style="list-style:none;">
- <li><a href="/about/">About</a></li>
- <li><a href="/archive/">Archive</a></li>
- <li><a href="/tags/">Tags</a></li>
+ <li><a href="<!-- tmpl_var name='top' -->/archive/">Archive</a></li>
+ <li><a href="<!-- tmpl_var name='top' -->/tags/">Tags</a></li>
 </ul>
 
 <h3>Search</h3>
@@ -39,5 +38,5 @@
 
 <h3>RSS Feed</h3>
 <ul style="list-style:none;">
- <li><a href="/index.rss"><img src="/xml.gif" alt="Subscribe to feed" width="36" height="14" /></a></li>
+ <li><a href="<!-- tmpl_var name='top' -->/index.rss"><img src="<!-- tmpl_var name='top' -->/xml.gif" alt="Subscribe to feed" width="36" height="14" /></a></li>
 </ul>

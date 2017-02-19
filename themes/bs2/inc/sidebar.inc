@@ -12,5 +12,5 @@
 <!-- /tmpl_if name='recent_posts' -->
 
 <h3>RSS Feed</h3>
-<a href="/index.rss">RSS</a>
+<a href="<!-- tmpl_var name='top' -->/index.rss">RSS</a>
 </div>

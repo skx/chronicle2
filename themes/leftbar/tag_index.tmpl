@@ -16,7 +16,7 @@
 <h1>Tag Cloud</h1>
 <!-- tmpl_if name='all_tags' -->
 <!-- tmpl_loop name='all_tags' -->
-<span style="font-size: <!-- tmpl_var name='tsize' -->px"><a href="/tags/<!-- tmpl_var name='tag' escape='html' -->" title="Used <!-- tmpl_var name='count' --> times"><!-- tmpl_var name='tag' --></a></span>
+<span style="font-size: <!-- tmpl_var name='tsize' -->px"><a href="<!-- tmpl_var name='top' -->/tags/<!-- tmpl_var name='tag' escape='html' -->" title="Used <!-- tmpl_var name='count' --> times"><!-- tmpl_var name='tag' --></a></span>
 <!-- /tmpl_loop -->
 <!-- tmpl_else -->
 <p>No tagged posts were found.</p>
