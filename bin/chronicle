@@ -386,11 +386,11 @@ $CONFIG{ 'comment-days' } = 10;
 $CONFIG{ 'entry-count' }  = 10;
 $CONFIG{ 'rss-count' }    = 10;
 
-$CONFIG{ 'theme-dir' }    = File::ShareDir::dist_dir('App-Chronicle');
-$CONFIG{ 'theme' }   = "default";
-$CONFIG{ 'unicode' } = "no";
-$CONFIG{ 'verbose' } = 0;
-$CONFIG{ 'top' }     = "/";
+$CONFIG{ 'theme-dir' } = File::ShareDir::dist_dir('App-Chronicle');
+$CONFIG{ 'theme' }     = "default";
+$CONFIG{ 'unicode' }   = "no";
+$CONFIG{ 'verbose' }   = 0;
+$CONFIG{ 'top' }       = "/";
 $CONFIG{ 'exclude-plugins' } =
   "Chronicle::Plugin::Archived,Chronicle::Plugin::Verbose";
 $CONFIG{ 'template-engine' } = "HTMLTemplate";
@@ -1220,9 +1220,24 @@ sub getComments
             # have special theming.
             #
             my $author = 0;
-            $author = 1
-              if ( $CONFIG{ 'author' } &&
-                   ( lc($mail) eq lc( $CONFIG{ 'author' } ) ) );
+
+            #
+            # We'll look for matches in the author-setup
+            #
+            if ( $CONFIG{ 'author' } )
+            {
+                #
+                #  This is comma-separated
+                #
+                foreach my $ent ( split( /,/, lc( $CONFIG{ 'author' } ) ) )
+                {
+                    # strip leading and trailing space.
+                    $ent =~ s/^\s+//;
+                    $ent =~ s/\s+$//;
+
+                    $author = 1 if ( lc($mail) eq $ent );
+                }
+            }
 
             #
             # Store the comment
