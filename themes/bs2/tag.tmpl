@@ -45,6 +45,16 @@
         <li><a href="<!-- tmpL_var name='top' -->tags/">Tags</a> <span class="divider">/</span></li>
         <li><a href="<!-- tmpL_var name='top' -->tags/<!-- tmpl_var name='tag' -->"><!-- tmpl_var name='tag' --></a></li>
       </ul>
+
+     <!-- tmpl_if name='related' -->
+     <ul class="breadcrumb">
+       <li>Related Tags <span class="divider">/</span></li>
+       <!-- tmpl_loop name='related' -->
+       <li><a href="<!-- tmpl_var name='top' -->tags/<!-- tmpl_var name='tag' escape='html' -->"><!-- tmpl_var name='tag' escape='html' --></a> <span class="divider">/</span></li>
+       <!-- /tmpl_loop -->
+      </ul>
+      <!-- /tmpl_if -->
+
     </div>
     <div class="container">
       <div class="row">

@@ -11,7 +11,18 @@
 <table style="width:100%; border-top: 1px solid black;">
 <tr>
  <td valign="top" width="80%" style="padding:5px; border-right: 1px solid grey;">
-<h1>Entries tagged <!-- tmpl_var name='tag' escape='html' --></h1>
+   <h1>Entries tagged <!-- tmpl_var name='tag' escape='html' --></h1>
+
+     <!-- tmpl_if name='related' -->
+     <blockquote>
+       <p>Related tags:
+         <!-- tmpl_loop name='related' -->
+         <a href="<!-- tmpl_var name='top' -->tags/<!-- tmpl_var name='tag' escape='html' -->"><!-- tmpl_var name='tag' escape='html' --></a><!-- tmpl_if name="__last__" -->.<!-- tmpl_else -->, <!-- /tmpl_if -->
+         <!-- /tmpl_loop -->
+         </p>
+     </blockquote>
+     <!-- /tmpl_if -->
+
 <!-- tmpl_if name='entries' -->
 <!-- tmpl_loop name='entries' -->
   <!-- tmpl_include name='inc/blog-post-truncated.inc' -->

@@ -141,9 +141,13 @@ sub _outputTags
         my $c = Chronicle::load_template("tag.tmpl");
         return unless ($c);
 
+        # Related tags
+        my $related = _getRelated( $dbh, $tag );
+
         $c->param( top     => $config->{ 'top' } );
         $c->param( entries => $entries ) if ($entries);
         $c->param( tag     => $tag );
+        $c->param( related => $related ) if ($related);
         open my $handle, ">:encoding(UTF-8)",
           "$config->{'output'}/tags/$tag/$index" or
           die "Failed to open";
@@ -162,6 +166,36 @@ sub _outputTags
 }
 
 
+=head2 _getRelated
+
+Return any tags related to that specified.
+
+=cut
+
+sub _getRelated
+{
+    my ( $dbh, $tag ) = (@_);
+
+    my $ret;
+
+    my $sql = $dbh->prepare(
+        "SELECT DISTINCT(a.name) FROM tags AS a JOIN tags b ON b.blog_id=a.blog_id WHERE b.name=? AND a.name != b.name ORDER BY a.name;"
+    );
+    $sql->execute($tag) or die "Failed to execute:" . $dbh->errstr();
+
+    my $found;
+    $sql->bind_columns( undef, \$found );
+
+    while ( $sql->fetch() )
+    {
+        push( @$ret, { tag => $found } );
+    }
+    $sql->finish();
+
+    use Data::Dumper;
+    print Dumper( \$ret );
+    return ($ret);
+}
 
 =head2 _outputTagCloud
 
