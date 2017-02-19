@@ -7,6 +7,7 @@
     * The "Recent Posts" template-snippet will correctly work when posts
       included in that subset contain comments.
     * Default theme now reports version number properly.
+	* Tag-output page shows related tags, in some themes.
 
 5.1.6 - 29th December 2016
     * New release to add libclass-path to build-deps, debian-specific.
