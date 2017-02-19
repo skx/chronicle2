@@ -192,8 +192,6 @@ sub _getRelated
     }
     $sql->finish();
 
-    use Data::Dumper;
-    print Dumper( \$ret );
     return ($ret);
 }
 
