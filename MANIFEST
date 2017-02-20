@@ -10,6 +10,7 @@ lib/Chronicle/Plugin/DBTweak.pm
 lib/Chronicle/Plugin/Filter.pm
 lib/Chronicle/Plugin/Generate/Archive.pm
 lib/Chronicle/Plugin/Generate/Index.pm
+lib/Chronicle/Plugin/Generate/LowerCase.pm
 lib/Chronicle/Plugin/Generate/Pages.pm
 lib/Chronicle/Plugin/Generate/RSS.pm
 lib/Chronicle/Plugin/Generate/Sitemap.pm
@@ -50,6 +51,7 @@ t/pod.t
 t/style-no-tabs.t
 t/test-archive-links.t
 t/test-config-reader.t
+t/test-in-place-post.t
 t/test-html-tidy.t
 t/test-markdown-formatter.t
 t/test-multimarkdown-formatter.t
@@ -57,6 +59,7 @@ t/test-publish-future.t
 t/test-skip-drafts.t
 t/test-strict.t
 t/test-textile-formatter.t
+t/test-truncatedbody.t
 t/test-version-insertion.t
 t/test-youtube.t
 THEMES.md
@@ -65,10 +68,13 @@ themes/blog.steve.org.uk/archive_index.tmpl
 themes/blog.steve.org.uk/entry.tmpl
 themes/blog.steve.org.uk/inc/add-comment.inc
 themes/blog.steve.org.uk/inc/blog-post.inc
+themes/blog.steve.org.uk/inc/blog-post-truncated.inc
 themes/blog.steve.org.uk/inc/comment-loop.inc
+themes/blog.steve.org.uk/inc/footer.inc
 themes/blog.steve.org.uk/inc/sidebar.inc
 themes/blog.steve.org.uk/inc/style.inc
 themes/blog.steve.org.uk/index.tmpl
+themes/blog.steve.org.uk/page.tmpl
 themes/blog.steve.org.uk/static/progress.gif
 themes/blog.steve.org.uk/static/spiral.gif
 themes/blog.steve.org.uk/static/xml.gif
@@ -79,10 +85,12 @@ themes/bs2/archive_index.tmpl
 themes/bs2/entry.tmpl
 themes/bs2/inc/add-comment.inc
 themes/bs2/inc/blog-post.inc
+themes/bs2/inc/blog-post-truncated.inc
 themes/bs2/inc/comment-loop.inc
 themes/bs2/inc/footer.inc
 themes/bs2/inc/sidebar.inc
 themes/bs2/index.tmpl
+themes/bs2/page.tmpl
 themes/bs2/static/css/bootstrap-responsive.css
 themes/bs2/static/css/bootstrap.css
 themes/bs2/static/css/mezzanine.css
@@ -102,6 +110,7 @@ themes/default/entry.tmpl
 themes/default/footer.inc
 themes/default/header.inc
 themes/default/index.tmpl
+themes/default/page.tmpl
 themes/default/sidebar.inc
 themes/default/static/style.css
 themes/default/static/xml.gif
@@ -113,10 +122,12 @@ themes/leftbar/entry.tmpl
 themes/leftbar/inc/add-comment.inc
 themes/leftbar/inc/analytics.inc
 themes/leftbar/inc/blog-post.inc
+themes/leftbar/inc/blog-post-truncated.inc
 themes/leftbar/inc/comment-loop.inc
 themes/leftbar/inc/sidebar.inc
 themes/leftbar/inc/style.inc
 themes/leftbar/index.tmpl
+themes/leftbar/page.tmpl
 themes/leftbar/static/spiral.gif
 themes/leftbar/static/xml.gif
 themes/leftbar/tag.tmpl
