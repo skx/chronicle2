@@ -348,7 +348,7 @@ use open IO     => ':encoding(UTF-8)';
 package Chronicle;
 use Module::Pluggable::Ordered require => 1, inner => 0;
 
-our $VERSION = "5.1.6";
+our $VERSION = "5.1.7";
 
 use DBI;
 use Date::Format;
@@ -386,7 +386,7 @@ $CONFIG{ 'comment-days' } = 10;
 $CONFIG{ 'entry-count' }  = 10;
 $CONFIG{ 'rss-count' }    = 10;
 
-$CONFIG{ 'theme-dir' } = File::ShareDir::dist_dir('App-Chronicle');
+#$CONFIG{ 'theme-dir' } = File::ShareDir::dist_dir('App-Chronicle');
 $CONFIG{ 'theme' }     = "default";
 $CONFIG{ 'unicode' }   = "no";
 $CONFIG{ 'verbose' }   = 0;

@@ -28,7 +28,7 @@ use warnings;
 use Date::Language;
 use Encode qw/ decode /;
 
-our $VERSION = "5.1.6";
+our $VERSION = "5.1.7";
 
 =head2 on_generate
 

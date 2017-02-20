@@ -1,6 +1,6 @@
-5.1.7 - XX Feb XX
+5.1.7 - 20th February 2017
     * The __CUT__ feature works 100% in all supplied themes.
-    * Each supplied theme supports "static pages".
+    * Each supplied theme now supports "static pages".
     * Static-pages can now explicitly specify their output path.
     * Re-added support for lower-casing of output page names.
     * Simple redirection pages will be created for the original mixed-case page.
