@@ -386,7 +386,7 @@ $CONFIG{ 'comment-days' } = 10;
 $CONFIG{ 'entry-count' }  = 10;
 $CONFIG{ 'rss-count' }    = 10;
 
-#$CONFIG{ 'theme-dir' } = File::ShareDir::dist_dir('App-Chronicle');
+$CONFIG{ 'theme-dir' } = File::ShareDir::dist_dir('App-Chronicle');
 $CONFIG{ 'theme' }     = "default";
 $CONFIG{ 'unicode' }   = "no";
 $CONFIG{ 'verbose' }   = 0;
