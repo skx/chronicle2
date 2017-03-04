@@ -71,10 +71,20 @@ sub on_initiate
     #
     my $count = $config->{ 'recent-tag-count' } || 10;
 
+    #
+    #  The recent tags.
+    #
     my $recent = $dbh->prepare(
         "SELECT a.name FROM tags AS a JOIN blog AS b WHERE ( b.id = a.blog_id  ) ORDER BY b.date DESC LIMIT $count"
       ) or
       die "Failed to find recent tags: " . $dbh->errstr();
+
+    #
+    #  A count of tags
+    #
+    my $count = $dbh->prepare("SELECT COUNT(name) FROM tags WHERE name=?") or
+      die "Failed to count tag-usage: " . $dbh->errstr();
+
 
     $recent->execute() or die "Failed to execute:" . $dbh->errstr();
     my $tag;
@@ -82,13 +92,26 @@ sub on_initiate
 
 
     my $entries = undef;
+    my %SEEN;
 
     while ( $recent->fetch() )
     {
-        push( @$entries, { tag => $tag } );
-    }
-    $recent->finish();
+        $count->execute($tag);
+        my $c = $count->fetchrow_array();
 
+
+        push( @$entries,
+              {  tag   => $tag,
+                 count => $c
+              } )
+          unless ( $SEEN{ $tag } );
+
+        $SEEN{ $tag } += 1;
+    }
+
+    # Close our statements
+    $recent->finish();
+    $count->finish();
 
     #
     #  Now we have the structure.
