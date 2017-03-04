@@ -1,3 +1,8 @@
+5.1.8 - XXX
+    * Recent tags now have their count available.  e.g. sidebar on
+	  https://blog.steve.fi/
+
+
 5.1.7 - 20th February 2017
     * The __CUT__ feature works 100% in all supplied themes.
     * Each supplied theme now supports "static pages".
