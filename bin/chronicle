@@ -1098,6 +1098,59 @@ sub getBlog
 Get the comments associated with a given post, if comments are
 enabled and there are some present.
 
+The way this works is constrained by legacy concerns.  Assuming
+we have a blog which has two entries:
+
+=for example begin
+
+   data/this_is_my_first.txt
+   data/i_like_cakes.txt
+
+=for example end
+
+Then we're looking for comments by searching the comment-directory
+for files of the form:
+
+=for example begin
+
+    comments/this_is_my_first.html.13-March-2017-04:25:29
+    comments/this_is_my_first.html.13-March-2017-03:21:32
+    ..
+
+=for example end
+
+Here we have "id", which is based upon the filename of the B<input>
+blog-entry, the C<.html.> suffix, and then the date/time.
+
+As you can see we pretty much find comments by running a glob to find
+comment-files, then sorting by mtime, before finally looking to see
+if we have a match of comments for this particular entry.
+
+We could be far cleaner if we just used:
+
+=for example begin
+
+   comments/$ID/$CTIME
+
+=for example end
+
+Which might result in files like this:
+
+=for example begin
+
+   ..
+   comments/this_is_my_first/1489381208
+   comments/this_is_my_first/1489381228
+   comments/i_like_cakes/1429381228
+   ..
+
+=for example end
+
+The downside of this approach is that the comment-writing CGI-script
+would need to run C<mkdir> and we might be more at risk of directory
+traversal, and other badness.  Also the seconds-past-epoch might result
+in a collision - but we have that risk already, ssh!
+
 =end doc
 
 =cut
@@ -1118,13 +1171,22 @@ sub getComments
     return unless ( -d $CONFIG{ 'comments' } );
 
 
+    #
+    #  The resulting comments for this piece.
+    #
     my $results;
 
+    #
+    #  Strip the .html suffix from the filename
+    #
     if ( $title =~ /^(.*)\.([^.]+)$/ )
     {
         $title = $1;
     }
 
+    #
+    #  Lower-case it.
+    #
     $title = lc($title);
 
 
@@ -1132,19 +1194,19 @@ sub getComments
     #  Find each comment file.
     #
     my @entries;
-    foreach
-      my $file ( sort( glob( $CONFIG{ 'comments' } . "/" . $title . "*" ) ) )
+    foreach my $file ( glob( $CONFIG{ 'comments' } . "/" . $title . "*" ) )
     {
         push( @entries, $file );
     }
 
     #
-    # Sort them into order.
+    # Sort them into order by mtime.
     #
     @entries = sort {( stat($a) )[9] <=> ( stat($b) )[9]} @entries;
 
     #
-    #  Now process them.
+    #  Now process them, extracting the submitters IP, email,
+    # etc, etc, from the body of the comment-file.
     #
     foreach my $file (@entries)
     {
@@ -1155,6 +1217,12 @@ sub getComments
         my $mail    = "";
         my $pubdate = "";
 
+        #
+        #  The name of the file has the date/time in it.
+        #
+        #  This could be so much cleaner, but it'd break if I changed
+        # anything.
+        #
         if ( $file =~ /^(.*)\.([^.]+)$/ )
         {
             $date = $2;
@@ -1170,15 +1238,19 @@ sub getComments
             }
         }
 
+        #
+        #  Process the contents of the file.
+        #
         open my $comment, "<:encoding(utf-8)", $file or
           next;
 
         foreach my $line (<$comment>)
         {
+            # Skip empty lines.
             next if ( !defined($line) );
-
             chomp($line);
 
+            # Skip fields we don't care about.
             next if ( $line =~ /^IP-Address:/ );
             next if ( $line =~ /^User-Agent:/ );
 
@@ -1192,7 +1264,12 @@ sub getComments
             }
             elsif ( !length($link) && $line =~ /^Link: (.*)/i )
             {
-                $link = $1;
+                #
+                # Only save the link if it is fully-qualified.
+                #
+                my $match = $1;
+
+                $link = $match if ( $match =~ /^https?:/i );
             }
             else
             {
