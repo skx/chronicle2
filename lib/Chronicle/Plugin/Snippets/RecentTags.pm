@@ -72,7 +72,7 @@ sub on_initiate
     my $count = $config->{ 'recent-tag-count' } || 10;
 
     #
-    #  The recent tags.
+    #  Fetch the most recent tags, obeying the limit.
     #
     my $recent = $dbh->prepare(
         "SELECT a.name FROM tags AS a JOIN blog AS b WHERE ( b.id = a.blog_id  ) ORDER BY b.date DESC LIMIT $count"
@@ -80,12 +80,15 @@ sub on_initiate
       die "Failed to find recent tags: " . $dbh->errstr();
 
     #
-    #  A count of tags
+    #  Count how many times the given tag has been used.
     #
-    my $count = $dbh->prepare("SELECT COUNT(name) FROM tags WHERE name=?") or
+    $count = $dbh->prepare("SELECT COUNT(name) FROM tags WHERE name=?") or
       die "Failed to count tag-usage: " . $dbh->errstr();
 
 
+    #
+    #  Look for the recent tags
+    #
     $recent->execute() or die "Failed to execute:" . $dbh->errstr();
     my $tag;
     $recent->bind_columns( undef, \$tag );
@@ -96,16 +99,18 @@ sub on_initiate
 
     while ( $recent->fetch() )
     {
+        # Count prior-uses
         $count->execute($tag);
         my $c = $count->fetchrow_array();
 
-
+        # store the results, unless this tag is a duplicate
         push( @$entries,
               {  tag   => $tag,
                  count => $c
               } )
           unless ( $SEEN{ $tag } );
 
+        # We avoid using this tag again in the future.
         $SEEN{ $tag } += 1;
     }
 
