@@ -1,7 +1,8 @@
 5.1.8 - XXX
     * Recent tags now have their count available.  e.g. sidebar on
 	  https://blog.steve.fi/
-
+    * When users submit comments we ignore their links if they are unqualified.
+      (e.g. "http://example.com/" is fine, "www.foo.com" is not.)
 
 5.1.7 - 20th February 2017
     * The __CUT__ feature works 100% in all supplied themes.
