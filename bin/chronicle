@@ -792,7 +792,11 @@ sub insertPost
     }
     else
     {
-        $meta{ 'date' } = str2time( $meta{ 'date' } );
+        my $d = str2time( $meta{ 'date' } );
+        die "Failed to parse $meta{'date'} into a time, from $filename"
+          unless $d;
+
+        $meta{ 'date' } = $d;
     }
 
     #
