@@ -79,7 +79,6 @@ my %WriteMakefileArgs = (
                        homepage   => 'https://github.com/skx/chronicle2/',
                        bugtracker => 'https://github.com/skx/chronicle2/issues',
                        repository => 'https://github.com/skx/chronicle2.git',
-                       GitMirror  => 'http://git.steve.org.uk/cpan/chronicle2',
                    },
                   },
 );

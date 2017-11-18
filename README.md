@@ -5,8 +5,6 @@
     * http://search.cpan.org/dist/App-Chronicle/
 * Git Repository:
     * http://github.com/skx/chronicle2
-* Git mirror:
-    * https://git.steve.org.uk/cpan/chronicle2
 * Real World Use:
     * https://blog.steve.fi/
 
