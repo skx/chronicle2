@@ -5,9 +5,13 @@
     * http://search.cpan.org/dist/App-Chronicle/
 * Git Repository:
     * http://github.com/skx/chronicle2
-* Real World Use:
-    * https://blog.steve.fi/
 
+
+# Project: Obsolete
+
+**NOTE** this project is currently unmaintained, it was replaced by a golang-based application which has complete feature-parity:
+
+* [https://github.com/skx/ephemeris](https://github.com/skx/ephemeris)
 
 chronicle
 ---------
