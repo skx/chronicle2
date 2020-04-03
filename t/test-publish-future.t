@@ -19,7 +19,7 @@ require_ok('Chronicle::Plugin::PostSpooler');
 my %data;
 $data{ 'body' }    = "This is **bold**";
 $data{ 'publish' } = scalar( localtime() );
-$data{ 'publish' } =~ s/(201[1-9])/2099/g;
+$data{ 'publish' } =~ s/(20[0-9]+)/2099/g;
 
 
 #
